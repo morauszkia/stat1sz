@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Morauszki András" />
+
+
+<title>Kombinatorika összefoglaló</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 66px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h2 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h3 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h4 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h5 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h6 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Statisztika 1. szeminárium</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Főoldal</a>
+</li>
+<li>
+  <a href="kombinatorika.html">Kombinatorika</a>
+</li>
+<li>
+  <a href="eloszlasok.html">Nevezetes eloszlások</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Órák slide-jai
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="01_valszam_muveletek.html">Műveletek valószínűségekkel</a>
+    </li>
+    <li>
+      <a href="02_felteteles.html">Feltételes valószínűségek</a>
+    </li>
+    <li>
+      <a href="03_val_valtozok.html">Valószínűségi változók</a>
+    </li>
+    <li>
+      <a href="04_val_valtozok_2.html">Hipergeometrikus és binomiális eloszlás</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="mailto:morauszki.andras@gmail.com">
+    <span class="fas fa-envelope"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Kombinatorika összefoglaló</h1>
+<h3 class="subtitle">Statisztika 1. szeminárium</h3>
+<h4 class="author">Morauszki András</h4>
+
+</div>
+
+
+<style>
+  p {
+    text-align: justify;
+    line-height: 1.5;
+  }
+</style>
+<p><br><br></p>
+<div id="bevezető-klasszikus-valószínűségi-mező" class="section level2">
+<h2>Bevezető: klasszikus valószínűségi mező</h2>
+<p><br><br />
+A valószínűségszámításban kiemelt jelentősége van a <strong>klasszikus valószínűségi mezőnek</strong>. Ez annyit jelent, hogy a mezőt alkotó egyes események valószínűségei egyenlők. Más szóval <strong>egyenlő valószínűségi mező</strong>nek is nevezik.</p>
+<p>Ha van egy A esemény, amely több, egyenlő valószínűségű alternatíva (egymást kölcsönösen kizáró elemi események) összege, akkor valószínűsége könnyedén kiszámítható. Jelöljük az összes elemi eseményt tartalmazó eseményteret Q-val. Ekkor A valószínűsége:<br />
+<span class="math display">\[P(A)=\frac{\textit{A elemeinek a száma}}{\textit{Q elemeinek a száma}}\]</span></p>
+<p>Vagy másképpen: a megfelelő elemi események számát osztjuk az összes lehetséges elemi eseménnyel. Néhány példa:</p>
+<ol style="list-style-type: decimal">
+<li>32 lapos magyarkártya-pakliból húzunk. Mennyi a valószínűsége annak, hogy a húzott kártya piros?</li>
+<li>Szabályos dobókockával dobunk. Mennyi annak a valószínűsége, hogy a dobott szám nagyobb, vagy egyenlő 5-tel?</li>
+<li>Feldobunk két pénzérmét. Mennyi a valószínűsége, hogy mindkét dobás fej?</li>
+<li>Öten mehetnek kenuzni. Mennyi a valószínűsége, hogy ha kilenc barátunkkal sorsolással döntjük el, ki mehet, a szerencsések között leszünk mi is?</li>
+<li>Véletlenszámgenerátorral négyjegyű számot generálunk. Mennyi a valószínűsége, hogy a kapott számban nem ismétlődnek a számjegyek?</li>
+</ol>
+<p>A választ minden esetben úgy kaphatjuk meg, hogy megszámoljuk, hány olyan eset van, amely megfelel a megadott feltételnek (piros, ≥5, két fej esett, stb.), és ezt elosztjuk az összes eset számával (hány lap van a pakliban, hányféle dobás lehetséges, stb.)</p>
+<ol style="list-style-type: decimal">
+<li>A pakliban 8 piros lap van, ami a 32 lap negyede, ezért a valószínűség 0,25.</li>
+<li>Két ilyen szám van (5, 6), ami az összes eset (1-6) harmada, ezért a valószínűség 1/3.</li>
+<li>Négy lehetőség van: FF, FÍ, ÍF, ÍÍ. Ezek közül egy felel meg, vagyis a valószínűség 0,25.</li>
+<li>A 10-ből az 5 kenuzót 252-féleképpen választhatjuk ki. Olyan eset, amikor mi a húzottak között vagyunk ugyanannyi van, mint ahányféleképpen ki tudjuk választani a fennmaradó 4 társunkat a 9-ből: 126. A valószínűség 0,5.</li>
+<li>Összesen, a 0000-t is számítva (nem volt olyan kitétel, amely kizárná), 10000 négyszámjegyű szám írható fel. Ebből 10x9x8x7=5040 olyan, amelyben nem ismétlődnek a számjegyek. A valószínűség 0,504.</li>
+</ol>
+<p>Ne aggódjanak, ha a 4. és 5. feladat így elsőre nem teljesen világos. Ezek kombinatorikai módszerekkel számíthatók ki, és ezért is született meg ez az összefoglaló.</p>
+</div>
+<div id="kombinatorikus-módszerek" class="section level2">
+<h2>Kombinatorikus módszerek</h2>
+<p><br> Az alpfelállás mindig az, hogy adottak bizonyos elemek, és ezekkel teszünk valamit: választunk közülük, sorba rendezzük, vagy akár mindkettő. Az alapján, mit teszünk az elemekkel, három esetet különböztetünk meg:</p>
+<ol style="list-style-type: decimal">
+<li>Permutáció: az összes elemet rendezzük sorba</li>
+<li>Variáció: az elemek közül választunk, és a kiválasztottakat rendezzük sorba</li>
+<li>Kombináció: az elemek közül választunk, a sorrend nem számít</li>
+</ol>
+<p>Mindhárom esetnek két változata van, attól függően, ismétlőd(het)nek-e az elemek:</p>
+<ol style="list-style-type: decimal">
+<li>Ismétléses</li>
+<li>Ismétlés nélküli</li>
+</ol>
+<div id="permutáció" class="section level3">
+<h3>Permutáció</h3>
+<p><br> Permutációról akkor beszélünk, ha adott valahány (általánosan: n) elem, és azt vizsgáljuk, hányféleképpen állíthatók ezek sorba.</p>
+<ol style="list-style-type: lower-alpha">
+<li>Ismétlés nélküli a permutáció, ha az elemek között nincsenek egyformák, ismétlődők.</li>
+</ol>
+<p>Példa: 5-en vizsgáznak. Hányféle sorrendben vizsgázhatnak?<br />
+Megoldás: Az első vizsgázót 5-féleképpen választhatjuk ki, a másodikat 4-féleképpen, a harmadikat 3-féleképpen, a negyediket 2-féleképpen, végül bemegy az ötödik vizsgázó is.<br />
+Eredmény: 5x4x3x2x1 = 120</p>
+<p>Általánosan: n elem ismétlés nélküli permutációját az alábbi képlettel kapjuk meg</p>
+<p><span class="math display">\[P_n=n!\]</span></p>
+<p>A fenti képletben n!-t <strong>n faktoriálisnak</strong> mondjuk, és egyenlő <span class="math inline">\(n*(n-1)*...*2*1\)</span>-gyel.<br />
+Például 4! = 4x3x2x1 = 24.<br />
+<em>Kiegészítés</em>: 0! = 1 és 1! = 1.</p>
+<ol start="2" style="list-style-type: lower-alpha">
+<li>Ha az elemek között vannak ismétlődők, akkor ismétléses permutációról van szó.</li>
+</ol>
+<p>Példa: Hányféleképpen lehet sorbarakni a MATEMATIKA szó betűit? Megoldás: Permutáció, hiszen adott az elemkészlet, és mindet felhasználjuk. Az előző ismétlés nélküli esethez képest a nehézséget az okozza, hogy vannak ismétlődő elemek: M (2 db), A (3 db), T (2 db).<br />
+Első lépésben különböztessük meg egymástól a két M-et (pl. M<sub>1</sub> és M<sub>2</sub> jelöléssel), a három A-t és két T-t. Ha ez lenne a helyzet, akkor simán 10 elem permutációjáról lenne szó, ami 10!.<br />
+Most töröljük el az M betűk indexeit. Hogyan csökken a különböző szavak száma? A válasz: annyiszor lesz kevesebb, ahányféleképpen az M-ek helyét &quot;feltölthetjük&quot; az M betűkkel. Pl. a MATEMATIKA sorrendben az M-ek kétféle sorrendben szerepelhetnek: először az M<sub>1</sub> a szó elején, és aztán az M<sub>2</sub> az E után, vagy fordítva. És ugyanez igaz minden sorrendre. Vagyis, a különböző sorrendek száma 2!-szor (= 2-szer) kevesebb lesz, ha az M-eket már nem különböztetjük meg egymástól.<br />
+Ugyanez történik a T-k indexeinek eltörlésével: a sorrendek száma a felére csökken.<br />
+Mi történik az A-k megkülönböztethetetlenné válásával? Mivel A-ból 3 van, ezeket 3! = 3x2x1 = 6-féleképpen tudjuk sorbarakni. Vagyis a sorrendek száma a hatodára csökken.<br />
+Eredmény: <span class="math inline">\(\frac{10!}{2!*2!*3!}=151200\)</span></p>
+<p>Általánosan: n elem ismétléses permutációját, ahol k<sub>1</sub>, k~2, stb. ismétlődés van, az alábbi képlettel kapjuk meg</p>
+<p><span class="math display">\[P_n^{(k_1, k_2, ..., k_r)}=\frac{n!}{k_1!*k_2!*...*k_r!}\]</span></p>
+</div>
+<div id="variáció" class="section level3">
+<h3>Variáció</h3>
+<p><br> Variációról akkor beszélünk, ha az elemkészletből (n elem) kiválasztunk k elemet, és ezek lehetséges sorrendjeinek számát vizsgáljuk.</p>
+<ol style="list-style-type: lower-alpha">
+<li>Ismétlés nélküli a variáció, ha az elemek nem ismétlődhetnek.</li>
+</ol>
+<p>Példa: Hányféleképpen alakulhat a dobogó, ha 10-en versenyeznek?<br />
+Megoldás: Az első helyre 10 személy esélyes. Ha már megvan az első, akkor még mindig 9-en lehetnek másodikok, és ha már a másodikat is kiválasztottuk, 8-an lehetnek harmadikok.<br />
+Eredmény: 10x9x8 = 720</p>
+<p>Általánosan: n elem k-adosztályú variációját az alábbi képlettel számíthatjuk ki</p>
+<p><span class="math display">\[V_n^k=\frac{n!}{(n-k)!}\]</span></p>
+<p>A képlet úgy jön ki, hogy a permutációból indulunk ki, de most mindazok az esetek, ahol csak a 4-10. helyezett változik, egynek számítanak. a 4-10. hely összesen 7 elem (= 10 - 3), amelyet 7!-féleképpen tudnánk sorbarakni. Vagyis a permutációhoz képest ennyiszer kevesebb sorrend lesz.</p>
+<p>A számológépek némelyikén külön funkcióként megtalálható a variáció, amelyet általában <code>nPr</code> jelöl.</p>
+<ol start="2" style="list-style-type: lower-alpha">
+<li>Ismétléses variációról akkor beszélünk, ha az elemek akárhányszor ismétlődhetnek.</li>
+</ol>
+<p>Példa: Négyjegyű PIN-kódot akarunk összeállítani a 0-9 számjegyekből. Hányféleképpen tehetjük meg?<br />
+Megoldás: Az első számot 10-féleképpen, a másodikat is 10-féleképpen, a harmadikat és a negyediket is 10-10-féleképpen választhatjuk ki.<br />
+Eredmény: 10x10x10x10 = 10<sup>4</sup> = 10000</p>
+<p>Általánosan: n elem k-adosztályú ismétléses variációját az alábbi képlettel tudjuk kiszámítani</p>
+<p><span class="math display">\[V_n^{i,k}=n^k\]</span></p>
+</div>
+<div id="kombináció" class="section level3">
+<h3>Kombináció</h3>
+<p><br> Kombinációról akkor beszélünk, amikor csak arra vagyunk kíváncsiak, hányféleképpen tudunk n elemből kiválasztani k-t, de a sorrend (a köznyelvi használatával ellentétben) nem érdekel minket.</p>
+<ol style="list-style-type: lower-alpha">
+<li>Ismétlés nélküli kombinációról van szó, ha az elemek nem ismétlődhetnek.</li>
+</ol>
+<p>Példa: 10-en szeretnének kenuzni menni, de a kenuba csak 5-en férnek ki. Hányféleképpen választhatjuk ki az 5 szerencsést, aki elmehet kenuzni?<br />
+Megoldás: a kombinációt a variációból tudjuk levezetni. Ha azt is néznénk, ki hová ül a kenuban, akkor 10x9x8x7x6 lehetőség lenne. Viszont ebben az esetben minden 5-ös csoport annyiszor számít, ahányféleképpen le tudnak ülni az 5 helyre, ami 5! (hiszen mind az 5-en leülnek, és nincs ismétlődés ⇒ ismétlés nélküli permutáció). Vagyis ennyivel kell még osztani a variációt, hogy megkapjuk a kombinációk számát.<br />
+Eredmény: <span class="math inline">\(\frac{10*9*8*7*6}{5*4*3*2}=252\)</span></p>
+<p>Általánosan: n elem k-adosztályú kombinációinak a száma</p>
+<p><span class="math display">\[C_n^k=\binom{n}{k}=\frac{n!}{k!*(n-k)!}\]</span></p>
+<p>A számológépeken az <code>nCr</code> funkciót érdemes keresni, ez jelenti a kombinációt.</p>
+<ol start="2" style="list-style-type: lower-alpha">
+<li>Ismétléses a kombináció, ha az elemek ismétlődhetnek.</li>
+</ol>
+<p>Példa: Piacon vásárolunk, és négyféle gyümölcsből választhatunk: alma, körte, barack, szilva. A kosarunkba 5 gyümölcsöt válogatunk össze. Hányféleképpen tehetjük ezt meg a négyfajta gyümölcsből, ha csak az számít, melyikből mennyit veszünk?<br />
+Megoldás: Ezt kicsit nehezebb átlátni, de logikailag kikövetkeztethető, ha a következőképpen jegyezzük le a kosarunk tartalmát: először strigulázzuk, hány almát vettünk, majd kiteszünk egy elválasztójelet (legyen mondjuk &quot;-&quot;), aztán jönnek a körték, majd ismét elválasztójel, barackok, elválasztójel, végül a szilvák. Mivel valamiből 0-t is tudunk venni, ezért az elválasztójelet akkor is kitesszük, ha az adott gyümölcsből nem veszünk semmit, csak nem lesznek strigulák. Néhány példa:</p>
+<p>||-|-||- (2 alma, 1 körte, 2 barack, 0 szilva)<br />
+-|||--|| (0 alma, 3 körte, 0 barack, 2 szilva)<br />
+---||||| (0 alma, 0 körte, 0 barack, 5 szilva)</p>
+<p>Ugyanígy minden kombináció jelölhető, és így minden kosár éppen egyféleképpen jelölhető, és minden jelölés egyértelműen megadja, melyik gyümölcsből mennyi van, vagyis ez egy használható jelölés. Na mármost, figyeljék meg, hogy minden jelölésben 5 strigula van (hiszen 5 gyümölcsöt veszünk), és 3 elválasztójel (mindig eggyel kevesebb, mint ahány különböző elemből válogatunk). A kérdés csak az, hogy ezek milyen sorrendben jönnek (ismétléses permutáció 8 elemmel, 5 és 3 ismétlődéssel), vagy ha úgy tetszik, hogy a teljes jelölés 5+3 = 8 jeléből melyik 5 lesz strigula / melyik 3 lesz elválasztó (ismétlés nélküli kombináció: 8 elemből 3-at/5-öt választunk).</p>
+<p>De a legegyszerűbb, ha az alábbi képletet használják</p>
+<p><span class="math display">\[C_n^{i, k}=\binom{n+k-1}{k}\]</span><br />
+Ha a képletet használják, arra figyeljenek, hogy <em>n</em> azt jelöli, hányféle elemből válogatnak, és <em>k</em> jelöli, hogy hányat választanak. A fenti példában n = 4-féle gyümölcsből szeretnénk k = 5-öt hazavinni:<br />
+<span class="math display">\[C_4^{i,5}=\binom{4+5-1}{5}=\binom{8}{5}=\frac{8!}{5!*3!}=56\]</span></p>
+</div>
+</div>
+<div id="bonyolultabb-feladatok" class="section level2">
+<h2>Bonyolultabb feladatok</h2>
+<p><br> Az alapesetekhez képest lehetnek olyan kikötések, amelyek bonyolultabbá teszik a feladatot. Ilyenekre találnak példát a gyakorló feladatsorban. Először próbálkozzanak meg a feladatokkal, a megoldásokat csak azután nézzék meg, ha már küzdöttek velük egy kicsit!<br />
+<br></p>
+<div style="text-align:center;">
+<h3 id="a-feladatokat-itt-találják"><a href="">A feladatokat itt találják</a></h3>
+<h3 id="a-megoldásokat-pedig-itt"><a href="">A megoldásokat pedig itt</a></h3>
+</div>
+<p><br></p>
+<p>Néhány támpont a több lépcsőben kiszámítható feladatokhoz:</p>
+<ul>
+<li>Vannak esetek, amikor könnyebb visszafelé számolni: kiszámítani az összes esetet (beleértve a nem megfelelőket), és ebből kivonni a nem megfelelő esetek számát.</li>
+<li>Van olyan, hogy egyszerűbb első körben megkülönböztetni egymástól az egyforma elemeket, és második lépésben osztani (ld. ismétléses permutáció levezetése, kombináció levezetése a variációból)</li>
+<li>Ha a részmegoldások egyszerre valósulnak meg, akkor a részmegoldások szorzódnak (pl. lányok és fiúk külön-külön ültetése után a sorrendek összesítése)</li>
+<li>Ha a részmegoldások egymás alternatívái (egyszerre egy valósulhat meg), akkor a részmegoldások összeadódnak (pl. vagy lányok, vagy fiúk leültetése adott számú székre)</li>
+<li>Előfordulhat, hogy egy probléma megoldásához kombinálni kell a permutációt, variációt és/vagy kombinációt.</li>
+</ul>
+</div>
+<div id="összegzés" class="section level2">
+<h2>Összegzés</h2>
+<p><br> A kombinatorikai feladatoknak három alapesete van:</p>
+<ul>
+<li>permutáció: ha minden elemet felhasználva képezünk sorrendeket</li>
+<li>variáció: ha néhány elemet kiválasztva képezünk sorrendeket</li>
+<li>kombináció: ha néhány elemet kiválasztunk, de a sorrend NEM érdekel minket</li>
+</ul>
+<p>Mindegyiknek két alesete van:</p>
+<ul>
+<li>ismétlés nélküli</li>
+<li>ismétléses</li>
+</ul>
+<p>Egy-egy feladatban az alapesetek kombinálódhatnak, és időnként csak több lépésben juthatunk el a megoldáshoz.</p>
+<p>Végül egy jótanács: Próbálják meg elképzelni a helyzetet, és először saját szavakkal megfogalmazni azokat a lépéseket, amelyeket végre kell hajtani, és csak ezután ezeket &quot;lefordítani&quot; a matematika nyelvére.</p>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

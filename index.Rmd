@@ -1,0 +1,55 @@
+---
+title: "Statisztika 1. szeminárium"
+output: html_document
+---
+
+## 2020/2021. tavaszi félév
+## PPKE-BTK
+
+<!-- *** -->
+<!-- <br> <br> -->
+
+<!-- ## Kérdőív: -->
+<!-- <br> -->
+<!-- Ha még nem tette meg, kérem segítse a munkámat ennek a kérdőívnek a kitöltésével: <br><br>   -->
+
+<!-- <center> -->
+<!-- <h2> -->
+<!-- [KÉRDŐÍV]() -->
+<!-- </h2> -->
+<!-- </center> -->
+
+***
+
+<style>
+  p {
+    text-align: justify;
+    line-height: 1.5;
+  }
+</style>
+
+<br><br>  
+
+## Tantárgy célja:
+<br>
+A szeminárium a Statisztika 1. előadáshoz kapcsolódik. Célja az előadáson tanultak gyakorlása és elmélyítése, a legfontosabb statisztikák és hipotézisvizsgálati módszerek megismerése. Az első negyedévben a valószínűségszámítással, a második negyedévben pedig a statisztika alapjaival (lejró statisztikák, becsléselmélet, hipotézisvizsgálat alapjai) foglalkozunk.
+<br><br>  
+
+## Legfontosabb információk:
+<br>
+A hallgatók a félév végén gyakorlati jegyet kapnak. Ez a félév során, az előre egyeztetett időpontban megírt két zárthelyi dolgozat **összesített ponteredményétől** függ. A félév teljesítésének feltétele, hogy a hallgató mindkét ZH-jának eredménye legalább elégséges.  
+A nem megírt ZH elégtelennek minősül. Indokolt esetben (pl. betegség esetén) lehetőség van a ZH pótlására. A távolmaradást a hallgató a ZH időpontja előtt köteles jelezni.  
+A sikertelen ZH javítására a félév végén, előre egyeztetett időpontban és módon van lehetőség.  
+A hallgatók az órán tanultak elmélyítésére házi gyakorló feladatokat kapnak. 
+<br><br>
+**A ZH-k időpontjai a 2020/21. tavaszi félévben:**
+<br>
+**I. ZH:** 2021.03.08.  
+**II. ZH:** 2021.05.10.  
+<br>
+A ZH-n használhatják az órai jegyzeteiket, illetve a kapott segédanyagokat (eloszlás-táblázatok, képletgyűjtemények, összefoglalók, stb.)
+<br><br>  
+
+## Segédanyagok:
+<br>
+A félév során a segédanyagokat, házi feladatsorokat, illetve azok megoldásait e-mailben kapják meg a hallgatók, illetve minden elérhető lesz a Teams csoportban is. A segédanyagokat igyekszem fokozatosan ide is feltölteni.

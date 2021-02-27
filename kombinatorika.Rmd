@@ -1,0 +1,186 @@
+---
+title: "Kombinatorika összefoglaló"
+subtitle: "Statisztika 1. szeminárium"
+author: "Morauszki András"
+output: html_document
+---
+
+<style>
+  p {
+    text-align: justify;
+    line-height: 1.5;
+  }
+</style>
+
+<br><br>  
+
+## Bevezető: klasszikus valószínűségi mező
+<br>  
+A valószínűségszámításban kiemelt jelentősége van a **klasszikus valószínűségi mezőnek**. Ez annyit jelent, hogy a mezőt alkotó egyes események valószínűségei egyenlők. Más szóval **egyenlő valószínűségi mező**nek is nevezik.  
+  
+Ha van egy A esemény, amely több, egyenlő valószínűségű alternatíva (egymást kölcsönösen kizáró elemi események) összege, akkor valószínűsége könnyedén kiszámítható. Jelöljük az összes elemi eseményt tartalmazó eseményteret Q-val. Ekkor A valószínűsége:  
+$$P(A)=\frac{\textit{A elemeinek a száma}}{\textit{Q elemeinek a száma}}$$
+  
+Vagy másképpen: a megfelelő elemi események számát osztjuk az összes lehetséges elemi eseménnyel. Néhány példa:  
+
+1. 32 lapos magyarkártya-pakliból húzunk. Mennyi a valószínűsége annak, hogy a húzott kártya piros?
+2. Szabályos dobókockával dobunk. Mennyi annak a valószínűsége, hogy a dobott szám nagyobb, vagy egyenlő 5-tel?
+3. Feldobunk két pénzérmét. Mennyi a valószínűsége, hogy mindkét dobás fej?
+4. Öten mehetnek kenuzni. Mennyi a valószínűsége, hogy ha kilenc barátunkkal sorsolással döntjük el, ki mehet, a szerencsések között leszünk mi is?
+5. Véletlenszámgenerátorral négyjegyű számot generálunk. Mennyi a valószínűsége, hogy a kapott számban nem ismétlődnek a számjegyek?  
+  
+A választ minden esetben úgy kaphatjuk meg, hogy megszámoljuk, hány olyan eset van, amely megfelel a megadott feltételnek (piros, &ge;5, két fej esett, stb.), és ezt elosztjuk az összes eset számával (hány lap van a pakliban, hányféle dobás lehetséges, stb.)  
+
+1. A pakliban 8 piros lap van, ami a 32 lap negyede, ezért a valószínűség 0,25.
+2. Két ilyen szám van (5, 6), ami az összes eset (1-6) harmada, ezért a valószínűség 1/3.
+3. Négy lehetőség van: FF, FÍ, ÍF, ÍÍ. Ezek közül egy felel meg, vagyis a valószínűség 0,25.
+4. A 10-ből az 5 kenuzót 252-féleképpen választhatjuk ki. Olyan eset, amikor mi a húzottak között vagyunk ugyanannyi van, mint ahányféleképpen ki tudjuk választani a fennmaradó 4 társunkat a 9-ből: 126. A valószínűség 0,5.
+5. Összesen, a 0000-t is számítva (nem volt olyan kitétel, amely kizárná), 10000 négyszámjegyű szám írható fel. Ebből 10x9x8x7=5040 olyan, amelyben nem ismétlődnek a számjegyek. A valószínűség 0,504.  
+  
+Ne aggódjanak, ha a 4. és 5. feladat így elsőre nem teljesen világos. Ezek kombinatorikai módszerekkel számíthatók ki, és ezért is született meg ez az összefoglaló.  
+
+## Kombinatorikus módszerek
+<br>
+Az alpfelállás mindig az, hogy adottak bizonyos elemek, és ezekkel teszünk valamit: választunk közülük, sorba rendezzük, vagy akár mindkettő. Az alapján, mit teszünk az elemekkel, három esetet különböztetünk meg:  
+
+1. Permutáció: az összes elemet rendezzük sorba
+2. Variáció: az elemek közül választunk, és a kiválasztottakat rendezzük sorba
+3. Kombináció: az elemek közül választunk, a sorrend nem számít
+
+Mindhárom esetnek két változata van, attól függően, ismétlőd(het)nek-e az elemek:  
+
+1. Ismétléses
+2. Ismétlés nélküli
+  
+  
+
+### Permutáció
+<br>
+Permutációról akkor beszélünk, ha adott valahány (általánosan: n) elem, és azt vizsgáljuk, hányféleképpen állíthatók ezek sorba.  
+
+a) Ismétlés nélküli a permutáció, ha az elemek között nincsenek egyformák, ismétlődők.  
+  
+Példa: 5-en vizsgáznak. Hányféle sorrendben vizsgázhatnak?  
+Megoldás: Az első vizsgázót 5-féleképpen választhatjuk ki, a másodikat 4-féleképpen, a harmadikat 3-féleképpen, a negyediket 2-féleképpen, végül bemegy az ötödik vizsgázó is.  
+Eredmény: 5x4x3x2x1 = 120  
+  
+Általánosan: n elem ismétlés nélküli permutációját az alábbi képlettel kapjuk meg
+
+$$P_n=n!$$
+
+A fenti képletben n!-t **n faktoriálisnak** mondjuk, és egyenlő $n*(n-1)*...*2*1$-gyel.  
+Például 4! = 4x3x2x1 = 24.  
+*Kiegészítés*: 0! = 1 és 1! = 1.  
+
+b) Ha az elemek között vannak ismétlődők, akkor ismétléses permutációról van szó.  
+  
+Példa: Hányféleképpen lehet sorbarakni a MATEMATIKA szó betűit?
+Megoldás: Permutáció, hiszen adott az elemkészlet, és mindet felhasználjuk. Az előző ismétlés nélküli esethez képest a nehézséget az okozza, hogy vannak ismétlődő elemek: M (2 db), A (3 db), T (2 db).  
+Első lépésben különböztessük meg egymástól a két M-et (pl. M~1~ és M~2~ jelöléssel), a három A-t és két T-t. Ha ez lenne a helyzet, akkor simán 10 elem permutációjáról lenne szó, ami 10!.  
+Most töröljük el az M betűk indexeit. Hogyan csökken a különböző szavak száma? A válasz: annyiszor lesz kevesebb, ahányféleképpen az M-ek helyét "feltölthetjük" az M betűkkel. Pl. a MATEMATIKA sorrendben az M-ek kétféle sorrendben szerepelhetnek: először az M~1~ a szó elején, és aztán az M~2~ az E után, vagy fordítva. És ugyanez igaz minden sorrendre. Vagyis, a különböző sorrendek száma 2!-szor (= 2-szer) kevesebb lesz, ha az M-eket már nem különböztetjük meg egymástól.  
+Ugyanez történik a T-k indexeinek eltörlésével: a sorrendek száma a felére csökken.  
+Mi történik az A-k megkülönböztethetetlenné válásával? Mivel A-ból 3 van, ezeket 3! = 3x2x1 = 6-féleképpen tudjuk sorbarakni. Vagyis a sorrendek száma a hatodára csökken.  
+Eredmény: $\frac{10!}{2!*2!*3!}=151200$  
+  
+Általánosan: n elem ismétléses permutációját, ahol k~1~, k~2, stb. ismétlődés van, az alábbi képlettel kapjuk meg
+
+$$P_n^{(k_1, k_2, ..., k_r)}=\frac{n!}{k_1!*k_2!*...*k_r!}$$
+
+### Variáció
+<br>
+Variációról akkor beszélünk, ha az elemkészletből (n elem) kiválasztunk k elemet, és ezek lehetséges sorrendjeinek számát vizsgáljuk.  
+  
+a) Ismétlés nélküli a variáció, ha az elemek nem ismétlődhetnek.  
+  
+Példa: Hányféleképpen alakulhat a dobogó, ha 10-en versenyeznek?  
+Megoldás: Az első helyre 10 személy esélyes. Ha már megvan az első, akkor még mindig 9-en lehetnek másodikok, és ha már a másodikat is kiválasztottuk, 8-an lehetnek harmadikok.  
+Eredmény: 10x9x8 = 720  
+  
+Általánosan: n elem k-adosztályú variációját az alábbi képlettel számíthatjuk ki
+
+$$V_n^k=\frac{n!}{(n-k)!}$$
+
+A képlet úgy jön ki, hogy a permutációból indulunk ki, de most mindazok az esetek, ahol csak a 4-10. helyezett változik, egynek számítanak. a 4-10. hely összesen 7 elem (= 10 - 3), amelyet 7!-féleképpen tudnánk sorbarakni. Vagyis a permutációhoz képest ennyiszer kevesebb sorrend lesz.  
+  
+A számológépek némelyikén külön funkcióként megtalálható a variáció, amelyet általában `nPr` jelöl.
+  
+b) Ismétléses variációról akkor beszélünk, ha az elemek akárhányszor ismétlődhetnek.  
+  
+Példa: Négyjegyű PIN-kódot akarunk összeállítani a 0-9 számjegyekből. Hányféleképpen tehetjük meg?  
+Megoldás: Az első számot 10-féleképpen, a másodikat is 10-féleképpen, a harmadikat és a negyediket is 10-10-féleképpen választhatjuk ki.  
+Eredmény: 10x10x10x10 = 10^4^ = 10000  
+  
+Általánosan: n elem k-adosztályú ismétléses variációját az alábbi képlettel tudjuk kiszámítani
+
+$$V_n^{i,k}=n^k$$
+
+### Kombináció
+<br>
+Kombinációról akkor beszélünk, amikor csak arra vagyunk kíváncsiak, hányféleképpen tudunk n elemből kiválasztani k-t, de a sorrend (a köznyelvi használatával ellentétben) nem érdekel minket.  
+  
+a) Ismétlés nélküli kombinációról van szó, ha az elemek nem ismétlődhetnek.  
+  
+Példa: 10-en szeretnének kenuzni menni, de a kenuba csak 5-en férnek ki. Hányféleképpen választhatjuk ki az 5 szerencsést, aki elmehet kenuzni?  
+Megoldás: a kombinációt a variációból tudjuk levezetni. Ha azt is néznénk, ki hová ül a kenuban, akkor 10x9x8x7x6 lehetőség lenne. Viszont ebben az esetben minden 5-ös csoport annyiszor számít, ahányféleképpen le tudnak ülni az 5 helyre, ami 5! (hiszen mind az 5-en leülnek, és nincs ismétlődés &rArr; ismétlés nélküli permutáció). Vagyis ennyivel kell még osztani a variációt, hogy megkapjuk a kombinációk számát.  
+Eredmény: $\frac{10*9*8*7*6}{5*4*3*2}=252$  
+  
+Általánosan: n elem k-adosztályú kombinációinak a száma
+
+$$C_n^k=\binom{n}{k}=\frac{n!}{k!*(n-k)!}$$
+  
+A számológépeken az `nCr` funkciót érdemes keresni, ez jelenti a kombinációt.  
+  
+b) Ismétléses a kombináció, ha az elemek ismétlődhetnek.  
+  
+Példa: Piacon vásárolunk, és négyféle gyümölcsből választhatunk: alma, körte, barack, szilva. A kosarunkba 5 gyümölcsöt válogatunk össze. Hányféleképpen tehetjük ezt meg a négyfajta gyümölcsből, ha csak az számít, melyikből mennyit veszünk?  
+Megoldás: Ezt kicsit nehezebb átlátni, de logikailag kikövetkeztethető, ha a következőképpen jegyezzük le a kosarunk tartalmát: először strigulázzuk, hány almát vettünk, majd kiteszünk egy elválasztójelet (legyen mondjuk "-"), aztán jönnek a körték, majd ismét elválasztójel, barackok, elválasztójel, végül a szilvák. Mivel valamiből 0-t is tudunk venni, ezért az elválasztójelet akkor is kitesszük, ha az adott gyümölcsből nem veszünk semmit, csak nem lesznek strigulák. Néhány példa:  
+  
+||-|-||- (2 alma, 1 körte, 2 barack, 0 szilva)  
+-|||--|| (0 alma, 3 körte, 0 barack, 2 szilva)  
+---||||| (0 alma, 0 körte, 0 barack, 5 szilva)  
+  
+Ugyanígy minden kombináció jelölhető, és így minden kosár éppen egyféleképpen jelölhető, és minden jelölés egyértelműen megadja, melyik gyümölcsből mennyi van, vagyis ez egy használható jelölés. Na mármost, figyeljék meg, hogy minden jelölésben 5 strigula van (hiszen 5 gyümölcsöt veszünk), és 3 elválasztójel (mindig eggyel kevesebb, mint ahány különböző elemből válogatunk). A kérdés csak az, hogy ezek milyen sorrendben jönnek (ismétléses permutáció 8 elemmel, 5 és 3 ismétlődéssel), vagy ha úgy tetszik, hogy a teljes jelölés 5+3 = 8 jeléből melyik 5 lesz strigula / melyik 3 lesz elválasztó (ismétlés nélküli kombináció: 8 elemből 3-at/5-öt választunk).  
+  
+De a legegyszerűbb, ha az alábbi képletet használják
+
+$$C_n^{i, k}=\binom{n+k-1}{k}$$  
+Ha a képletet használják, arra figyeljenek, hogy *n* azt jelöli, hányféle elemből válogatnak, és *k* jelöli, hogy hányat választanak. A fenti példában n = 4-féle gyümölcsből szeretnénk k = 5-öt hazavinni:  
+$$C_4^{i,5}=\binom{4+5-1}{5}=\binom{8}{5}=\frac{8!}{5!*3!}=56$$
+
+## Bonyolultabb feladatok
+<br>
+Az alapesetekhez képest lehetnek olyan kikötések, amelyek bonyolultabbá teszik a feladatot. Ilyenekre találnak példát a gyakorló feladatsorban. Először próbálkozzanak meg a feladatokkal, a megoldásokat csak azután nézzék meg, ha már küzdöttek velük egy kicsit!  
+<br>
+
+<div style="text-align:center;">
+### [A feladatokat itt találják](00_kombinatorika.pdf)  
+### [A megoldásokat pedig itt](00_kombinatorika_megoldas.pdf)  
+### [Itt pedig egy másik (nem saját) összefoglalót](https://www.mateking.hu/valoszinusegszamitas/kombinatorika/nagy-kombinatorikai-osszefoglalo)  
+</div>
+  
+<br> 
+
+Néhány támpont a több lépcsőben kiszámítható feladatokhoz:  
+
+- Vannak esetek, amikor könnyebb visszafelé számolni: kiszámítani az összes esetet (beleértve a nem megfelelőket), és ebből kivonni a nem megfelelő esetek számát.
+- Van olyan, hogy egyszerűbb első körben megkülönböztetni egymástól az egyforma elemeket, és második lépésben osztani (ld. ismétléses permutáció levezetése, kombináció levezetése a variációból)
+- Ha a részmegoldások egyszerre valósulnak meg, akkor a részmegoldások szorzódnak (pl. lányok és fiúk külön-külön ültetése után a sorrendek összesítése)
+- Ha a részmegoldások egymás alternatívái (egyszerre egy valósulhat meg), akkor a részmegoldások összeadódnak (pl. vagy lányok, vagy fiúk leültetése adott számú székre)
+- Előfordulhat, hogy egy probléma megoldásához kombinálni kell a permutációt, variációt és/vagy kombinációt.
+
+## Összegzés
+<br>
+A kombinatorikai feladatoknak három alapesete van:  
+
+- permutáció: ha minden elemet felhasználva képezünk sorrendeket
+- variáció: ha néhány elemet kiválasztva képezünk sorrendeket
+- kombináció: ha néhány elemet kiválasztunk, de a sorrend NEM érdekel minket
+
+Mindegyiknek két alesete van:  
+
+- ismétlés nélküli
+- ismétléses
+
+Egy-egy feladatban az alapesetek kombinálódhatnak, és időnként csak több lépésben juthatunk el a megoldáshoz.  
+  
+Végül egy jótanács: Próbálják meg elképzelni a helyzetet, és először saját szavakkal megfogalmazni azokat a lépéseket, amelyeket végre kell hajtani, és csak ezután ezeket "lefordítani" a matematika nyelvére.

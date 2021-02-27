@@ -1,0 +1,24 @@
+h1 {
+  font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+}
+h2 {
+  font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+  color: #000000
+}
+p {
+  font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+  text-align: justify;
+}
+ol {
+  list-style-type: upper-alpha;
+  font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+}
+ul {
+  font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+}
+.fewlines {
+  line-height: 1.5;
+}
+.fewlines2 {
+  line-height: 2;
+}
