@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Morauszki András" />
+
+
+<title>Nevezetes eloszlások</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 66px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h2 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h3 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h4 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h5 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h6 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Statisztika 1. szeminárium</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Főoldal</a>
+</li>
+<li>
+  <a href="kombinatorika.html">Kombinatorika</a>
+</li>
+<li>
+  <a href="eloszlasok.html">Nevezetes eloszlások</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Órák slide-jai
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="01_valszam_muveletek.html">Műveletek valószínűségekkel</a>
+    </li>
+    <li>
+      <a href="02_felteteles.html">Feltételes valószínűségek</a>
+    </li>
+    <li>
+      <a href="03_val_valtozok.html">Valószínűségi változók</a>
+    </li>
+    <li>
+      <a href="03_var_shooting.html">Valószínűségi változós feladatok</a>
+    </li>
+    <li>
+      <a href="04_val_valtozok_2.html">Nevezetes eloszlások</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="mailto:morauszki.andras@gmail.com">
+    <span class="fas fa-envelope"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Nevezetes eloszlások</h1>
+<h3 class="subtitle">Statisztika 1. szeminárium</h3>
+<h4 class="author">Morauszki András</h4>
+
+</div>
+
+
+<style>
+  p {
+    text-align: justify;
+    line-height: 1.5;
+  }
+</style>
+<p><br><br></p>
+<div id="nevezetes-eloszlások" class="section level1 tabset tabset-pills">
+<h1>Nevezetes eloszlások</h1>
+<p><br><br />
+A vizsgált valószínűségi változók időnként nevezetes eloszlásokat követnek. Ilyenek például azok a változók, amelyek visszatevés nélküli vagy visszatevéses mintavétel eredményeképpen jönnek létre, de sok más is. Ez az összefoglaló ezeket tekinti át.<br />
+<br></p>
+<div id="diszkrét-valószínűségi-eloszlások" class="section level2 tabset tabset-pills">
+<h2>Diszkrét valószínűségi eloszlások</h2>
+<p>Diszkrét változónak azokat nevezzük, amelyek véges sok vagy megszámlálhatóan végtelen sok értéket vehetnek fel (pl. csak egész számok lehetnek - ld. Poisson és negatív binomiális eloszlások).</p>
+<div id="hipergeometrikus" class="section level3">
+<h3>Hipergeometrikus</h3>
+<p>Az alapja a visszatevés nélküli mintavétel. Adott az elemek egy <span class="math inline">\(N\)</span> elemű halmaza (a <strong>populáció</strong>), amelyben van <span class="math inline">\(K\)</span> darab bizonyos típusú elem. Veszünk egy <span class="math inline">\(n\)</span> elemű mintát ebből a populációból, és azt vizsgáljuk, hány adott típusú elem került a mintába.</p>
+<p>A hipergeometrikus eloszlás paraméterei tehát:</p>
+<ul>
+<li>N: populáció nagysága</li>
+<li>K: speciális elemek száma a populációban</li>
+<li>n: mintanagyság</li>
+</ul>
+<p>Annak valószínűségét, hogy a mintában éppen <span class="math inline">\(k\)</span> speciális elem van az alábbi képlettel kapjuk meg: <span class="math display">\[P(\xi=k)=\frac{\binom{K}{k}*\binom{N-K}{n-k}}{\binom{N}{n}}\]</span> A változó várható értéke (= a speciális elemek várható száma a mintában) <span class="math display">\[E(\xi)=n*\frac{K}{N}\]</span> A változó szórása <span class="math display">\[D(\xi)=\sqrt{n*\frac{K}{N}*\left(1-\frac{K}{N}\right)*\frac{N-n}{N-1}}\]</span></p>
+<p><strong>PÉLDA</strong>: Egy adott útszakaszon az elmúlt 365 nap során 40 nap történt baleset. Véletlenszerűen kiválasztunk 7 napot.</p>
+<p>Mennyi a valószínűsége, hogy ezek között nincs olyan nap, amelyen baleset történt?<br />
+N = 365; K = 40; n = 7; k = 0</p>
+<p><span class="math display">\[P(\xi=0)=\frac{\binom{40}{0}*\binom{365-40}{7-0}}{\binom{365}{7}}=0.4406\]</span></p>
+<p>Várhatóan hány balesetes van a kiválasztottak között? Mennyi a változó szórása? <span class="math display">\[E(\xi)=7*\frac{40}{365}=0.767123287671233\]</span><span class="math display">\[D(\xi)=\sqrt{7*\frac{40}{365}*\left(1-\frac{40}{365}\right)*\frac{365-7}{365-1}}=0.82\]</span></p>
+</div>
+<div id="binomiális" class="section level3">
+<h3>Binomiális</h3>
+<p>Hasonlóan a hipergeometrikus eloszláshoz, arra vagyunk kíváncsiak, <span class="math inline">\(n\)</span> esetből hányszor következik be egy esemény, de ellentétben a visszatevés nélküli mintavétellel, ahol a korábbi események befolyásolják a bekövetkezés valószínűségét, a binomiális eloszlás esetében ez a <span class="math inline">\(p\)</span> valószínűség állandó.</p>
+<p>A binomiális eloszlás paraméterei:</p>
+<ul>
+<li>n: mintanagyság</li>
+<li>p: a vizsgált esemény bekövetkezésének valószínűsége</li>
+</ul>
+<p>A <span class="math inline">\(p\)</span> valószínűséget néha az <span class="math inline">\(N\)</span> populációnagyságból és a speciális elemek <span class="math inline">\(K\)</span> számából kell kiszámítani: <span class="math inline">\(p=\frac{K}{N}\)</span></p>
+<p>Annak valószínűségét, hogy a mintában éppen <span class="math inline">\(k\)</span>-szor következik be a vizsgált esemény, az alábbi képlettel kapjuk meg: <span class="math display">\[P(\xi=k)=\binom{n}{k}*p^k*(1-p)^{n-k}\]</span> A változó várható értéke (= az esemény bekövetkezésének várható gyakorisága) <span class="math display">\[E(\xi)=n*p\]</span> A változó szórása <span class="math display">\[D(\xi)=\sqrt{n*p*(1-p)}\]</span></p>
+<p><strong>PÉLDA</strong>: Annak valószínűsége, hogy egy útszakaszon egy adott nap baleset történik 10%.</p>
+<p>Mennyi a valószínűsége, hogy az elkövetkező 7 napban éppen 1 balesetes nap lesz?<br />
+n = 7; p = 0.1; k = 1</p>
+<p><span class="math display">\[P(\xi=1)=\binom{7}{1}*0.1^1*(1-0.1)^{7-1}=0.372\]</span></p>
+<p>Mennyi a balesetes napok várható száma? Mennyi a változó szórása? <span class="math display">\[E(\xi)=7*0.1=0.7\]</span><span class="math display">\[D(\xi)=\sqrt{7*0.1*(1-0.1)}=0.79\]</span></p>
+</div>
+<div id="poisson" class="section level3">
+<h3>Poisson</h3>
+<p>Ellentétben a hipergeometrikus és a binomiális eloszlással, nem azt vizsgáljuk, hogy <span class="math inline">\(n\)</span> esetből hányszor következik be valami, hanem hogy egy adott intervallumon belül, ami lehet idő vagy távolság, tér is, hányszor következik be egy esemény. Ellentétben a hipergeometrikus és a binomiális eloszlással a Poisson eloszlású változók nem korlátosak, elmélegileg végtelen nagy értéket felvehetnek.</p>
+<p>A Poisson eloszlás paramétere:</p>
+<ul>
+<li>λ: várható gyakoriság</li>
+</ul>
+<p>Annak valószínűsége, hogy a vizsgált esemény a megadott intervallumon belül éppen <span class="math inline">\(k\)</span>-szor következik be: <span class="math display">\[P(\xi=k)=\frac{\lambda^k}{k!}*e^{-\lambda}\]</span> A képletben <span class="math inline">\(e\)</span> az Euler-féle számot jelöli (<span class="math inline">\(e \approx 2,718\)</span>)</p>
+<p>A változó várható értéke (= az esemény bekövetkezésének várható gyakorisága) <span class="math display">\[E(\xi)=\lambda\]</span> A változó szórása <span class="math display">\[D(\xi)=\sqrt{\lambda}\]</span></p>
+<p><strong>PÉLDA</strong>: Egy útszakaszon 365 nap során várhatóan 40 baleset történik.</p>
+<p>Mennyi a valószínűsége, hogy az elkövetkező 7 napban éppen 1 baleset történik?</p>
+<p>Az első lépés a λ kiszámítása. Ha 365 nap alatt 40 baleset történik, akkor 7 nap alatt várhatóan <span class="math inline">\(7 * \frac{40}{365}=0.767\)</span>.</p>
+<p>Ezt az értéket kell behelyettesíteni:</p>
+<p><span class="math display">\[P(\xi=1)=\frac{0.767^1}{1!}*e^{-0.767}=0.3562\]</span></p>
+<p>Mennyi a balesetek várható száma? Mennyi a változó szórása? <span class="math display">\[E(\xi)=0.767\]</span><span class="math display">\[D(\xi)=\sqrt{0.767}=0.876\]</span></p>
+</div>
+<div id="negatív-binomiális" class="section level3">
+<h3>Negatív binomiális</h3>
+</div>
+</div>
+<div id="folytonos-valószínűségi-eloszlások" class="section level2 tabset tabset-pills">
+<h2>Folytonos valószínűségi eloszlások</h2>
+<div id="egyenletes" class="section level3">
+<h3>Egyenletes</h3>
+</div>
+<div id="exponenciális" class="section level3">
+<h3>Exponenciális</h3>
+</div>
+<div id="normális" class="section level3">
+<h3>Normális</h3>
+</div>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

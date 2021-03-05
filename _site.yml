@@ -12,6 +12,8 @@ navbar:
       href: index.html
     - text: "Kombinatorika"
       href: kombinatorika.html
+    - text: "Nevezetes eloszlások"
+      href: eloszlasok.html
     - text: "Órák slide-jai"
       menu:
         - text: "Műveletek valószínűségekkel"
@@ -20,6 +22,10 @@ navbar:
           href: 02_felteteles.html
         - text: "Valószínűségi változók"
           href: 03_val_valtozok.html
+        - text: "Valószínűségi változós feladatok"
+          href: 03_var_shooting.html
+        - text: "Nevezetes eloszlások"
+          href: 04_val_valtozok_2.html
   right: 
     - icon: fa-envelope
       href: mailto:morauszki.andras@gmail.com
