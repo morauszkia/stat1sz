@@ -320,7 +320,7 @@ P(\xi<x)=F(x)=
   \begin{cases}
     0 & \quad \text{ha x < a} \\
     \frac{x-a}{b-a} & \quad \text{ha a < x < b} \\
-    q & \quad \text{ha x > b}
+    1 & \quad \text{ha x > b}
   \end{cases}
 $$
 
@@ -429,9 +429,9 @@ lambda <- in_hour / 60
 x1 <- 2
 x2 <- 5
 
-expression1 <- "P(\\xi<%d)=1-e^{-%.2f%d}="
-expression2 <- "P(\\xi>%d)=1-F(%d) = 1-(1-e^{-%.2f%d})=e^{-%.2f%d}="
-expression3 <- "P(%d<\\xi<%d)=F(%d)-F(%d)=1-e^{-%.2f%d}-(1-e^{-%.2f%d})=e^{-%.2f%d}-e^{-%.2f%d}="
+expression1 <- "P(\\xi<%d)=1-e^{-%.2f*%d}="
+expression2 <- "P(\\xi>%d)=1-F(%d) = 1-(1-e^{-%.2f*%d})=e^{-%.2f*%d}="
+expression3 <- "P(%d<\\xi<%d)=F(%d)-F(%d)=1-e^{-%.2f*%d}-(1-e^{-%.2f*%d})=e^{-%.2f*%d}-e^{-%.2f*%d}="
 
 ```
 

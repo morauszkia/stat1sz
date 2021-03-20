@@ -464,7 +464,7 @@ P(\xi&lt;x)=F(x)=
   \begin{cases}
     0 &amp; \quad \text{ha x &lt; a} \\
     \frac{x-a}{b-a} &amp; \quad \text{ha a &lt; x &lt; b} \\
-    q &amp; \quad \text{ha x &gt; b}
+    1 &amp; \quad \text{ha x &gt; b}
   \end{cases}
 \]</span></p>
 <p>Vagyis annak a valószínűsége, hogy az esemény a kezdőpont előtt bekövetkezik 0, hogy a végpont előtt bekövetkezik 1, a megadott intervallumon pedig a <span class="math inline">\(\frac{x-a}{b-a}\)</span> képlettel számítható ki.</p>
@@ -507,13 +507,13 @@ Mivel a továbbiakban percekben fogunk számolni (ez lesz az alapegység), λ az
 λ=0.25</p>
 <p><em>1. kérdés:</em> Mennyi a valószínűsége, hogy két autó érkezése között kevesebb, mint 2 perc telik el?<br />
 x = 2</p>
-<p><span class="math display">\[P(\xi&lt;2)=1-e^{-0.252}=0.3935\]</span></p>
+<p><span class="math display">\[P(\xi&lt;2)=1-e^{-0.25*2}=0.3935\]</span></p>
 <p><em>2. kérdés:</em> Mennyi a valószínűsége, hogy 5 percnél több telik el két autó érkezése között?<br />
 x = 5</p>
-<p><span class="math display">\[P(\xi&gt;5)=1-F(5) = 1-(1-e^{-0.255})=e^{-0.255}=0.2865\]</span></p>
+<p><span class="math display">\[P(\xi&gt;5)=1-F(5) = 1-(1-e^{-0.25*5})=e^{-0.25*5}=0.2865\]</span></p>
 <p><em>3. kérdés:</em> Mennyi a valószínűsége, hogy két autó érkezése között 2 és 5 közötti idő telik el?<br />
 x<sub>1</sub> = 2 és x<sub>2</sub> = 5</p>
-<p><span class="math display">\[P(2&lt;\xi&lt;5)=F(5)-F(2)=1-e^{-0.255}-(1-e^{-0.252})=e^{-0.255}-e^{-0.252}=0.32\]</span></p>
+<p><span class="math display">\[P(2&lt;\xi&lt;5)=F(5)-F(2)=1-e^{-0.25*5}-(1-e^{-0.25*2})=e^{-0.25*5}-e^{-0.25*2}=0.32\]</span></p>
 <p><em>4. kérdés:</em> Várhatóan hány perc telik el két autó érkezése között? Mennyi a változó szórása? <span class="math display">\[E(\xi)=\frac{1}{0.25}=4\]</span><span class="math display">\[D(\xi)=\frac{1}{0.25}=4\]</span></p>
 <p>Ha 60 perc alatt várhatóan 15 autó érkezik, akkor átlagosan 4 percenként jön egy autó.</p>
 </div>
