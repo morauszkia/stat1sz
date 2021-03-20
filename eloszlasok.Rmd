@@ -1,0 +1,501 @@
+---
+title: "Nevezetes eloszlások"
+subtitle: "Statisztika 1. szeminárium"
+author: "Morauszki András"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(dplyr)
+library(MASS)
+```
+
+```{r functions}
+round2 = function(x, n) {
+  posneg = sign(x)
+  z = abs(x)*10^n
+  z = z + 0.5 + sqrt(.Machine$double.eps)
+  z = trunc(z)
+  z = z/10^n
+  z*posneg
+}
+```
+
+<style>
+  p {
+    text-align: justify;
+    line-height: 1.5;
+  }
+</style>
+
+<br><br>  
+
+# Nevezetes eloszlások {.tabset .tabset-pills}
+<br>  
+A vizsgált valószínűségi változók időnként nevezetes eloszlásokat követnek. Ilyenek például azok a változók, amelyek visszatevés nélküli vagy visszatevéses mintavétel eredményeképpen jönnek létre, de sok más is. Ez az összefoglaló ezeket tekinti át.  
+<br>  
+
+## Diszkrét valószínűségi eloszlások {.tabset .tabset-pills}
+
+Diszkrét változónak azokat nevezzük, amelyek véges sok vagy megszámlálhatóan végtelen sok értéket vehetnek fel (pl. csak egész számok lehetnek - ld. Poisson és negatív binomiális eloszlások).  
+  
+Minden esetben azt vizsgáljuk, mennyi a valószínűsége, hogy a változó egy adott értéket vesz fel, mennyi a változó várható értéke és szórása.  
+
+### Hipergeometrikus
+
+Az alapja a visszatevés nélküli mintavétel. Adott az elemek egy $N$ elemű halmaza (a **populáció**), amelyben van $K$ darab bizonyos típusú elem. Veszünk egy $n$ elemű mintát ebből a populációból, és azt vizsgáljuk, hány adott típusú elem került a mintába.  
+  
+A hipergeometrikus eloszlás paraméterei tehát:  
+
+- N: populáció nagysága 
+- K: speciális elemek száma a populációban 
+- n: mintanagyság
+
+Annak valószínűségét, hogy a mintában éppen $k$ speciális elem van az alábbi képlettel kapjuk meg:
+$$P(\xi=k)=\frac{\binom{K}{k}*\binom{N-K}{n-k}}{\binom{N}{n}}$$
+A változó várható értéke (= a speciális elemek várható száma a mintában)
+$$E(\xi)=n*\frac{K}{N}$$
+A változó szórása
+$$D(\xi)=\sqrt{n*\frac{K}{N}*\left(1-\frac{K}{N}\right)*\frac{N-n}{N-1}}$$
+
+  
+```{r hypergeom}
+N <- 365
+K <- 40
+n <- 7
+k <- 0
+
+expression <- "P(\\xi=%d)=\\frac{\\binom{%d}{%d}*\\binom{%d-%d}{%d-%d}}{\\binom{%d}{%d}}="
+
+```
+
+
+**PÉLDA**: Egy adott útszakaszon az elmúlt `r N` nap során `r K` nap történt baleset. Véletlenszerűen kiválasztunk `r n` napot.  
+  
+Mennyi a valószínűsége, hogy ezek között `r ifelse(k == 0, "nincs olyan nap, amelyen baleset történt?", paste(k, "nap van, amelyen baleset történt?"))`  
+N = `r N`; K = `r K`; n = `r n`; k = `r k`  
+
+```{r print hyper, results='asis'}
+cat(paste0("$$", 
+           sprintf(expression, k, K, k, N, K, n, k, N, n),
+           dhyper(k, K, N - K, n) %>% round2(4),
+           "$$"))
+```
+
+Várhatóan hány balesetes van a kiválasztottak között? Mennyi a változó szórása?
+```{r print hyp_exp, results='asis'}
+expect_expression <- "E(\\xi)=%d*\\frac{%d}{%d}="
+stdev_expression <- "D(\\xi)=\\sqrt{%d*\\frac{%d}{%d}*\\left(1-\\frac{%d}{%d}\\right)*\\frac{%d-%d}{%d-1}}="
+
+stdev <- sqrt(n * K/N * (1 - K/N) * ((N - n)/(N - 1))) %>% round2(2)
+cat(paste0("$$",
+           sprintf(expect_expression, n, K, N),
+           n*K/N %>% round2(2),
+           "$$"))
+cat(paste0("$$",
+           sprintf(stdev_expression, n, K, N, K, N, N, n, N),
+           stdev,
+           "$$"))
+```
+
+### Binomiális
+
+Hasonlóan a hipergeometrikus eloszláshoz, arra vagyunk kíváncsiak, $n$ esetből hányszor következik be egy esemény, de ellentétben a visszatevés nélküli mintavétellel, ahol a korábbi események befolyásolják a bekövetkezés valószínűségét, a binomiális eloszlás esetében ez a $p$ valószínűség állandó.  
+  
+A binomiális eloszlás paraméterei:  
+
+- n: mintanagyság
+- p: a vizsgált esemény bekövetkezésének valószínűsége
+
+A $p$ valószínűséget néha az $N$ populációnagyságból és a speciális elemek $K$ számából kell kiszámítani: $p=\frac{K}{N}$  
+
+Annak valószínűségét, hogy a mintában éppen $k$-szor következik be a vizsgált esemény, az alábbi képlettel kapjuk meg:
+$$P(\xi=k)=\binom{n}{k}*p^k*(1-p)^{n-k}$$
+A változó várható értéke (= az esemény bekövetkezésének várható gyakorisága)
+$$E(\xi)=n*p$$
+A változó szórása
+$$D(\xi)=\sqrt{n*p*(1-p)}$$
+
+  
+```{r binom}
+n <- 7
+p <- 0.1
+k <- 1
+
+expression <- "P(\\xi=%d)=\\binom{%d}{%d}*%.1f^%d*(1-%.1f)^{%d-%d}="
+
+```
+
+
+**PÉLDA**: Annak valószínűsége, hogy egy útszakaszon egy adott nap baleset történik `r paste0(p*100, "%")`. 
+
+Mennyi a valószínűsége, hogy az elkövetkező `r n` napban  `r ifelse(k == 0, "nem történik baleset?", paste("éppen", k, "balesetes nap lesz?"))`  
+n = `r n`; p = `r p`; k = `r k`  
+
+```{r print_binom, results='asis'}
+cat(paste0("$$", 
+           sprintf(expression, k, n, k, p, k, p, n, k),
+           dbinom(k, n, p) %>% round2(4),
+           "$$"))
+```
+
+Mennyi a balesetes napok várható száma? Mennyi a változó szórása?
+```{r print_bin_exp, results='asis'}
+expect_expression <- "E(\\xi)=%d*%.1f="
+stdev_expression <- "D(\\xi)=\\sqrt{%d*%.1f*(1-%.1f)}="
+
+stdev <- sqrt(n * p * (1 - p)) %>% round2(2)
+cat(paste0("$$",
+           sprintf(expect_expression, n, p),
+           n*p %>% round2(2),
+           "$$"))
+cat(paste0("$$",
+           sprintf(stdev_expression, n, p, p),
+           stdev,
+           "$$"))
+```
+
+### Poisson
+
+Ellentétben a hipergeometrikus és a binomiális eloszlással, nem azt vizsgáljuk, hogy $n$ esetből hányszor következik be valami, hanem hogy egy adott intervallumon belül, ami lehet idő vagy távolság, tér is, hányszor következik be egy esemény. Ellentétben a hipergeometrikus és a binomiális eloszlással a Poisson eloszlású változók nem korlátosak, elmélegileg végtelen nagy értéket felvehetnek.
+
+A Poisson eloszlás paramétere:  
+
+- &lambda;: várható gyakoriság
+  
+Annak valószínűsége, hogy a vizsgált esemény a megadott intervallumon belül éppen $k$-szor következik be:
+$$P(\xi=k)=\frac{\lambda^k}{k!}*e^{-\lambda}$$
+A képletben $e$ az Euler-féle számot jelöli ($e \approx 2,718$)  
+
+A változó várható értéke (= az esemény bekövetkezésének várható gyakorisága)
+$$E(\xi)=\lambda$$
+A változó szórása
+$$D(\xi)=\sqrt{\lambda}$$
+
+  
+```{r pois}
+exp <- 40
+interval <- 365
+interval_new <- 7
+k <- 1
+
+lambda <- (exp * interval_new / interval) %>% round2(3)
+
+lambda_expression <- "%d * \\frac{%d}{%d}="
+
+expression <- "P(\\xi=%d)=\\frac{%.3f^%d}{%d!}*e^{-%.3f}="
+```
+
+
+**PÉLDA**: Egy útszakaszon `r interval` nap során várhatóan `r exp` baleset történik.   
+
+Mennyi a valószínűsége, hogy az elkövetkező `r interval_new` napban  `r ifelse(k == 0, "nem történik baleset?", paste("éppen", k, "baleset történik?"))`  
+
+Az első lépés a &lambda; kiszámítása. Ha `r interval` nap alatt `r exp` baleset történik, akkor `r interval_new` nap alatt várhatóan `r paste0("$", sprintf(lambda_expression, interval_new, exp, interval), lambda, "$")`.  
+  
+Ezt az értéket kell behelyettesíteni:
+
+```{r print_pois, results='asis'}
+cat(paste0("$$", 
+           sprintf(expression, k, lambda, k, k, lambda),
+           dpois(k, lambda) %>% round2(4),
+           "$$"))
+```
+
+Mennyi a balesetek várható száma? Mennyi a változó szórása?
+```{r print_pois_exp, results='asis'}
+expect_expression <- "E(\\xi)="
+stdev_expression <- "D(\\xi)=\\sqrt{%.3f}="
+
+stdev <- sqrt(lambda) %>% round2(3)
+cat(paste0("$$",
+           sprintf(expect_expression),
+           lambda,
+           "$$"))
+cat(paste0("$$",
+           sprintf(stdev_expression, lambda),
+           stdev,
+           "$$"))
+```
+
+### Negatív binomiális
+
+Ellentétben a korábbiakkal, ebben az esetben nem azt vizsgáljuk, hányszor következik be egy esemény, hanem hogy hányadikra következik be ez az esemény valahányadik alkalommal. Ezt az eloszlást követi az "orosz rulett", amelyben a kérdés, hogy hányadszorra dördül el a revolver.  
+
+Fontos figyelmeztetés: ezt az eloszlást többféleképpen szokták értelmezni:  
+
+- van, hogy csak az első bekövetkezésig nézik a "körök" számát, és a változó értékébe beleszámítják a bekövetkezést (pl. hányadszorra dobok először 6-ost a kockával)
+- van, hogy csaz az első bekövetkezés előtti "köröket" számítják, magát a bekövetkezést már nem számolják (pl. hányszor kell dobnom a dobókockával, *mielőtt* először 6-ost dobnék?)
+- van, hogy az r. bekövetkezésig nézik a körök számát, beleszámítva a k. bekövetkezést (pl. hányszor kell dobnom, mire lesz 3db 6-os a dobások között?)
+- van, hogy az r. bekövetkezésig nézik, de ezt már nem számítják (pl. hányszor kell dobnom, *mielőtt* harmadszor is 6-ost dobnék?)
+- és van, hogy az r. bekövetkezésig csak azokat a köröket számolják, amikor az esemény *nem* következett be (pl. hányszor dobok várhatóan *más számot*, mire 3db 6-ost sikerül dobnom?)
+  
+Látható, hogy az első kettő az utóbbi háromnak speciális esete, amikor r = 1.  
+
+A negatív binomiális eloszlás paraméterei:  
+
+- r: hányszor akarjuk, hogy az esemény bekövetkezzen?
+- p: az esemény bekövetkezésének valószínűsége
+  
+Annak a valószínűsége, hogy az esemény éppen a k. körben következik be r-edszer:
+$$P(\xi=k)=\binom{k-1}{r-1}*p^r*(1-p)^{k-r}$$
+  
+A változó várható értéke: várhatóan hányadik körben következik be r-edszer?
+$$E(\xi)=\frac{r}{p}$$
+  
+A változó szórása:
+$$D(\xi)=\frac{\sqrt{r*(1-p)}}{p}$$
+
+```{r negbin}
+r <- 3
+p <- 0.7
+k <- 5
+
+expression <- "P(\\xi=%d)=\\binom{%d-1}{%d-1}*%.1f^{%d}*(1-%.1f)^{%d-%d}="
+```
+
+
+**PÉLDA**: Egy lövész addig lő egy céltáblára, míg el nem ér `r r` találatot. A találat valószínűsége minden körben `r paste0(p*100, "%")`. 
+
+Mennyi a valószínűsége, hogy a `r r`. találat a `r k`. körben következik be?
+r = `r r`; p = `r p`; k = `r k`  
+
+```{r print_nbinom, results='asis'}
+cat(paste0("$$", 
+           sprintf(expression, k, k, r, p, r, p, k, r),
+           dnbinom(k-r, r, p) %>% round2(4),
+           "$$"))
+```
+
+Kitérő: ez az az eset, amikor az r. bekövetkezést is beleszámítjuk.  
+Ez megfelel a $P(\xi=`r k-1`)$ esetnek, ha az r. bekövetkezést nem számítanánk, és a $P(\xi=`r k-r`)$ esetnek, ha azt vizsgálnánk, hányszor véti el a célpontot, míg eléri a szükséges találatot. A három esetben &xi; mást-mást jelent (összes kör, végső siker előtti körök, sikertelen körök száma).
+
+Várhatóan hányadikra születik meg `r ifelse(r %in% c(1, 5), "az", "a")` `r r`. találat? Mennyi a szórás?
+```{r print_nbin_exp, results='asis'}
+expect_expression <- "E(\\xi)=\\frac{%d}{%.1f}="
+stdev_expression <- "D(\\xi)=\\frac{\\sqrt{%d*(1-%.1f)}}{%.1f}="
+
+ev <- r / p
+stdev <- (sqrt(r * (1-p)) / p) %>% round2(2)
+cat(paste0("$$",
+           sprintf(expect_expression, r, p),
+           ev %>% round2(2),
+           "$$"))
+cat(paste0("$$",
+           sprintf(stdev_expression, r, p, p),
+           stdev,
+           "$$"))
+```
+
+Kitérő: A másik két esetben a várható érték `r (ev-1) %>% round2(2)` lenne (ha az r. találat körét nem számoljuk), vagy pedig `r (ev-r) %>% round2(2)`, ha csak a sikertelen körök várható számát vizsgáljuk. 
+
+## Folytonos valószínűségi eloszlások {.tabset .tabset-pills}
+
+Folytonos változónak azokat nevezzük, amelyek megszámlálhatatlanul végtelen sok értéket vehetnek fel (pl. egy adott intervallumon belül, vagy a valós számok egy részhalmazán bármilyen valós számot).  
+  
+Ellentétben a diszkrét eloszlásokkal, ezekben az esetekben nincs értelme olyan valószínűségeket keresni, hogy a változó éppen egy adott számmal egyenlő. Mivel megszámlálhatatlanul végtelen sok értéket felvehetnek a változók, ezért minden egyes konkrét érték valószínűsége 0. Ezért ezekben az esetekben mindig valamilyen intervallumok valószínűségét fogjuk keresni.  
+  
+A $P(\xi < x)$ valószínűségeket közvetlenül ki tudjuk számítani az F(x) eloszlásfüggvények képlete segítségével. A $P(\xi > x)$ valószínűségek az előbbiek komplementerei, a $P(x_1 < \xi < x_2)$ valószínűségek pedig az eloszlásfüggvény két függvényértéke közötti különbségként:
+
+$$
+\begin{aligned}
+P(\xi < x)&=F(x) \\
+P(\xi > x)&=1-F(x) \\
+P(x_1 < \xi < x_2)&=F(x_2)-F(x_1)
+\end{aligned}
+$$
+
+### Egyenletes
+  
+Adott egy intervallum, amelyen belül minden pontnak ugyanakkora a valószínűsége. Annak valószínűségét keressük, hogy egy esemény ennek egy meghatározott részintervallumán belül következik be. A valószínűség egyenlő lesz azzal, ahogyan a részintervallum hossza aránylik a teljes intervallumhoz.
+  
+Az eloszlás paraméterei:  
+
+- a és b: a két végpont
+
+Annak a valószínűsége, hogy az esemény az A végponttól kevesebb, mint x időre/távolságra következik be:
+
+$$
+P(\xi<x)=F(x)=
+  \begin{cases}
+    0 & \quad \text{ha x < a} \\
+    \frac{x-a}{b-a} & \quad \text{ha a < x < b} \\
+    q & \quad \text{ha x > b}
+  \end{cases}
+$$
+
+Vagyis annak a valószínűsége, hogy az esemény a kezdőpont előtt bekövetkezik 0, hogy a végpont előtt bekövetkezik 1, a megadott intervallumon pedig a $\frac{x-a}{b-a}$ képlettel számítható ki.
+  
+A bekövetkezés várhatóan hol következik be az intervallumon?
+$$E(\xi)=\frac{a+b}{2}$$
+Vagyis várhatóan az intervallum közepén következik be az esemény.  
+  
+A szórás:
+$$D(\xi)=\frac{b-a}{\sqrt{12}}$$  
+```{r unif, results='asis'}
+a <- 2
+b <- 6
+x1 <- 3
+x2 <- 4
+
+expression1 <- "P(\\xi<%d)=\\frac{%d-%d}{%d-%d}="
+expression2 <- "P(\\xi>%d)=1-F(%d)=1-\\frac{%d-%d}{%d-%d}="
+expression3 <- "P(%d<\\xi<%d)=F(%d)-F(%d)=\\frac{%d-%d}{%d-%d}-\\frac{%d-%d}{%d-%d}="
+
+```
+
+**PÉLDA**: Valaki telefonhívást vár, ami `r a` és `r b` óra között érkezik, minden időpontban ugyanakkora valószínűséggel.  
+a = `r a`, b = `r b`  
+
+*1. kérdés:* Mennyi a valószínűsége, hogy `r x1`-ig hívják?  
+x = `r x1`  
+
+```{r print_unif1, results='asis'}
+cat(paste0("$$", 
+           sprintf(expression1, x1, x1, a, b, a),
+           punif(x1, a, b) %>% fractions(),
+           "$$"))
+```
+
+*2. kérdés:* Mennyi a valószínűsége, hogy `r x2` után hívják?  
+x = `r x2`  
+
+```{r print_unif2, results='asis'}
+cat(paste0("$$", 
+           sprintf(expression2, x2, x2, x2, a, b, a),
+           1-punif(x2, a, b) %>% fractions(),
+           "$$"))
+```
+
+*3. kérdés:* Mennyi a valószínűsége, hogy valamikor `r x1` és `r x2` között hívják?  
+x~1~ = `r x1` és x~2~ = `r x2`
+
+```{r print_unif3, results='asis'}
+cat(paste0("$$", 
+           sprintf(expression3, x1, x2, x2, x1, x2, a, b, a, x1, a, b, a),
+           paste0(punif(x2, a, b) %>% fractions(), "-", punif(x1, a, b) %>% fractions()),
+           "=", punif(x2, a, b)-punif(x1, a, b) %>% fractions(),
+           "$$"))
+```
+
+Megjegyzés: ezek a valószínűségek könnyen megkaphatók, ha figyelembe vesszük, hogy az egyes esetekben sorban `r x1-a`, `r b-x2` és `r x2-x1` órás intervallumokról van szó, amelyek a teljes `r b-a` órás intervallum `r fractions((x1-a)/(b-a))`, `r fractions((b-x2)/(b-a))` és `r fractions((x2-x1)/(b-a))` részének felelnek meg.
+
+*4. kérdés:* Mi a hívás várható időpontja? Mennyi a változó szórása?
+```{r print_unif, results='asis'}
+expect_expression <- "E(\\xi)=\\frac{%d+%d}{2}="
+stdev_expression <- "D(\\xi)=\\frac{%d-%d}{\\sqrt{12}}="
+
+ev <- (a + b) / 2
+stdev <- ((b - a) / sqrt(12)) %>% round2(2)
+cat(paste0("$$",
+           sprintf(expect_expression, a, b),
+           ev %>% round2(2),
+           "$$"))
+cat(paste0("$$",
+           sprintf(stdev_expression, b, a),
+           stdev,
+           "$$"))
+```
+
+### Exponenciális
+
+Az exponenciális eloszlás a Poisson eloszlás párja. A Poisson eloszlás esetében a kérdés az volt, hányszor fog valami egy adott intervallumon belül bekövetkezni. Az exponenciális eloszlás pedig arra vonatkozik, mikor/hol fog ez az esemény bekövetkezni. 
+  
+Az eloszlás paraméterei:  
+
+- &lambda;: az esemény várható bekövetkezési gyakorisága egy egységnyi intervallumon
+
+Annak a valószínűsége, hogy az esemény a kezdőponttól kevesebb, mint x időre/távolságra következik be:
+
+$$
+P(\xi<x)=F(x)=
+  \begin{cases}
+    0 & \quad \text{ha x} \le 0 \\
+    1-e^{-\lambda x}& \quad \text{ha x} > 0
+  \end{cases}
+$$
+
+Vagyis annak a valószínűsége, hogy az esemény a kezdőpont előtt bekövetkezik 0, egyébként pedig az $1-e^{-\lambda x}$ képlettel számítható ki, ahol $e$ az Euler-féle szám.
+  
+A bekövetkezés várhatóan hol következik be az intervallumon?
+$$E(\xi)=\frac{1}{\lambda}$$
+Vagyis várhatóan az intervallum közepén következik be az esemény.  
+  
+A szórás:
+$$D(\xi)=\frac{1}{\lambda}$$  
+```{r expon, results='asis'}
+in_hour <- 15
+lambda <- in_hour / 60
+x1 <- 2
+x2 <- 5
+
+expression1 <- "P(\\xi<%d)=1-e^{-%.2f%d}="
+expression2 <- "P(\\xi>%d)=1-F(%d) = 1-(1-e^{-%.2f%d})=e^{-%.2f%d}="
+expression3 <- "P(%d<\\xi<%d)=F(%d)-F(%d)=1-e^{-%.2f%d}-(1-e^{-%.2f%d})=e^{-%.2f%d}-e^{-%.2f%d}="
+
+```
+
+**PÉLDA**: Egy benzinkútra óránként `r in_hour` autó érkezik.   
+Mivel a továbbiakban percekben fogunk számolni (ez lesz az alapegység), &lambda; az egy perc alatt várhatóan megérkező autók száma lesz. Ha egy óra alatt `r in_hour` autó érkezik, akkor egy perc alatt `r paste0(in_hour, "/60)=", lambda %>% round2(2))` érkezik.  
+&lambda;=`r lambda`
+
+*1. kérdés:* Mennyi a valószínűsége, hogy két autó érkezése között kevesebb, mint `r x1` perc telik el?  
+x = `r x1`  
+
+```{r print_exp1, results='asis'}
+cat(paste0("$$", 
+           sprintf(expression1, x1, lambda, x1),
+           pexp(x1, lambda) %>% round2(4),
+           "$$"))
+```
+
+*2. kérdés:* Mennyi a valószínűsége, hogy `r x2` percnél több telik el két autó érkezése között?  
+x = `r x2`  
+
+```{r print_exp2, results='asis'}
+cat(paste0("$$", 
+           sprintf(expression2, x2, x2, lambda, x2, lambda, x2),
+           1-pexp(x2, lambda) %>% round2(4),
+           "$$"))
+```
+
+*3. kérdés:* Mennyi a valószínűsége, hogy két autó érkezése között `r x1` és `r x2` közötti idő telik el?  
+x~1~ = `r x1` és x~2~ = `r x2`
+
+```{r print_exp3, results='asis'}
+cat(paste0("$$", 
+           sprintf(expression3, x1, x2, x2, x1, lambda, x2, lambda, x1, lambda, x2, lambda, x1),
+           (pexp(x2, lambda)-pexp(x1, lambda)) %>% round2(4),
+           "$$"))
+```
+
+*4. kérdés:* Várhatóan hány perc telik el két autó érkezése között? Mennyi a változó szórása?
+```{r print_exp, results='asis'}
+expect_expression <- "E(\\xi)=\\frac{1}{%.2f}="
+stdev_expression <- "D(\\xi)=\\frac{1}{%.2f}="
+
+ev <- 1 / lambda
+stdev <- 1/ lambda
+cat(paste0("$$",
+           sprintf(expect_expression, lambda),
+           ev %>% round2(2),
+           "$$"))
+cat(paste0("$$",
+           sprintf(stdev_expression, lambda),
+           stdev,
+           "$$"))
+```
+
+Ha 60 perc alatt várhatóan `r in_hour` autó érkezik, akkor átlagosan `r ev` percenként jön egy autó.
+
+### További nevezetes folytonos eloszlások
+
+További nevezetes folytonos eloszlások:  
+
+1. normális eloszlás
+2. standard normális eloszlás, amely az előző egy speciális alesete
+3. Student-féle t-eloszlás
+4. &chi;^2^ eloszlás (e: khí-négyzet)
+5. F-eloszlás
+
+Ezekkel is fokozatosan meg fognak ismerkedni. A normális és standard normális eloszlásról a közeljövőben külön összefoglaló készül majd. 

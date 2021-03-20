@@ -21,6 +21,8 @@
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+<script src="site_libs/anchor-sections-1.0/anchor-sections.js"></script>
 <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
@@ -62,7 +64,6 @@ h6 {
   text-align: left;
 }
 </style>
-
 
 
 
@@ -270,11 +271,32 @@ $(document).ready(function () {
         <li>
   <a href="index.html">Főoldal</a>
 </li>
-<li>
-  <a href="kombinatorika.html">Kombinatorika</a>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Kombinatorika és valószínűségszámítás
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="kombinatorika.html">Kombinatorika</a>
+    </li>
+    <li>
+      <a href="eloszlasok.html">Nevezetes eloszlások</a>
+    </li>
+  </ul>
 </li>
-<li>
-  <a href="eloszlasok.html">Nevezetes eloszlások</a>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Matematikai statisztika
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="vizualizacio.html">Adatvizualizáció</a>
+    </li>
+  </ul>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -304,7 +326,7 @@ $(document).ready(function () {
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="mailto:morauszki.andras@gmail.com">
-    <span class="fas fa-envelope"></span>
+    <span class="fa fa-envelope"></span>
      
   </a>
 </li>
@@ -339,6 +361,7 @@ A vizsgált valószínűségi változók időnként nevezetes eloszlásokat köv
 <div id="diszkrét-valószínűségi-eloszlások" class="section level2 tabset tabset-pills">
 <h2>Diszkrét valószínűségi eloszlások</h2>
 <p>Diszkrét változónak azokat nevezzük, amelyek véges sok vagy megszámlálhatóan végtelen sok értéket vehetnek fel (pl. csak egész számok lehetnek - ld. Poisson és negatív binomiális eloszlások).</p>
+<p>Minden esetben azt vizsgáljuk, mennyi a valószínűsége, hogy a változó egy adott értéket vesz fel, mennyi a változó várható értéke és szórása.</p>
 <div id="hipergeometrikus" class="section level3">
 <h3>Hipergeometrikus</h3>
 <p>Az alapja a visszatevés nélküli mintavétel. Adott az elemek egy <span class="math inline">\(N\)</span> elemű halmaza (a <strong>populáció</strong>), amelyben van <span class="math inline">\(K\)</span> darab bizonyos típusú elem. Veszünk egy <span class="math inline">\(n\)</span> elemű mintát ebből a populációból, és azt vizsgáljuk, hány adott típusú elem került a mintába.</p>
@@ -389,18 +412,122 @@ n = 7; p = 0.1; k = 1</p>
 </div>
 <div id="negatív-binomiális" class="section level3">
 <h3>Negatív binomiális</h3>
+<p>Ellentétben a korábbiakkal, ebben az esetben nem azt vizsgáljuk, hányszor következik be egy esemény, hanem hogy hányadikra következik be ez az esemény valahányadik alkalommal. Ezt az eloszlást követi az “orosz rulett”, amelyben a kérdés, hogy hányadszorra dördül el a revolver.</p>
+<p>Fontos figyelmeztetés: ezt az eloszlást többféleképpen szokták értelmezni:</p>
+<ul>
+<li>van, hogy csak az első bekövetkezésig nézik a “körök” számát, és a változó értékébe beleszámítják a bekövetkezést (pl. hányadszorra dobok először 6-ost a kockával)</li>
+<li>van, hogy csaz az első bekövetkezés előtti “köröket” számítják, magát a bekövetkezést már nem számolják (pl. hányszor kell dobnom a dobókockával, <em>mielőtt</em> először 6-ost dobnék?)</li>
+<li>van, hogy az r. bekövetkezésig nézik a körök számát, beleszámítva a k. bekövetkezést (pl. hányszor kell dobnom, mire lesz 3db 6-os a dobások között?)</li>
+<li>van, hogy az r. bekövetkezésig nézik, de ezt már nem számítják (pl. hányszor kell dobnom, <em>mielőtt</em> harmadszor is 6-ost dobnék?)</li>
+<li>és van, hogy az r. bekövetkezésig csak azokat a köröket számolják, amikor az esemény <em>nem</em> következett be (pl. hányszor dobok várhatóan <em>más számot</em>, mire 3db 6-ost sikerül dobnom?)</li>
+</ul>
+<p>Látható, hogy az első kettő az utóbbi háromnak speciális esete, amikor r = 1.</p>
+<p>A negatív binomiális eloszlás paraméterei:</p>
+<ul>
+<li>r: hányszor akarjuk, hogy az esemény bekövetkezzen?</li>
+<li>p: az esemény bekövetkezésének valószínűsége</li>
+</ul>
+<p>Annak a valószínűsége, hogy az esemény éppen a k. körben következik be r-edszer: <span class="math display">\[P(\xi=k)=\binom{k-1}{r-1}*p^r*(1-p)^{k-r}\]</span></p>
+<p>A változó várható értéke: várhatóan hányadik körben következik be r-edszer? <span class="math display">\[E(\xi)=\frac{r}{p}\]</span></p>
+<p>A változó szórása: <span class="math display">\[D(\xi)=\frac{\sqrt{r*(1-p)}}{p}\]</span></p>
+<p><strong>PÉLDA</strong>: Egy lövész addig lő egy céltáblára, míg el nem ér 3 találatot. A találat valószínűsége minden körben 70%.</p>
+<p>Mennyi a valószínűsége, hogy a 3. találat a 5. körben következik be? r = 3; p = 0.7; k = 5</p>
+<p><span class="math display">\[P(\xi=5)=\binom{5-1}{3-1}*0.7^{3}*(1-0.7)^{5-3}=0.1852\]</span></p>
+<p>Kitérő: ez az az eset, amikor az r. bekövetkezést is beleszámítjuk.<br />
+Ez megfelel a <span class="math inline">\(P(\xi=4)\)</span> esetnek, ha az r. bekövetkezést nem számítanánk, és a <span class="math inline">\(P(\xi=2)\)</span> esetnek, ha azt vizsgálnánk, hányszor véti el a célpontot, míg eléri a szükséges találatot. A három esetben ξ mást-mást jelent (összes kör, végső siker előtti körök, sikertelen körök száma).</p>
+<p>Várhatóan hányadikra születik meg a 3. találat? Mennyi a szórás? <span class="math display">\[E(\xi)=\frac{3}{0.7}=4.29\]</span><span class="math display">\[D(\xi)=\frac{\sqrt{3*(1-0.7)}}{0.7}=1.36\]</span></p>
+<p>Kitérő: A másik két esetben a várható érték 3.29 lenne (ha az r. találat körét nem számoljuk), vagy pedig 1.29, ha csak a sikertelen körök várható számát vizsgáljuk.</p>
 </div>
 </div>
 <div id="folytonos-valószínűségi-eloszlások" class="section level2 tabset tabset-pills">
 <h2>Folytonos valószínűségi eloszlások</h2>
+<p>Folytonos változónak azokat nevezzük, amelyek megszámlálhatatlanul végtelen sok értéket vehetnek fel (pl. egy adott intervallumon belül, vagy a valós számok egy részhalmazán bármilyen valós számot).</p>
+<p>Ellentétben a diszkrét eloszlásokkal, ezekben az esetekben nincs értelme olyan valószínűségeket keresni, hogy a változó éppen egy adott számmal egyenlő. Mivel megszámlálhatatlanul végtelen sok értéket felvehetnek a változók, ezért minden egyes konkrét érték valószínűsége 0. Ezért ezekben az esetekben mindig valamilyen intervallumok valószínűségét fogjuk keresni.</p>
+<p>A <span class="math inline">\(P(\xi &lt; x)\)</span> valószínűségeket közvetlenül ki tudjuk számítani az F(x) eloszlásfüggvények képlete segítségével. A <span class="math inline">\(P(\xi &gt; x)\)</span> valószínűségek az előbbiek komplementerei, a <span class="math inline">\(P(x_1 &lt; \xi &lt; x_2)\)</span> valószínűségek pedig az eloszlásfüggvény két függvényértéke közötti különbségként:</p>
+<p><span class="math display">\[
+\begin{aligned}
+P(\xi &lt; x)&amp;=F(x) \\
+P(\xi &gt; x)&amp;=1-F(x) \\
+P(x_1 &lt; \xi &lt; x_2)&amp;=F(x_2)-F(x_1)
+\end{aligned}
+\]</span></p>
 <div id="egyenletes" class="section level3">
 <h3>Egyenletes</h3>
+<p>Adott egy intervallum, amelyen belül minden pontnak ugyanakkora a valószínűsége. Annak valószínűségét keressük, hogy egy esemény ennek egy meghatározott részintervallumán belül következik be. A valószínűség egyenlő lesz azzal, ahogyan a részintervallum hossza aránylik a teljes intervallumhoz.</p>
+<p>Az eloszlás paraméterei:</p>
+<ul>
+<li>a és b: a két végpont</li>
+</ul>
+<p>Annak a valószínűsége, hogy az esemény az A végponttól kevesebb, mint x időre/távolságra következik be:</p>
+<p><span class="math display">\[
+P(\xi&lt;x)=F(x)=
+  \begin{cases}
+    0 &amp; \quad \text{ha x &lt; a} \\
+    \frac{x-a}{b-a} &amp; \quad \text{ha a &lt; x &lt; b} \\
+    q &amp; \quad \text{ha x &gt; b}
+  \end{cases}
+\]</span></p>
+<p>Vagyis annak a valószínűsége, hogy az esemény a kezdőpont előtt bekövetkezik 0, hogy a végpont előtt bekövetkezik 1, a megadott intervallumon pedig a <span class="math inline">\(\frac{x-a}{b-a}\)</span> képlettel számítható ki.</p>
+<p>A bekövetkezés várhatóan hol következik be az intervallumon? <span class="math display">\[E(\xi)=\frac{a+b}{2}\]</span> Vagyis várhatóan az intervallum közepén következik be az esemény.</p>
+<p>A szórás: <span class="math display">\[D(\xi)=\frac{b-a}{\sqrt{12}}\]</span></p>
+<p><strong>PÉLDA</strong>: Valaki telefonhívást vár, ami 2 és 6 óra között érkezik, minden időpontban ugyanakkora valószínűséggel.<br />
+a = 2, b = 6</p>
+<p><em>1. kérdés:</em> Mennyi a valószínűsége, hogy 3-ig hívják?<br />
+x = 3</p>
+<p><span class="math display">\[P(\xi&lt;3)=\frac{3-2}{6-2}=1/4\]</span></p>
+<p><em>2. kérdés:</em> Mennyi a valószínűsége, hogy 4 után hívják?<br />
+x = 4</p>
+<p><span class="math display">\[P(\xi&gt;4)=1-F(4)=1-\frac{4-2}{6-2}=1/2\]</span></p>
+<p><em>3. kérdés:</em> Mennyi a valószínűsége, hogy valamikor 3 és 4 között hívják?<br />
+x<sub>1</sub> = 3 és x<sub>2</sub> = 4</p>
+<p><span class="math display">\[P(3&lt;\xi&lt;4)=F(4)-F(3)=\frac{4-2}{6-2}-\frac{3-2}{6-2}=1/2-1/4=1/4\]</span></p>
+<p>Megjegyzés: ezek a valószínűségek könnyen megkaphatók, ha figyelembe vesszük, hogy az egyes esetekben sorban 1, 2 és 1 órás intervallumokról van szó, amelyek a teljes 4 órás intervallum 0.25, 0.5 és 0.25 részének felelnek meg.</p>
+<p><em>4. kérdés:</em> Mi a hívás várható időpontja? Mennyi a változó szórása? <span class="math display">\[E(\xi)=\frac{2+6}{2}=4\]</span><span class="math display">\[D(\xi)=\frac{6-2}{\sqrt{12}}=1.15\]</span></p>
 </div>
 <div id="exponenciális" class="section level3">
 <h3>Exponenciális</h3>
+<p>Az exponenciális eloszlás a Poisson eloszlás párja. A Poisson eloszlás esetében a kérdés az volt, hányszor fog valami egy adott intervallumon belül bekövetkezni. Az exponenciális eloszlás pedig arra vonatkozik, mikor/hol fog ez az esemény bekövetkezni.</p>
+<p>Az eloszlás paraméterei:</p>
+<ul>
+<li>λ: az esemény várható bekövetkezési gyakorisága egy egységnyi intervallumon</li>
+</ul>
+<p>Annak a valószínűsége, hogy az esemény a kezdőponttól kevesebb, mint x időre/távolságra következik be:</p>
+<p><span class="math display">\[
+P(\xi&lt;x)=F(x)=
+  \begin{cases}
+    0 &amp; \quad \text{ha x} \le 0 \\
+    1-e^{-\lambda x}&amp; \quad \text{ha x} &gt; 0
+  \end{cases}
+\]</span></p>
+<p>Vagyis annak a valószínűsége, hogy az esemény a kezdőpont előtt bekövetkezik 0, egyébként pedig az <span class="math inline">\(1-e^{-\lambda x}\)</span> képlettel számítható ki, ahol <span class="math inline">\(e\)</span> az Euler-féle szám.</p>
+<p>A bekövetkezés várhatóan hol következik be az intervallumon? <span class="math display">\[E(\xi)=\frac{1}{\lambda}\]</span> Vagyis várhatóan az intervallum közepén következik be az esemény.</p>
+<p>A szórás: <span class="math display">\[D(\xi)=\frac{1}{\lambda}\]</span></p>
+<p><strong>PÉLDA</strong>: Egy benzinkútra óránként 15 autó érkezik.<br />
+Mivel a továbbiakban percekben fogunk számolni (ez lesz az alapegység), λ az egy perc alatt várhatóan megérkező autók száma lesz. Ha egy óra alatt 15 autó érkezik, akkor egy perc alatt 15/60)=0.25 érkezik.<br />
+λ=0.25</p>
+<p><em>1. kérdés:</em> Mennyi a valószínűsége, hogy két autó érkezése között kevesebb, mint 2 perc telik el?<br />
+x = 2</p>
+<p><span class="math display">\[P(\xi&lt;2)=1-e^{-0.252}=0.3935\]</span></p>
+<p><em>2. kérdés:</em> Mennyi a valószínűsége, hogy 5 percnél több telik el két autó érkezése között?<br />
+x = 5</p>
+<p><span class="math display">\[P(\xi&gt;5)=1-F(5) = 1-(1-e^{-0.255})=e^{-0.255}=0.2865\]</span></p>
+<p><em>3. kérdés:</em> Mennyi a valószínűsége, hogy két autó érkezése között 2 és 5 közötti idő telik el?<br />
+x<sub>1</sub> = 2 és x<sub>2</sub> = 5</p>
+<p><span class="math display">\[P(2&lt;\xi&lt;5)=F(5)-F(2)=1-e^{-0.255}-(1-e^{-0.252})=e^{-0.255}-e^{-0.252}=0.32\]</span></p>
+<p><em>4. kérdés:</em> Várhatóan hány perc telik el két autó érkezése között? Mennyi a változó szórása? <span class="math display">\[E(\xi)=\frac{1}{0.25}=4\]</span><span class="math display">\[D(\xi)=\frac{1}{0.25}=4\]</span></p>
+<p>Ha 60 perc alatt várhatóan 15 autó érkezik, akkor átlagosan 4 percenként jön egy autó.</p>
 </div>
-<div id="normális" class="section level3">
-<h3>Normális</h3>
+<div id="további-nevezetes-folytonos-eloszlások" class="section level3">
+<h3>További nevezetes folytonos eloszlások</h3>
+<p>További nevezetes folytonos eloszlások:</p>
+<ol style="list-style-type: decimal">
+<li>normális eloszlás</li>
+<li>standard normális eloszlás, amely az előző egy speciális alesete</li>
+<li>Student-féle t-eloszlás</li>
+<li>χ<sup>2</sup> eloszlás (e: khí-négyzet)</li>
+<li>F-eloszlás</li>
+</ol>
+<p>Ezekkel is fokozatosan meg fognak ismerkedni. A normális és standard normális eloszlásról a közeljövőben külön összefoglaló készül majd.</p>
 </div>
 </div>
 </div>

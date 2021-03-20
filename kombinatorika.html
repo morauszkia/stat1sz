@@ -21,6 +21,8 @@
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+<script src="site_libs/anchor-sections-1.0/anchor-sections.js"></script>
 <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
@@ -62,7 +64,6 @@ h6 {
   text-align: left;
 }
 </style>
-
 
 
 
@@ -270,11 +271,32 @@ $(document).ready(function () {
         <li>
   <a href="index.html">Főoldal</a>
 </li>
-<li>
-  <a href="kombinatorika.html">Kombinatorika</a>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Kombinatorika és valószínűségszámítás
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="kombinatorika.html">Kombinatorika</a>
+    </li>
+    <li>
+      <a href="eloszlasok.html">Nevezetes eloszlások</a>
+    </li>
+  </ul>
 </li>
-<li>
-  <a href="eloszlasok.html">Nevezetes eloszlások</a>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Matematikai statisztika
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="vizualizacio.html">Adatvizualizáció</a>
+    </li>
+  </ul>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -304,7 +326,7 @@ $(document).ready(function () {
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="mailto:morauszki.andras@gmail.com">
-    <span class="fas fa-envelope"></span>
+    <span class="fa fa-envelope"></span>
      
   </a>
 </li>
@@ -387,7 +409,7 @@ Például 4! = 4x3x2x1 = 24.<br />
 </ol>
 <p>Példa: Hányféleképpen lehet sorbarakni a MATEMATIKA szó betűit? Megoldás: Permutáció, hiszen adott az elemkészlet, és mindet felhasználjuk. Az előző ismétlés nélküli esethez képest a nehézséget az okozza, hogy vannak ismétlődő elemek: M (2 db), A (3 db), T (2 db).<br />
 Első lépésben különböztessük meg egymástól a két M-et (pl. M<sub>1</sub> és M<sub>2</sub> jelöléssel), a három A-t és két T-t. Ha ez lenne a helyzet, akkor simán 10 elem permutációjáról lenne szó, ami 10!.<br />
-Most töröljük el az M betűk indexeit. Hogyan csökken a különböző szavak száma? A válasz: annyiszor lesz kevesebb, ahányféleképpen az M-ek helyét &quot;feltölthetjük&quot; az M betűkkel. Pl. a MATEMATIKA sorrendben az M-ek kétféle sorrendben szerepelhetnek: először az M<sub>1</sub> a szó elején, és aztán az M<sub>2</sub> az E után, vagy fordítva. És ugyanez igaz minden sorrendre. Vagyis, a különböző sorrendek száma 2!-szor (= 2-szer) kevesebb lesz, ha az M-eket már nem különböztetjük meg egymástól.<br />
+Most töröljük el az M betűk indexeit. Hogyan csökken a különböző szavak száma? A válasz: annyiszor lesz kevesebb, ahányféleképpen az M-ek helyét “feltölthetjük” az M betűkkel. Pl. a MATEMATIKA sorrendben az M-ek kétféle sorrendben szerepelhetnek: először az M<sub>1</sub> a szó elején, és aztán az M<sub>2</sub> az E után, vagy fordítva. És ugyanez igaz minden sorrendre. Vagyis, a különböző sorrendek száma 2!-szor (= 2-szer) kevesebb lesz, ha az M-eket már nem különböztetjük meg egymástól.<br />
 Ugyanez történik a T-k indexeinek eltörlésével: a sorrendek száma a felére csökken.<br />
 Mi történik az A-k megkülönböztethetetlenné válásával? Mivel A-ból 3 van, ezeket 3! = 3x2x1 = 6-féleképpen tudjuk sorbarakni. Vagyis a sorrendek száma a hatodára csökken.<br />
 Eredmény: <span class="math inline">\(\frac{10!}{2!*2!*3!}=151200\)</span></p>
@@ -432,10 +454,10 @@ Eredmény: <span class="math inline">\(\frac{10*9*8*7*6}{5*4*3*2}=252\)</span></
 <li>Ismétléses a kombináció, ha az elemek ismétlődhetnek.</li>
 </ol>
 <p>Példa: Piacon vásárolunk, és négyféle gyümölcsből választhatunk: alma, körte, barack, szilva. A kosarunkba 5 gyümölcsöt válogatunk össze. Hányféleképpen tehetjük ezt meg a négyfajta gyümölcsből, ha csak az számít, melyikből mennyit veszünk?<br />
-Megoldás: Ezt kicsit nehezebb átlátni, de logikailag kikövetkeztethető, ha a következőképpen jegyezzük le a kosarunk tartalmát: először strigulázzuk, hány almát vettünk, majd kiteszünk egy elválasztójelet (legyen mondjuk &quot;-&quot;), aztán jönnek a körték, majd ismét elválasztójel, barackok, elválasztójel, végül a szilvák. Mivel valamiből 0-t is tudunk venni, ezért az elválasztójelet akkor is kitesszük, ha az adott gyümölcsből nem veszünk semmit, csak nem lesznek strigulák. Néhány példa:</p>
+Megoldás: Ezt kicsit nehezebb átlátni, de logikailag kikövetkeztethető, ha a következőképpen jegyezzük le a kosarunk tartalmát: először strigulázzuk, hány almát vettünk, majd kiteszünk egy elválasztójelet (legyen mondjuk “-”), aztán jönnek a körték, majd ismét elválasztójel, barackok, elválasztójel, végül a szilvák. Mivel valamiből 0-t is tudunk venni, ezért az elválasztójelet akkor is kitesszük, ha az adott gyümölcsből nem veszünk semmit, csak nem lesznek strigulák. Néhány példa:</p>
 <p>||-|-||- (2 alma, 1 körte, 2 barack, 0 szilva)<br />
--|||--|| (0 alma, 3 körte, 0 barack, 2 szilva)<br />
----||||| (0 alma, 0 körte, 0 barack, 5 szilva)</p>
+-|||–|| (0 alma, 3 körte, 0 barack, 2 szilva)<br />
+—||||| (0 alma, 0 körte, 0 barack, 5 szilva)</p>
 <p>Ugyanígy minden kombináció jelölhető, és így minden kosár éppen egyféleképpen jelölhető, és minden jelölés egyértelműen megadja, melyik gyümölcsből mennyi van, vagyis ez egy használható jelölés. Na mármost, figyeljék meg, hogy minden jelölésben 5 strigula van (hiszen 5 gyümölcsöt veszünk), és 3 elválasztójel (mindig eggyel kevesebb, mint ahány különböző elemből válogatunk). A kérdés csak az, hogy ezek milyen sorrendben jönnek (ismétléses permutáció 8 elemmel, 5 és 3 ismétlődéssel), vagy ha úgy tetszik, hogy a teljes jelölés 5+3 = 8 jeléből melyik 5 lesz strigula / melyik 3 lesz elválasztó (ismétlés nélküli kombináció: 8 elemből 3-at/5-öt választunk).</p>
 <p>De a legegyszerűbb, ha az alábbi képletet használják</p>
 <p><span class="math display">\[C_n^{i, k}=\binom{n+k-1}{k}\]</span><br />
@@ -476,7 +498,7 @@ Ha a képletet használják, arra figyeljenek, hogy <em>n</em> azt jelöli, hán
 <li>ismétléses</li>
 </ul>
 <p>Egy-egy feladatban az alapesetek kombinálódhatnak, és időnként csak több lépésben juthatunk el a megoldáshoz.</p>
-<p>Végül egy jótanács: Próbálják meg elképzelni a helyzetet, és először saját szavakkal megfogalmazni azokat a lépéseket, amelyeket végre kell hajtani, és csak ezután ezeket &quot;lefordítani&quot; a matematika nyelvére.</p>
+<p>Végül egy jótanács: Próbálják meg elképzelni a helyzetet, és először saját szavakkal megfogalmazni azokat a lépéseket, amelyeket végre kell hajtani, és csak ezután ezeket “lefordítani” a matematika nyelvére.</p>
 </div>
 
 

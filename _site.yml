@@ -10,10 +10,16 @@ navbar:
   left:
     - text: "Főoldal"
       href: index.html
-    - text: "Kombinatorika"
-      href: kombinatorika.html
-    - text: "Nevezetes eloszlások"
-      href: eloszlasok.html
+    - text: "Kombinatorika és valószínűségszámítás"
+      menu:
+      - text: "Kombinatorika"
+        href: kombinatorika.html
+      - text: "Nevezetes eloszlások"
+        href: eloszlasok.html
+    - text: "Matematikai statisztika"
+      menu:
+        - text: "Adatvizualizáció"
+          href: vizualizacio.html
     - text: "Órák slide-jai"
       menu:
         - text: "Műveletek valószínűségekkel"
