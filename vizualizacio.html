@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Adatvizualizáció</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+<script src="site_libs/anchor-sections-1.0/anchor-sections.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 66px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h2 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h3 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h4 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h5 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h6 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Statisztika 1. szeminárium</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Főoldal</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Kombinatorika és valószínűségszámítás
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="kombinatorika.html">Kombinatorika</a>
+    </li>
+    <li>
+      <a href="eloszlasok.html">Nevezetes eloszlások</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Matematikai statisztika
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="vizualizacio.html">Adatvizualizáció</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Órák slide-jai
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="01_valszam_muveletek.html">Műveletek valószínűségekkel</a>
+    </li>
+    <li>
+      <a href="02_felteteles.html">Feltételes valószínűségek</a>
+    </li>
+    <li>
+      <a href="03_val_valtozok.html">Valószínűségi változók</a>
+    </li>
+    <li>
+      <a href="03_var_shooting.html">Valószínűségi változós feladatok</a>
+    </li>
+    <li>
+      <a href="04_val_valtozok_2.html">Nevezetes eloszlások</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="mailto:morauszki.andras@gmail.com">
+    <span class="fa fa-envelope"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Adatvizualizáció</h1>
+
+</div>
+
+
+<style>
+  p {
+    text-align: justify;
+    line-height: 1.5;
+  }
+  h1 {
+    margin-top: 1em;
+    margin-bottom: 1em;
+  }
+  h2 {
+    margin-top: 1em;
+    margin-bottom: 1em;
+  }
+  h3 {
+    margin-top: 1em;
+    margin-bottom: 1em;
+  }
+  h4 {
+    margin-top: 1em;
+    margin-bottom: 1em;
+  }
+</style>
+<ul>
+<li>Sokszor hasznos az adataink képi megjelenítése (ábrák, grafikonok formájában)</li>
+<li>Az elemzés során: rávilágíthatnak összefüggésekre, amelyeket statisztikai próbákkal megvizsgálhatunk</li>
+<li>Prezentációk során, tanulmányokban: könnyebben áttekinthető a közönség számára, mint egy táblázat</li>
+</ul>
+<p>Ez az összefoglaló természetesen nem tud teljes képet adni a vizualizációban rejlő lehetőségek teljes palettájáról, csak arra vállalkozik, hogy a legfontosabb, leggyakrabban használt ábrákból mutasson néhány példát. A konkrét megvalósítás, a választott formák, színek, elrendezés függ a használt programtól is, attól is, hová szánjuk a diagrammokat (ettől függően elképzelhető, hogy fekete-fehér ábrákra lesz szükség), és hogy az adatok maguk milyenek (tehát például hány csoport van, mennyire van összefüggés, különbség a csoportok között, stb.)</p>
+<div id="egy-változó-bemutatása" class="section level1">
+<h1>Egy változó bemutatása</h1>
+<div id="diszkrét-változók-esetében" class="section level2">
+<h2>Diszkrét változók esetében</h2>
+<p>Ha nominális, ordinális, vagy olyan skála mérési szintű változót szeretnénk ábrázolni, amelynek viszonylag kevés lehetséges értéke van, akkor választhatjuk a kördiagramot vagy az oszlopdiagramot.</p>
+<div id="kördiagram" class="section level3">
+<h3>Kördiagram</h3>
+<p>Ha kevés kategóriánk van, akkor jól használható ábrák a kördiagramok (esetleg a középen “lyukas” fánkdiagramok).</p>
+<p><img src="vizualizacio_files/figure-html/pie2-1.png" width="960" /></p>
+</div>
+<div id="oszlopdiagram" class="section level3">
+<h3>Oszlopdiagram</h3>
+<p>Ha a kategóriák száma nagyobb, a kördiagram nehezen áttekinthető, ezért az oszlopdiagram hasznosabb. Oszlopdiagramnál arra vigyázzanak, hogy, ha az y tengelyen olyan adatot jelölnek, amelynek van abszolút 0 pontja, akkor a tengely 0-tól kezdódjön!</p>
+<p><img src="vizualizacio_files/figure-html/bar-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="folytonos" class="section level2">
+<h2>Folytonos</h2>
+<p>Ha a kategóriák száma túl nagy, a fenti ábrák áttekinthetetlenné válnak. Ez történik jellemzően azoknak az intervallum- vagy arányskála mérési szintű változóknak az esetében, amelyek sokféle értéket vesznek fel a mintában (pl. testmagasság, jövedelem)</p>
+<div id="hisztogram-és-sűrűségfüggvény" class="section level3">
+<h3>Hisztogram és sűrűségfüggvény</h3>
+<p>A hisztogram első ránézésre oszlopdiagramnak tűnhet, de a különbség, hogy míg utóbbi esetében minden értékhez tartozik oszlop, a hisztogramokon intervallumokat használunk. Az y tengelyen jelölhetők a gyakoriságok vagy a százalékos arányok. A hisztogram alternatívája lehet a sűrűségfüggvény, amely jobban érzékelteti az eloszlás alakját.</p>
+<p>Az alábbi ábrán egy hisztogramon (bal) és egy sűrűségfüggvények (jobb) láthatják a testmagasságok eloszlását egy 500 elemű mintában:</p>
+<p><img src="vizualizacio_files/figure-html/density-1.png" width="960" /></p>
+</div>
+<div id="dobozábra-és-hegedűábra" class="section level3">
+<h3>Dobozábra és hegedűábra</h3>
+<p>Szintén kedvelt diagram a dobozábra, amely a változó mediánját, alsó és felső kvartilisét és terjedelmét (beállításoktól függően a kiugró értékeket is - az ábrán a különálló pontok) mutatja. A hegedűábra a sűrűségfüggvény és a dobozábra furcsa hibridje, amely majd a több kategória összehasonlításában lesz igazán praktikus. A fenti magasság-eloszlás egy dobozábrán és egy hegedűábrán:</p>
+<p><img src="vizualizacio_files/figure-html/boxplot-1.png" width="960" /></p>
+</div>
+</div>
+</div>
+<div id="két-változó-összefüggése" class="section level1">
+<h1>Két változó összefüggése</h1>
+<p>Ugyan egyelőre még nem foglalkoztunk azokkal a statisztikai módszerekkel, amelyek két változó összefüggését vizsgálják, érdemes már most megismerkedni azokkal a diagrammokkal, amelyekkel az ilyen összefüggések jól bemutathatók.</p>
+<div id="két-diszkrét-változó-összefüggése" class="section level2">
+<h2>Két diszkrét változó összefüggése</h2>
+<div id="halmozott-oszlopdiagram" class="section level3">
+<h3>Halmozott oszlopdiagram</h3>
+<p>A legkézenfekvőbb módja az összefüggés bemutatása a halmozott oszlopdiagram, amely százalékos arányban adja meg az egyik (ha van: a független) változó kategóriáin belül a másik (függő) változó megoszlását.</p>
+<p><img src="vizualizacio_files/figure-html/stacked-1.png" width="768" /></p>
+</div>
+</div>
+<div id="egy-diszkrét-és-egy-skála-mérési-szintű-változó-összefüggése" class="section level2">
+<h2>Egy diszkrét és egy skála mérési szintű változó összefüggése</h2>
+<div id="dobozábrák-és-hegedűábrák" class="section level3">
+<h3>Dobozábrák és hegedűábrák</h3>
+<p>A dobozábrák nem csak egy csoport vagy változó bemutatására alkalmasak, hanem használhatjuk egy változó értékeinek összevetésére több csoportban, vagy akár még arra is van lehetőség, hogy kétféle bontásban (pl. ország és nem) mutassuk be az értékeket.</p>
+<p>A tengelyek felcserélhetők, ennek nincs jelentősége.</p>
+<p><img src="vizualizacio_files/figure-html/box_compare-1.png" width="960" /></p>
+</div>
+<div id="hisztogramok-vagy-sűrűségfüggvények" class="section level3">
+<h3>Hisztogramok vagy sűrűségfüggvények</h3>
+<p>A hisztorgramok és sűrűségfüggvények is használhatók két vagy több (de általában nem túl sok, mert áttekinthetetlenekké válnak) csoport összehasonlítására. Az alábbi ábrák ugyanazokat az adatokat mutatják be más-más formában. Az egyik lehetőség (1. ábra), hogy a csoportok egymásra rakódnak, vagyis nem külön-külön látjuk a két csoport hisztogramját, hanem egy, a teljes mintára vonatkozó hisztogram van felosztva. Itt például látszik, hogy a magas személyek között a férfiak vannak többségben (az eloszlás jobb oldala nagyrészt kék). A másik lehetőség (2. és 3. ábra), hogy a két vagy több csoportra külön-külön készítjük a hisztogramot, amelyek átfedhetik egymást (2. ábra) vagy külön is megjeleníthetők, azonos x tengellyel (3. ábra) az összevetés érdekében. Hisztogramok helyett ebben az esetben is használhatunk empirikus sűrűségfüggvényeket.</p>
+<p><img src="vizualizacio_files/figure-html/hist_compare-1.png" width="960" /></p>
+</div>
+</div>
+<div id="két-skála-mérési-szintű-változó-összefüggése" class="section level2">
+<h2>Két skála mérési szintű változó összefüggése</h2>
+<div id="felhődiagram" class="section level3">
+<h3>Felhődiagram</h3>
+<p>Két skála mérési szintű változó kapcsolatát felhődiagrammal (másképpen: szórásdiagram) szokás ábrázolni (angolul: scatter plot).</p>
+<p><img src="vizualizacio_files/figure-html/scatter-1.png" width="672" /></p>
+<p>Ez a diagram alkalmas egy további kvalitatív szempont ábrázolására (pl. csoportok szerinti bontás vagy színezés). A két változó közötti kapcsolatot ábrázolhatjuk például a lineáris regressziós becslés egyenesével (Statisztika 2. kurzuson tanuljuk majd)</p>
+<p><img src="vizualizacio_files/figure-html/unnamed-chunk-1-1.png" width="960" /></p>
+</div>
+</div>
+</div>
+<div id="több-azonos-formán-mért-változó-megoszlásának-összehasonlítása" class="section level1">
+<h1>Több azonos formán mért változó megoszlásának összehasonlítása</h1>
+<p>Nem mutatok be ismét minden lehetőséget, de az egy diszkrét és egy másik változó összefüggését bemutató ábrák egy másik esetben - az azonos formán mért változók megoszlásának összevetése - is jól használhatók. Ebben az esetben a diszkrét változó helyét az ábrán az veszi át, hogy melyik változóról van szó, míg a másik tengely ugyanúgy működik, tehát a diszkrét változó százalékos megoszlását vagy a folytonos változó értékeit mutatja.</p>
+<p><img src="vizualizacio_files/figure-html/unnamed-chunk-2-1.png" width="960" /></p>
+</div>
+<div id="idősorok-vonal--vagy-területdiagram" class="section level1">
+<h1>Idősorok: Vonal- vagy területdiagram</h1>
+<p>A vonaldiagramot változók időbeli változásának ábrázolására szokás használni. Akárcsak az oszlopdiagramnál, arra kell figyelni, hogy ha az ábrázolt változónak van 0 pontja, akkor az y tengely a 0-tól induljon! A területdiagram ugyanerre használható, a különbség annyi, hogy a vonal alatti terület is színezve van. Utóbbi akkor hasznos, ha a teljes összeg több részből tevődik össze, amelyeket egymásra rakódva mutatunk be (ld. utolsó ábra)</p>
+<p><img src="vizualizacio_files/figure-html/unnamed-chunk-4-1.png" width="960" /></p>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
