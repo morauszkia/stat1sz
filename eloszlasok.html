@@ -13,15 +13,26 @@
 
 <title>Nevezetes eloszlások</title>
 
+<script src="site_libs/header-attrs-2.7/header-attrs.js"></script>
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
-<link href="site_libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
-<script src="site_libs/anchor-sections-1.0/anchor-sections.js"></script>
 <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
@@ -37,32 +48,7 @@
 
 
 
-<style type="text/css">
-h1 {
-  font-size: 34px;
-}
-h1.title {
-  font-size: 38px;
-}
-h2 {
-  font-size: 30px;
-}
-h3 {
-  font-size: 24px;
-}
-h4 {
-  font-size: 18px;
-}
-h5 {
-  font-size: 16px;
-}
-h6 {
-  font-size: 12px;
-}
-.table th:not([align]) {
-  text-align: left;
-}
-</style>
+
 
 
 
@@ -72,10 +58,6 @@ h6 {
   max-width: 940px;
   margin-left: auto;
   margin-right: auto;
-}
-code {
-  color: inherit;
-  background-color: rgba(0, 0, 0, 0.04);
 }
 img {
   max-width:100%;
@@ -92,40 +74,13 @@ button.code-folding-btn:focus {
 summary {
   display: list-item;
 }
+pre code {
+  padding: 0;
+}
 </style>
 
 
 <style type="text/css">
-/* padding for bootstrap navbar */
-body {
-  padding-top: 66px;
-  padding-bottom: 40px;
-}
-/* offset scroll position for anchor links (for fixed navbar)  */
-.section h1 {
-  padding-top: 71px;
-  margin-top: -71px;
-}
-.section h2 {
-  padding-top: 71px;
-  margin-top: -71px;
-}
-.section h3 {
-  padding-top: 71px;
-  margin-top: -71px;
-}
-.section h4 {
-  padding-top: 71px;
-  margin-top: -71px;
-}
-.section h5 {
-  padding-top: 71px;
-  margin-top: -71px;
-}
-.section h6 {
-  padding-top: 71px;
-  margin-top: -71px;
-}
 .dropdown-submenu {
   position: relative;
 }
@@ -153,7 +108,7 @@ body {
   margin-right: -10px;
 }
 .dropdown-submenu:hover>a:after {
-  border-left-color: #ffffff;
+  border-left-color: #adb5bd;
 }
 .dropdown-submenu.pull-left {
   float: none;
@@ -165,7 +120,7 @@ body {
 }
 </style>
 
-<script>
+<script type="text/javascript">
 // manage active state of menu based on current page
 $(document).ready(function () {
   // active menu anchor
@@ -176,10 +131,23 @@ $(document).ready(function () {
   var menuAnchor = $('a[href="' + href + '"]');
 
   // mark it active
-  menuAnchor.parent().addClass('active');
+  menuAnchor.tab('show');
 
   // if it's got a parent navbar menu mark it active as well
   menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
 });
 </script>
 
@@ -191,7 +159,6 @@ $(document).ready(function () {
   max-height: 500px;
   min-height: 44px;
   overflow-y: auto;
-  background: white;
   border: 1px solid #ddd;
   border-radius: 4px;
 }
@@ -244,6 +211,75 @@ $(document).ready(function () {
 
 
 
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
 
 </head>
 
@@ -251,6 +287,16 @@ $(document).ready(function () {
 
 
 <div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-sm-12 col-md-4 col-lg-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-sm-12 col-md-8 col-lg-9">
 
 
 
@@ -295,6 +341,9 @@ $(document).ready(function () {
     <li>
       <a href="vizualizacio.html">Adatvizualizáció</a>
     </li>
+    <li>
+      <a href="normalis-eloszlas.html">Normális eloszlás</a>
+    </li>
   </ul>
 </li>
 <li class="dropdown">
@@ -325,7 +374,7 @@ $(document).ready(function () {
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="mailto:morauszki.andras@gmail.com">
-    <span class="fa fa-envelope"></span>
+    <span class="fas fa-envelope"></span>
      
   </a>
 </li>
@@ -334,7 +383,7 @@ $(document).ready(function () {
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-<div class="fluid-row" id="header">
+<div id="header">
 
 
 
@@ -348,15 +397,18 @@ $(document).ready(function () {
     text-align: justify;
     line-height: 1.5;
   }
+  strong {
+    color: #a82727;
+  }
 </style>
 <p><br><br></p>
 <div id="nevezetes-eloszlások" class="section level1 tabset tabset-pills">
-<h1>Nevezetes eloszlások</h1>
+<h1 class="tabset tabset-pills">Nevezetes eloszlások</h1>
 <p><br><br />
 A vizsgált valószínűségi változók időnként nevezetes eloszlásokat követnek. Ilyenek például azok a változók, amelyek visszatevés nélküli vagy visszatevéses mintavétel eredményeképpen jönnek létre, de sok más is. Ez az összefoglaló ezeket tekinti át.<br />
 <br></p>
 <div id="diszkrét-valószínűségi-eloszlások" class="section level2 tabset tabset-pills">
-<h2>Diszkrét valószínűségi eloszlások</h2>
+<h2 class="tabset tabset-pills">Diszkrét valószínűségi eloszlások</h2>
 <p>Diszkrét változónak azokat nevezzük, amelyek véges sok vagy megszámlálhatóan végtelen sok értéket vehetnek fel (pl. csak egész számok lehetnek - ld. Poisson és negatív binomiális eloszlások).</p>
 <p>Minden esetben azt vizsgáljuk, mennyi a valószínűsége, hogy a változó egy adott értéket vesz fel, mennyi a változó várható értéke és szórása.</p>
 <div id="hipergeometrikus" class="section level3">
@@ -437,7 +489,7 @@ Ez megfelel a <span class="math inline">\(P(\xi=4)\)</span> esetnek, ha az r. be
 </div>
 </div>
 <div id="folytonos-valószínűségi-eloszlások" class="section level2 tabset tabset-pills">
-<h2>Folytonos valószínűségi eloszlások</h2>
+<h2 class="tabset tabset-pills">Folytonos valószínűségi eloszlások</h2>
 <p>Folytonos változónak azokat nevezzük, amelyek megszámlálhatatlanul végtelen sok értéket vehetnek fel (pl. egy adott intervallumon belül, vagy a valós számok egy részhalmazán bármilyen valós számot).</p>
 <p>Ellentétben a diszkrét eloszlásokkal, ezekben az esetekben nincs értelme olyan valószínűségeket keresni, hogy a változó éppen egy adott számmal egyenlő. Mivel megszámlálhatatlanul végtelen sok értéket felvehetnek a változók, ezért minden egyes konkrét érték valószínűsége 0. Ezért ezekben az esetekben mindig valamilyen intervallumok valószínűségét fogjuk keresni.</p>
 <p>A <span class="math inline">\(P(\xi &lt; x)\)</span> valószínűségeket közvetlenül ki tudjuk számítani az F(x) eloszlásfüggvények képlete segítségével. A <span class="math inline">\(P(\xi &gt; x)\)</span> valószínűségek az előbbiek komplementerei, a <span class="math inline">\(P(x_1 &lt; \xi &lt; x_2)\)</span> valószínűségek pedig az eloszlásfüggvény két függvényértéke közötti különbségként:</p>
@@ -531,6 +583,8 @@ x<sub>1</sub> = 2 és x<sub>2</sub> = 5</p>
 
 
 
+</div>
+</div>
 
 </div>
 
@@ -556,13 +610,39 @@ $(document).ready(function () {
 
 $(document).ready(function () {
   $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
+    $(this).parent().toggleClass('nav-tabs-open');
   });
 });
 </script>
 
 <!-- code folding -->
 
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>

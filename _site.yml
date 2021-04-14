@@ -20,6 +20,8 @@ navbar:
       menu:
         - text: "Adatvizualizáció"
           href: vizualizacio.html
+        - text: "Normális eloszlás"
+          href: normalis-eloszlas.html
     - text: "Órák slide-jai"
       menu:
         - text: "Műveletek valószínűségekkel"
