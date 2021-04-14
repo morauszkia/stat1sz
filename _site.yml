@@ -34,6 +34,10 @@ navbar:
           href: 03_var_shooting.html
         - text: "Nevezetes eloszlások"
           href: 04_val_valtozok_2.html
+        - text: "Leíró statisztikák"
+          href: 05_leiro_stat.html
+        - text: "Becsléselmélet"
+          href: 06_becsles.html
   right: 
     - icon: fa-envelope
       href: mailto:morauszki.andras@gmail.com
