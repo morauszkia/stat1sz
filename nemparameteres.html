@@ -454,7 +454,7 @@ div.tocify {
 <li>Ha több elem esetében is ugyanaz az érték: <strong>kapcsolt rangokat</strong> adunk, vagyis az egyes elemek a sorszámaik átlagát kapják: pl. ha a 6. és 7. helyen holtverseny van, akkor <span class="math inline">\(\frac{6+7}{2}=6,5\)</span>-t, a következő a 8-ast, ha a 9-11. helyeken ismét holtverseny van, akkor <span class="math inline">\(\frac{9+10+11}{3}=10\)</span>-et, a következő elem a 12-t, és így tovább.</li>
 <li>A két csoportra külön-külön összeadjuk a rangokat. A további számítás ezeken a rangszámösszegeken alapul.</li>
 <li>Mindegyik módszer a <strong>kisebbik elemszámú csoport rangszámösszegével</strong> dolgozik tovább.</li>
-<li>Kis elemszám esetén külön <a href="resources/eloszlas_Mann_Whitney.pdf"></a> használható, ezzel veti össze a kisebbik elemszámú csoport rangszámösszegét (a <em>two-tailed</em> táblázatot érdemes nézni, ez felel meg a kétoldali próbának).</li>
+<li>Kis elemszám esetén külön <a href="resources/eloszlas_Mann_Whitney.pdf">U-eloszlástábla</a> használható, ezzel veti össze a kisebbik elemszámú csoport rangszámösszegét (a <em>two-tailed</em> táblázatot érdemes nézni, ez felel meg a kétoldali próbának).</li>
 <li>Nagyobb elemszámok esetén pedig kiszámítható egy <strong>megközelítőleg standard normális eloszlást</strong> követő statisztikai próba. Nézzük ez utóbbit. Ennek több változata létezik az interneten, egyesek bonyolultabbaknak tűnnek, mások egyszerűbbnek, de ugyanazon a számításon alapulnak, csak más-más stádiumú képletet közölnek, de ugyanazt az eredményt hozzák.</li>
 <li>Legyen a <strong>kisebbik elemszámú</strong> csoport az 1-es: elemszáma N<sub>1</sub> és rangszámösszeg a csoportban R<sub>1</sub>.</li>
 <li>A <strong>nagyobbik elemszámú</strong> csoport elemszáma N<sub>2</sub>, rangszámösszege R<sub>2</sub>.</li>
@@ -492,15 +492,7 @@ Lefutott táv (km)
 A iskola
 </td>
 <td style="text-align:right;">
-1.8
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-A iskola
-</td>
-<td style="text-align:right;">
-1.9
+2.3
 </td>
 </tr>
 <tr>
@@ -509,6 +501,14 @@ A iskola
 </td>
 <td style="text-align:right;">
 2.3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+A iskola
+</td>
+<td style="text-align:right;">
+2.2
 </td>
 </tr>
 <tr>
@@ -524,39 +524,7 @@ A iskola
 A iskola
 </td>
 <td style="text-align:right;">
-2.3
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-A iskola
-</td>
-<td style="text-align:right;">
-2.9
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-A iskola
-</td>
-<td style="text-align:right;">
-1.9
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-A iskola
-</td>
-<td style="text-align:right;">
-2.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-A iskola
-</td>
-<td style="text-align:right;">
-2.2
+1.8
 </td>
 </tr>
 <tr>
@@ -569,71 +537,7 @@ A iskola
 </tr>
 <tr>
 <td style="text-align:left;">
-B iskola
-</td>
-<td style="text-align:right;">
-2.2
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-B iskola
-</td>
-<td style="text-align:right;">
-2.7
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-B iskola
-</td>
-<td style="text-align:right;">
-2.5
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-B iskola
-</td>
-<td style="text-align:right;">
-3.0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-B iskola
-</td>
-<td style="text-align:right;">
-2.3
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-B iskola
-</td>
-<td style="text-align:right;">
-2.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-B iskola
-</td>
-<td style="text-align:right;">
-2.7
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-B iskola
-</td>
-<td style="text-align:right;">
-2.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-B iskola
+A iskola
 </td>
 <td style="text-align:right;">
 1.9
@@ -641,7 +545,15 @@ B iskola
 </tr>
 <tr>
 <td style="text-align:left;">
-B iskola
+A iskola
+</td>
+<td style="text-align:right;">
+1.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+A iskola
 </td>
 <td style="text-align:right;">
 2.9
@@ -649,10 +561,26 @@ B iskola
 </tr>
 <tr>
 <td style="text-align:left;">
+A iskola
+</td>
+<td style="text-align:right;">
+2.4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 B iskola
 </td>
 <td style="text-align:right;">
-2.8
+2.7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+B iskola
+</td>
+<td style="text-align:right;">
+2.7
 </td>
 </tr>
 <tr>
@@ -668,7 +596,79 @@ B iskola
 B iskola
 </td>
 <td style="text-align:right;">
+2.8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+B iskola
+</td>
+<td style="text-align:right;">
+2.5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+B iskola
+</td>
+<td style="text-align:right;">
+2.2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+B iskola
+</td>
+<td style="text-align:right;">
+1.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+B iskola
+</td>
+<td style="text-align:right;">
+3.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+B iskola
+</td>
+<td style="text-align:right;">
 2.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+B iskola
+</td>
+<td style="text-align:right;">
+2.3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+B iskola
+</td>
+<td style="text-align:right;">
+2.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+B iskola
+</td>
+<td style="text-align:right;">
+2.4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+B iskola
+</td>
+<td style="text-align:right;">
+2.4
 </td>
 </tr>
 </tbody>
@@ -1081,7 +1081,7 @@ B iskola
 <h3>Wilcoxon-féle előjeles rangpróba</h3>
 <ul>
 <li>A páros t-próba kiváltására használható, ha <strong>nem teljesül</strong>, hogy <strong>a különbségek normális eloszlást követnek</strong>.</li>
-<li>Hogy szép, és egyszerű legyen az élet, ennek is több változata lelhető fel az interneten. Van olyan módszer, amely kis elemszámok esetén alkalmazható, és egy külön <a href="resources/eloszlas_Wilcoxon.pdf"></a> használ, és vannak olyanok, amelyek a tesztstatisztikát standardizálják. Mi most is ez utóbbiakat nézzük meg.</li>
+<li>Hogy szép, és egyszerű legyen az élet, ennek is több változata lelhető fel az interneten. Van olyan módszer, amely kis elemszámok esetén alkalmazható, és egy külön <a href="resources/eloszlas_Wilcoxon.pdf">W-eloszlástáblát</a> használ, és vannak olyanok, amelyek a tesztstatisztikát standardizálják. Mi most is ez utóbbiakat nézzük meg.</li>
 <li>Alapja viszont mindenképpen a különbségek rangsorolása, abszolút értékük szerint: a rangsorolás erejéig elfelejtjük a különbségek előjeleit, és a fenti szabály szerint rangsoroljuk őket (a holtversenyben lévő helyeket átlagolva), azzal a kiegészítéssel, hogy azokat az eseteket, amelyekben 0 a különbség, kihagyhatjuk, és ennyivel csökkentjük az elemszámot (jelölje <em>N<sub>r</sub></em> a csökkentett elemszámot)</li>
 </ul>
 <p><strong>1. módszer</strong></p>

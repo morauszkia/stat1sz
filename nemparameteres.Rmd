@@ -59,7 +59,7 @@ Hátrány:
 * Ha több elem esetében is ugyanaz az érték: **kapcsolt rangokat** adunk, vagyis az egyes elemek a sorszámaik átlagát kapják: pl. ha a 6. és 7. helyen holtverseny van, akkor $\frac{6+7}{2}=6,5$-t, a következő a 8-ast, ha a 9-11. helyeken ismét holtverseny van, akkor $\frac{9+10+11}{3}=10$-et, a következő elem a 12-t, és így tovább.
 * A két csoportra külön-külön összeadjuk a rangokat. A további számítás ezeken a rangszámösszegeken alapul.
 * Mindegyik módszer a **kisebbik elemszámú csoport rangszámösszegével** dolgozik tovább.
-* Kis elemszám esetén külön [\underline{U-eloszlástábla}](resources/eloszlas_Mann_Whitney.pdf) használható, ezzel veti össze a kisebbik elemszámú csoport rangszámösszegét (a *two-tailed* táblázatot érdemes nézni, ez felel meg a kétoldali próbának).
+* Kis elemszám esetén külön [U-eloszlástábla](resources/eloszlas_Mann_Whitney.pdf) használható, ezzel veti össze a kisebbik elemszámú csoport rangszámösszegét (a *two-tailed* táblázatot érdemes nézni, ez felel meg a kétoldali próbának).
 * Nagyobb elemszámok esetén pedig kiszámítható egy **megközelítőleg standard normális eloszlást** követő statisztikai próba. Nézzük ez utóbbit. Ennek több változata létezik az interneten, egyesek bonyolultabbaknak tűnnek, mások egyszerűbbnek, de ugyanazon a számításon alapulnak, csak más-más stádiumú képletet közölnek, de ugyanazt az eredményt hozzák.
 * Legyen a **kisebbik elemszámú** csoport az 1-es: elemszáma N~1~ és rangszámösszeg a csoportban R~1~.
 * A **nagyobbik elemszámú** csoport elemszáma N~2~, rangszámösszege R~2~.
@@ -138,7 +138,7 @@ $$z=\frac{\frac{N_1(N_1+N_2+1)}{2}-R_1}{\sqrt{\frac{N_1 N_2 (N_1 + N_2 + 1)}{12}
 ### Wilcoxon-féle előjeles rangpróba
 
 * A páros t-próba kiváltására használható, ha **nem teljesül**, hogy **a különbségek normális eloszlást követnek**.
-* Hogy szép, és egyszerű legyen az élet, ennek is több változata lelhető fel az interneten. Van olyan módszer, amely kis elemszámok esetén alkalmazható, és egy külön [\underline{W-eloszlástáblát}](resources/eloszlas_Wilcoxon.pdf) használ, és vannak olyanok, amelyek a tesztstatisztikát standardizálják. Mi most is ez utóbbiakat nézzük meg.
+* Hogy szép, és egyszerű legyen az élet, ennek is több változata lelhető fel az interneten. Van olyan módszer, amely kis elemszámok esetén alkalmazható, és egy külön [W-eloszlástáblát](resources/eloszlas_Wilcoxon.pdf) használ, és vannak olyanok, amelyek a tesztstatisztikát standardizálják. Mi most is ez utóbbiakat nézzük meg.
 * Alapja viszont mindenképpen a különbségek rangsorolása, abszolút értékük szerint: a rangsorolás erejéig elfelejtjük a különbségek előjeleit, és a fenti szabály szerint rangsoroljuk őket (a holtversenyben lévő helyeket átlagolva), azzal a kiegészítéssel, hogy azokat az eseteket, amelyekben 0 a különbség, kihagyhatjuk, és ennyivel csökkentjük az elemszámot (jelölje *N~r~* a csökkentett elemszámot)
 
 **1. módszer**  
