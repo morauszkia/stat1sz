@@ -1,8 +1,10 @@
 ---
 title: "Nevezetes eloszlások"
-subtitle: "Statisztika 1. szeminárium"
-author: "Morauszki András"
-output: html_document
+output: 
+  html_document:
+    toc: true
+    toc_float: 
+        collapsed: false
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
@@ -25,6 +27,9 @@ round2 = function(x, n) {
   p {
     text-align: justify;
     line-height: 1.5;
+  }
+  strong {
+    color: #a82727;
   }
 </style>
 

@@ -1,0 +1,1942 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Nemparaméteres próbák</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Statisztika 1. szeminárium</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Főoldal</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Kombinatorika és valószínűségszámítás
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="kombinatorika.html">Kombinatorika</a>
+    </li>
+    <li>
+      <a href="eloszlasok.html">Nevezetes eloszlások</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Matematikai statisztika
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="vizualizacio.html">Adatvizualizáció</a>
+    </li>
+    <li>
+      <a href="normalis-eloszlas.html">Normális eloszlás</a>
+    </li>
+    <li>
+      <a href="nemparameteres.html">Nemparaméteres próbák</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Órák slide-jai
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="slides/01_valszam_muveletek.html">Műveletek valószínűségekkel</a>
+    </li>
+    <li>
+      <a href="slides/02_felteteles.html">Feltételes valószínűségek</a>
+    </li>
+    <li>
+      <a href="slides/03_val_valtozok.html">Valószínűségi változók</a>
+    </li>
+    <li>
+      <a href="slides/03_var_shooting.html">Valószínűségi változós feladatok</a>
+    </li>
+    <li>
+      <a href="slides/04_val_valtozok_2.html">Nevezetes eloszlások</a>
+    </li>
+    <li>
+      <a href="slides/05_leiro_stat.html">Leíró statisztikák</a>
+    </li>
+    <li>
+      <a href="slides/06_becsles.html">Becsléselmélet</a>
+    </li>
+    <li>
+      <a href="slides/07_hipotezis.html">Hipotézisvizsgálat - egymintás próbák</a>
+    </li>
+    <li>
+      <a href="slides/08_ketmintas.html">Független mintás próbák</a>
+    </li>
+    <li>
+      <a href="slides/09_paros.html">Páros t-próba</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="mailto:morauszki.andras@gmail.com">
+    <span class="fas fa-envelope"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Nemparaméteres próbák</h1>
+
+</div>
+
+
+<style>
+  p {
+    text-align: justify;
+    line-height: 1.5;
+  }
+  strong {
+    color: #a82727;
+  }
+</style>
+<div id="a-független-mintás-és-páros-próbák-nem-paraméteres-alternatívái" class="section level2">
+<h2>A független mintás és páros próbák nem paraméteres alternatívái</h2>
+<ul>
+<li>Az utolsó tananyag, amelyről ez az összefoglaló szól olyan nemparaméteres próbák, amelyekkel kiváltható a kétmintás t, illetve Welch-próba, valamint a páros t-próba, ha <strong>nem teljesül a változók normális eloszlására vonatkozó feltétel</strong>.</li>
+<li>Ilyen esetekben rangosoroláson alapuló ún. nemparaméteres próbákat használunk.</li>
+<li>Két ilyen próbát fogunk megnézni:</li>
+<li>A <strong>Mann-Whitney próbát</strong> a kétmintás t-/Welch-próba kiváltására</li>
+<li>A <strong>Wilcoxon-féle előjeles rangpróbát</strong> a páros t-próba kiváltására</li>
+<li>Mindkettőnek az alapja a <strong>rangtranszformáció</strong>, vagyis a mintaelemek rangsorolása. <br> <br></li>
+</ul>
+<div id="mann-whitney-u-próba" class="section level3">
+<h3>Mann-Whitney U-próba</h3>
+<ul>
+<li>Olyankor használjuk a kétmintás t-próba vagy Welch-próba kiváltására, ha nem teljesül, hogy a változók normális eloszlást követnek az egyes populációkban.</li>
+<li>Ezt a minták alapján különböző tesztekkel (pl. Shapiro-Wilks, Kolmogorov-Smirnor) tudjuk ellenőrizni. Ezek nullhipotézise szerint a változók eloszlása normális. Ha a próba szignifikáns eredményt hoz (a szig. szint alacsony), elvetjük ezt a nullhipotézist, és nem feltételezhetjük, hogy az eloszlás a populációban normális.</li>
+<li>Ilyenkor használjuk a Mann-Whitney U-próbát.</li>
+<li>Utóbbi <strong>nullhipotézise</strong> szerint a változó <strong>mediánja</strong> a két mintában egyenlő, az ellenhipotézis szerint pedig nem egyenlő.</li>
+</ul>
+<p>Előnyök:</p>
+<ul>
+<li>Nincs meghatározott eloszláshoz kötve a használata.</li>
+<li>Ordinális mérési szintű változók esetében is használható.</li>
+</ul>
+<p>Hátrány:</p>
+<ul>
+<li>Információt veszítünk, mivel intervallum- vagy arányskáláról ordinális skálára térünk át. Ezáltal a próba ereje csökken.</li>
+</ul>
+<div id="a-kulcslépés-rangsorolás" class="section level4">
+<h4>A kulcslépés: Rangsorolás</h4>
+<ul>
+<li>Ez az első és legfontosabb lépés. Ehhez a két minta elemeit összevonjuk, nagyság szerint növekvő sorrendbe rendezzük, és együtt rangsoroljuk.</li>
+<li>Ha több elem esetében is ugyanaz az érték: <strong>kapcsolt rangokat</strong> adunk, vagyis az egyes elemek a sorszámaik átlagát kapják: pl. ha a 6. és 7. helyen holtverseny van, akkor <span class="math inline">\(\frac{6+7}{2}=6,5\)</span>-t, a következő a 8-ast, ha a 9-11. helyeken ismét holtverseny van, akkor <span class="math inline">\(\frac{9+10+11}{3}=10\)</span>-et, a következő elem a 12-t, és így tovább.</li>
+<li>A két csoportra külön-külön összeadjuk a rangokat. A további számítás ezeken a rangszámösszegeken alapul.</li>
+<li>Mindegyik módszer a <strong>kisebbik elemszámú csoport rangszámösszegével</strong> dolgozik tovább.</li>
+<li>Kis elemszám esetén külön <a href="resources/eloszlas_Mann_Whitney.pdf"></a> használható, ezzel veti össze a kisebbik elemszámú csoport rangszámösszegét (a <em>two-tailed</em> táblázatot érdemes nézni, ez felel meg a kétoldali próbának).</li>
+<li>Nagyobb elemszámok esetén pedig kiszámítható egy <strong>megközelítőleg standard normális eloszlást</strong> követő statisztikai próba. Nézzük ez utóbbit. Ennek több változata létezik az interneten, egyesek bonyolultabbaknak tűnnek, mások egyszerűbbnek, de ugyanazon a számításon alapulnak, csak más-más stádiumú képletet közölnek, de ugyanazt az eredményt hozzák.</li>
+<li>Legyen a <strong>kisebbik elemszámú</strong> csoport az 1-es: elemszáma N<sub>1</sub> és rangszámösszeg a csoportban R<sub>1</sub>.</li>
+<li>A <strong>nagyobbik elemszámú</strong> csoport elemszáma N<sub>2</sub>, rangszámösszege R<sub>2</sub>.</li>
+<li>Az első lépés egy U-statisztika kiszámítása:</li>
+</ul>
+<p><span class="math display">\[U=N_1N_2+\frac{N_1(N_1+1)}{2}-R_1\]</span></p>
+<ul>
+<li>Ennek ismert a várható értéke és szórása:</li>
+</ul>
+<p><span class="math display">\[\mu_u=\frac{N_1N_2}{2}\]</span> <span class="math display">\[\sigma_u=\sqrt{\frac{N_1 N_2 (N_1 + N_2 + 1)}{12}}\]</span></p>
+<ul>
+<li>Vagyis (a normális eloszlás tulajdonságaiból adódóan), mivel U viszonylag nagyobb elemszámok esetén, normális eloszlású változó, ha igaz a nullhipotézis, akkor az alábbi képlettel egy standard normális eloszlású változót kapunk:</li>
+</ul>
+<p><span class="math display">\[z = \frac{U-\mu_u}{\sigma_u}\]</span></p>
+<ul>
+<li>Behelyettesítve és kicsit átrendezve az alábbi, szerintem - még ha elsőre nem is tűnik úgy - egyszerűbben használható képletet kapjuk (mivel egy lépésben mindent be tudunk helyettesíteni):</li>
+</ul>
+<p><span class="math display">\[z=\frac{\frac{N_1(N_1+N_2+1)}{2}-R_1}{\sqrt{\frac{N_1 N_2 (N_1 + N_2 + 1)}{12}}}\]</span></p>
+<p><strong>PÉLDA</strong> Nézzünk egy konkrét példát:<br />
+Két iskola diákjainak egy-egy mintája lefutotta a Cooper-tesztet, és az alábbi táblázat mutatja, hány km-t futottak 12 perc alatt.</p>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Iskola
+</th>
+<th style="text-align:right;">
+Lefutott táv (km)
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+A iskola
+</td>
+<td style="text-align:right;">
+1.8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+A iskola
+</td>
+<td style="text-align:right;">
+1.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+A iskola
+</td>
+<td style="text-align:right;">
+2.3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+A iskola
+</td>
+<td style="text-align:right;">
+2.7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+A iskola
+</td>
+<td style="text-align:right;">
+2.3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+A iskola
+</td>
+<td style="text-align:right;">
+2.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+A iskola
+</td>
+<td style="text-align:right;">
+1.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+A iskola
+</td>
+<td style="text-align:right;">
+2.4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+A iskola
+</td>
+<td style="text-align:right;">
+2.2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+A iskola
+</td>
+<td style="text-align:right;">
+2.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+B iskola
+</td>
+<td style="text-align:right;">
+2.2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+B iskola
+</td>
+<td style="text-align:right;">
+2.7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+B iskola
+</td>
+<td style="text-align:right;">
+2.5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+B iskola
+</td>
+<td style="text-align:right;">
+3.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+B iskola
+</td>
+<td style="text-align:right;">
+2.3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+B iskola
+</td>
+<td style="text-align:right;">
+2.4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+B iskola
+</td>
+<td style="text-align:right;">
+2.7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+B iskola
+</td>
+<td style="text-align:right;">
+2.4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+B iskola
+</td>
+<td style="text-align:right;">
+1.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+B iskola
+</td>
+<td style="text-align:right;">
+2.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+B iskola
+</td>
+<td style="text-align:right;">
+2.8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+B iskola
+</td>
+<td style="text-align:right;">
+2.6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+B iskola
+</td>
+<td style="text-align:right;">
+2.9
+</td>
+</tr>
+</tbody>
+</table>
+<ol style="list-style-type: decimal">
+<li>Az első lépés, hogy iskolától függetlenül növekvő sorrendbe rakjuk a diákokat a lefutott táv szerint, és a fenti szabályt követve rangsoroljuk őket. (Az egyik oszlop, a sorszám csak segítség - hogy látható legyen, melyik számokat átlagoljuk a holtversenyek esetén - pl. a 2-4. helyen lévők 3-ast, a 6-7. helyen lévők 6,5-et kapnak, stb.)</li>
+</ol>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Iskola
+</th>
+<th style="text-align:right;">
+Táv
+</th>
+<th style="text-align:right;">
+Sorszám
+</th>
+<th style="text-align:right;">
+Rang
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+A iskola
+</td>
+<td style="text-align:right;">
+1.8
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+A iskola
+</td>
+<td style="text-align:right;">
+1.9
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+3.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+A iskola
+</td>
+<td style="text-align:right;">
+1.9
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+3.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+B iskola
+</td>
+<td style="text-align:right;">
+1.9
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+3.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+A iskola
+</td>
+<td style="text-align:right;">
+2.0
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+5.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+A iskola
+</td>
+<td style="text-align:right;">
+2.2
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+6.5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+B iskola
+</td>
+<td style="text-align:right;">
+2.2
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+6.5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+A iskola
+</td>
+<td style="text-align:right;">
+2.3
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+9.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+A iskola
+</td>
+<td style="text-align:right;">
+2.3
+</td>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:right;">
+9.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+B iskola
+</td>
+<td style="text-align:right;">
+2.3
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+9.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+A iskola
+</td>
+<td style="text-align:right;">
+2.4
+</td>
+<td style="text-align:right;">
+11
+</td>
+<td style="text-align:right;">
+12.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+B iskola
+</td>
+<td style="text-align:right;">
+2.4
+</td>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:right;">
+12.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+B iskola
+</td>
+<td style="text-align:right;">
+2.4
+</td>
+<td style="text-align:right;">
+13
+</td>
+<td style="text-align:right;">
+12.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+B iskola
+</td>
+<td style="text-align:right;">
+2.5
+</td>
+<td style="text-align:right;">
+14
+</td>
+<td style="text-align:right;">
+14.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+B iskola
+</td>
+<td style="text-align:right;">
+2.6
+</td>
+<td style="text-align:right;">
+15
+</td>
+<td style="text-align:right;">
+15.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+A iskola
+</td>
+<td style="text-align:right;">
+2.7
+</td>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:right;">
+17.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+B iskola
+</td>
+<td style="text-align:right;">
+2.7
+</td>
+<td style="text-align:right;">
+17
+</td>
+<td style="text-align:right;">
+17.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+B iskola
+</td>
+<td style="text-align:right;">
+2.7
+</td>
+<td style="text-align:right;">
+18
+</td>
+<td style="text-align:right;">
+17.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+B iskola
+</td>
+<td style="text-align:right;">
+2.8
+</td>
+<td style="text-align:right;">
+19
+</td>
+<td style="text-align:right;">
+19.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+A iskola
+</td>
+<td style="text-align:right;">
+2.9
+</td>
+<td style="text-align:right;">
+20
+</td>
+<td style="text-align:right;">
+21.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+B iskola
+</td>
+<td style="text-align:right;">
+2.9
+</td>
+<td style="text-align:right;">
+21
+</td>
+<td style="text-align:right;">
+21.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+B iskola
+</td>
+<td style="text-align:right;">
+2.9
+</td>
+<td style="text-align:right;">
+22
+</td>
+<td style="text-align:right;">
+21.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+B iskola
+</td>
+<td style="text-align:right;">
+3.0
+</td>
+<td style="text-align:right;">
+23
+</td>
+<td style="text-align:right;">
+23.0
+</td>
+</tr>
+</tbody>
+</table>
+<ol start="2" style="list-style-type: decimal">
+<li>Csoportonként összeadjuk a rangszámokat, és megnézzük, melyik csoportnak kisebb az elemszáma. Ennek a csoportnak (a példában az A iskola: N<sub>1</sub> = 10) a rangszámösszegével (R<sub>1</sub> = 86,5) számolunk tovább.</li>
+</ol>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Iskola
+</th>
+<th style="text-align:right;">
+n
+</th>
+<th style="text-align:right;">
+R
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+A iskola
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+86.5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+B iskola
+</td>
+<td style="text-align:right;">
+13
+</td>
+<td style="text-align:right;">
+189.5
+</td>
+</tr>
+</tbody>
+</table>
+<p>Ellenőrzésképpen: a rangszámok összege 276, ugyanannyi, mint az 1-től 23-ig (ennyi az összes elem) tartó számok összege: <span class="math inline">\(\frac{23\times24}{2}=276\)</span>.</p>
+<ol start="3" style="list-style-type: decimal">
+<li>Ezt a rangszámösszeget (R<sub>1</sub>-et) helyettesítjük a képletekbe, hogy megkapjuk a próba értékét (<em>z</em>).</li>
+</ol>
+<p><span class="math display">\[U=N_{1} N_{2} + \frac{N_{1} (N_{1}+1)}{2}-R_{1}=10\times13+\frac{10\times(10+1)}{2}-86,5=98,5\]</span><br />
+<span class="math display">\[\mu_u=\frac{N_1N_2}{2}=\frac{10\times13}{2}=65\]</span> <span class="math display">\[\sigma_u=\sqrt{\frac{N_1 N_2 (N_1 + N_2 + 1)}{12}}=\sqrt{\frac{10\times13\times(10+13+1)}{12}}=16,12\]</span><br />
+<span class="math display">\[z = \frac{U-\mu_u}{\sigma_u}=\frac{98,5-65}{16,12}=2,08\]</span></p>
+<p>Vagy közvetlenül az &quot;egylépéses&quot; képletbe:</p>
+<p><span class="math display">\[z=\frac{\frac{N_1(N_1+N_2+1)}{2}-R_1}{\sqrt{\frac{N_1 N_2 (N_1 + N_2 + 1)}{12}}}
+=\frac{\frac{10\times(10+13+1)}{2}-86,5}{\sqrt{\frac{10\times13\times(10+13+1)}{12}}}=\frac{33,5}{16,12}=2,08\]</span></p>
+<ol start="4" style="list-style-type: decimal">
+<li>A próba értékét a standard normális eloszlás megfelelő határértétével vetjük össze: ha 5%-os szignifikanciaszintre törekszünk, akkor ±1,96-tal; ha 1%-osra, akkor ±2,58-cal.</li>
+<li>Döntés: 5%-os szignifikanciaszint mellett elvetjük a nullhipotézist, vagyis a 12 perc alatt lefutott táv medián értéke a két populációban (a két iskolában) eltér.</li>
+</ol>
+<p>    <em>Kiegészítés</em>: a pontos szig. szint: p = 0.038</p>
+</div>
+</div>
+<div id="wilcoxon-féle-előjeles-rangpróba" class="section level3">
+<h3>Wilcoxon-féle előjeles rangpróba</h3>
+<ul>
+<li>A páros t-próba kiváltására használható, ha <strong>nem teljesül</strong>, hogy <strong>a különbségek normális eloszlást követnek</strong>.</li>
+<li>Hogy szép, és egyszerű legyen az élet, ennek is több változata lelhető fel az interneten. Van olyan módszer, amely kis elemszámok esetén alkalmazható, és egy külön <a href="resources/eloszlas_Wilcoxon.pdf"></a> használ, és vannak olyanok, amelyek a tesztstatisztikát standardizálják. Mi most is ez utóbbiakat nézzük meg.</li>
+<li>Alapja viszont mindenképpen a különbségek rangsorolása, abszolút értékük szerint: a rangsorolás erejéig elfelejtjük a különbségek előjeleit, és a fenti szabály szerint rangsoroljuk őket (a holtversenyben lévő helyeket átlagolva), azzal a kiegészítéssel, hogy azokat az eseteket, amelyekben 0 a különbség, kihagyhatjuk, és ennyivel csökkentjük az elemszámot (jelölje <em>N<sub>r</sub></em> a csökkentett elemszámot)</li>
+</ul>
+<p><strong>1. módszer</strong></p>
+<ul>
+<li>Az egyik módszer elgondolása azon alapul, hogy ha nem történt változás (a változás medián értéke 0), akkor az előjelüket visszakapó rangszámok összegének a várható értéke 0. (Legyen az előjeles rangszámok összege <em>W</em>)</li>
+<li>Ezt a rangszámot a következő képletbe helyettesíti, amely igaz nullhipotézis esetén egy standard normális változót eredményez:</li>
+</ul>
+<p><span class="math display">\[z=\frac{W}{\sqrt{\frac{N_r(N_r+1)(2N_r+1)}{6}}}\]</span></p>
+<p><strong>2. módszer</strong></p>
+<ul>
+<li>A másik módszer azon alapul, hogy ha nem történt változás, akkor a pozitív rangok és a negatív rangok (abszolút értékének) összege várhatóan azonos. Látszik, hogy ez ugyanaz a feltételezés, csak más számokat vesz alapul. (Legyen a pozitív rangszámok összege T<sup>+</sup>)</li>
+<li>Kiegészítés: Van olyan változat is, amelyben a két érték (a pozitív és a negatív rangszámok összege) közül a nagyobbal számolnak tovább, de ennek nincs jelentősége, mert csak az eredmény előjele változik.</li>
+<li>A pozitív rangszámok összegét (vagy a nagyobb összeget) az alábbi képletbe helyettesítjük (megértem, ha az első változat szimpatikusabb):</li>
+</ul>
+<p><span class="math display">\[z = \frac{T^+-\frac{N_r(N_r+1)}{4}}{\sqrt{\frac{N_r(N_r+1)(2N_r+1)}{24}}}\]</span></p>
+<ul>
+<li>Sőt, ha vannak holtversenyek, akkor egyesek javasolják minden holtverseny esetében egy korrekciós tényező kivonását a gyök alatti törtből, amelynek képlete (<em>t</em> azt jelöli, hány elem van holtversenyben, holtversenyenként - ld. példa): <span class="math inline">\(\frac{t^3-t}{48}\)</span><br />
+</li>
+<li>Ha mindezeket végrehajtottuk, a kapott z érték standard normális eloszlású, ha igaz a nullhipotézis, mely szerint a változás medián értéke 0.</li>
+</ul>
+<hr />
+<p><strong>PÉLDA</strong></p>
+<p>Nézzük a konkrét példát:<br />
+20 gyermek esetében nézzük egy új írás-olvasás oktatási módszertan hatékonyságát. A kutatók az új módszertan bevezetése előtt és után is kitöltettek a gyermekekkel egy-egy tesztet, amely 0 és 10 közötti skálán mérte az írás-olvasás készségeket. Mivel az eloszlás nem normális, ezért a páros t-próba nem használható. Mivel a két mérés nem független egymástól, hanem ugyanazok a gyerekek töltötték ki a tesztet kétszer, ezért nem is független mintás Mann-Whitney-próbát használunk, hanem Wilcoxon-féle előjeles rangpróbát.</p>
+<ol style="list-style-type: decimal">
+<li>Rögtön a változást feltüntetve mutatom az adatokat:</li>
+</ol>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;">
+Azonosítószám
+</th>
+<th style="text-align:right;">
+Első mérés
+</th>
+<th style="text-align:right;">
+Második mérés
+</th>
+<th style="text-align:right;">
+Különbség
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+2
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:right;">
+4
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+3
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+3
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+-3
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+-3
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+10
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+11
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+7
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+13
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+4
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+14
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+15
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+5
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+5
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+17
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+10
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+18
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+7
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+19
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:right;">
+7
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+20
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+8
+</td>
+</tr>
+</tbody>
+</table>
+<ol start="2" style="list-style-type: decimal">
+<li>Sorbarakjuk a különbség abszolút értéke szerint (ld. + és -3 egymás mellé került), és a tanult módon rangsoroljuk, azzal a kiegészítéssel, hogy a 0 különbség(ek)et figyelmen kívül hagyjuk (ld. első sor). Az elemszám mostantól N<sub>r</sub>=19. A végén &quot;visszaadjuk&quot; az előjelet (ld. 4,5-ek):<br />
+
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;">
+Azonosítószám
+</th>
+<th style="text-align:right;">
+Első mérés
+</th>
+<th style="text-align:right;">
+Második mérés
+</th>
+<th style="text-align:right;">
+Különbség
+</th>
+<th style="text-align:right;">
+Sorszám
+</th>
+<th style="text-align:right;">
+Előjeles rangszám
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+14
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+11
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+2
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+4.5
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+4.5
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+-3
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+-4.5
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+-3
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+-4.5
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+7.5
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+13
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+7.5
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+15
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:right;">
+9.5
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+9.5
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+11
+</td>
+<td style="text-align:right;">
+12
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:right;">
+12
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+13
+</td>
+<td style="text-align:right;">
+12
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+14
+</td>
+<td style="text-align:right;">
+15
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+18
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+15
+</td>
+<td style="text-align:right;">
+15
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+19
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:right;">
+15
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+20
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+17
+</td>
+<td style="text-align:right;">
+17
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+18
+</td>
+<td style="text-align:right;">
+18.5
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+17
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+19
+</td>
+<td style="text-align:right;">
+18.5
+</td>
+</tr>
+</tbody>
+</table></li>
+</ol>
+<p>3a. Összeadjuk a rangszámokat: W = 172<br />
+4a. Behelyettesítünk: <span class="math display">\[z = \frac{W}{\sqrt{\frac{N_r(N_r+1)(2N_r+1)}{6}}}=\frac{172}{\sqrt{\frac{19(19+1)(2\times19+1)}{6}}}
+= 3.46\]</span></p>
+<p>VAGY:</p>
+<p>3b. Összeadjuk csak a pozitív rangszámokat (vagy, mint fent írtam, bármelyiket, legfeljebb az előjel lesz más): <span class="math inline">\(T^+=181\)</span></p>
+<p>4b. Behelyettesítünk: <span class="math display">\[z = \frac{T^+-\frac{N_r(N_r+1)}{4}}{\sqrt{\frac{N_r(N_r+1)(2N_r+1)}{24}}}=\frac{181-\frac{19(19+1)}{4}}{\sqrt{\frac{19(19+1)(2\times19+1)}{24}}}=3.46\]</span></p>
+<p>Ez még kiegészíthető a holtversenyek miatti korrekcióval: + Van egy 4-es holtverseny (3-6. hely), három 2-es holtverseny (7-8., 9-10. és 18-19. hely) és két hármas holtverseny (11-13. és 14-16. hely) + A korrigált képlet ezért kiegészül:</p>
+<p><span class="math display">\[z = \frac{T^+-\frac{N_r(N_r+1)}{4}}{\sqrt{\frac{N_r(N_r+1)(2N_r+1)}{24}-\frac{4^3-4}{48}-3\times\frac{2^3-2}{48}-2\times\frac{3^3-3}{48}}}=...=3,47\]</span></p>
+<ol start="5" style="list-style-type: decimal">
+<li>Összevetjük a kapott tesztértéket a standard normális eloszlás határértékeivel: 5% esetén ±1,96; 1% esetén ±2,58, stb. Ez alapján az eredmény 1%-os szignifikanciaszint esetén is szignifikáns</li>
+</ol>
+<p>    Kiegészítés: a pontos szig. szint 0.001</p>
+</div>
+</div>
+<div id="összefoglalás" class="section level2">
+<h2>Összefoglalás</h2>
+<ul>
+<li>Vannak esetek, amikor a változó nem normális eloszlást követ, ezért a szokásos próbák helyett nem paraméteres próbákat használunk, amelyek <strong>nem feltételezik a normális eloszlást</strong>.</li>
+<li>A t-próba (és Welch-próba) alternatívája a <strong>Mann-Whitney-féle U-próba</strong>.</li>
+<li>A páros t-próba nem paraméteres alternatívája a <strong>Wilcoxon-féle előjeles rangpróba</strong>.</li>
+<li>Ezek alapja a <strong>rangszámtranszformáció</strong>. A mai anyagból ez az, amit mindenképp érdemesnek tartok a megjegyzésre.</li>
+<li>A rangszámtranszformáció lényege, hogy a változók értékeit növekvő sorrendbe rendezzük és rangsoroljuk. Ennek eredményeképpen ugyan elvész információ (az értékek közötti különbségek), de legalább az értékek sorrendjével tovább tudunk számolni.</li>
+<li>Ezáltal a skála mérési szintű változókból ordinális változók lesznek, és ennek megfelelően, a hipotézisek sem az átlagokra vonatkoznak, hanem a mediánokra.</li>
+<li>A próbák sokszor többféleképpen is kiszámíthatók, de mint látható volt, az eredmény ugyanaz.</li>
+<li>Kis elemszám esetén külön eloszlás-táblázatok állnak rendelkezésünkre, de viszonylag nagyobb minták esetében már van lehetőség olyan statisztika kiszámítására, amely igaz nullhipotézis esetén közel standard normális eloszlású.</li>
+</ul>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

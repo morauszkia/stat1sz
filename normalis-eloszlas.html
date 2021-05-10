@@ -13,7 +13,6 @@
 
 <title>Normális eloszlás</title>
 
-<script src="site_libs/header-attrs-2.7/header-attrs.js"></script>
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
@@ -291,12 +290,12 @@ div.tocify {
 
 <!-- setup 3col/9col grid for toc_float and main content  -->
 <div class="row">
-<div class="col-sm-12 col-md-4 col-lg-3">
+<div class="col-xs-12 col-sm-4 col-md-3">
 <div id="TOC" class="tocify">
 </div>
 </div>
 
-<div class="toc-content col-sm-12 col-md-8 col-lg-9">
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
 
 
 
@@ -344,6 +343,9 @@ div.tocify {
     <li>
       <a href="normalis-eloszlas.html">Normális eloszlás</a>
     </li>
+    <li>
+      <a href="nemparameteres.html">Nemparaméteres próbák</a>
+    </li>
   </ul>
 </li>
 <li class="dropdown">
@@ -354,25 +356,34 @@ div.tocify {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="01_valszam_muveletek.html">Műveletek valószínűségekkel</a>
+      <a href="slides/01_valszam_muveletek.html">Műveletek valószínűségekkel</a>
     </li>
     <li>
-      <a href="02_felteteles.html">Feltételes valószínűségek</a>
+      <a href="slides/02_felteteles.html">Feltételes valószínűségek</a>
     </li>
     <li>
-      <a href="03_val_valtozok.html">Valószínűségi változók</a>
+      <a href="slides/03_val_valtozok.html">Valószínűségi változók</a>
     </li>
     <li>
-      <a href="03_var_shooting.html">Valószínűségi változós feladatok</a>
+      <a href="slides/03_var_shooting.html">Valószínűségi változós feladatok</a>
     </li>
     <li>
-      <a href="04_val_valtozok_2.html">Nevezetes eloszlások</a>
+      <a href="slides/04_val_valtozok_2.html">Nevezetes eloszlások</a>
     </li>
     <li>
-      <a href="05_leiro_stat.html">Leíró statisztikák</a>
+      <a href="slides/05_leiro_stat.html">Leíró statisztikák</a>
     </li>
     <li>
-      <a href="06_becsles.html">Becsléselmélet</a>
+      <a href="slides/06_becsles.html">Becsléselmélet</a>
+    </li>
+    <li>
+      <a href="slides/07_hipotezis.html">Hipotézisvizsgálat - egymintás próbák</a>
+    </li>
+    <li>
+      <a href="slides/08_ketmintas.html">Független mintás próbák</a>
+    </li>
+    <li>
+      <a href="slides/09_paros.html">Páros t-próba</a>
     </li>
   </ul>
 </li>
@@ -679,7 +690,7 @@ Milyen értékek között van a terület 90%-a?</p>
 </div>
 <div class="solution">
 <p><strong>MEGOLDÁS:</strong><br />
-Mint az alábbi ábrán is látszik, ha középen a terület 90%-át határoljuk le, akkor marad két egyenlő nagyságú terület, amelyek összesen 10%-ot tesznek ki, vagyis egyenként 5-5%-osak. Mivel a táblázatban -∞ és az adott határérték közötti területek vannak feltüntetve, az “alsó” szürke terület hozzáadódik a lefedni kívánt 90%-hoz, és a táblázatban ezért a 0,95-öt kell megkeresnünk. Ez pedig valahol 1,64 és 1,65 között van. Érdemes az 1,65-öt választani, hogy inkább nagyobb területet fedjünk le, mint kisebbet. A szimmetria miatt az alsó határérték -1,65.<br />
+Mint az alábbi ábrán is látszik, ha középen a terület 90%-át határoljuk le, akkor marad két egyenlő nagyságú terület, amelyek összesen 10%-ot tesznek ki, vagyis egyenként 5-5%-osak. Mivel a táblázatban -∞ és az adott határérték közötti területek vannak feltüntetve, az &quot;alsó&quot; szürke terület hozzáadódik a lefedni kívánt 90%-hoz, és a táblázatban ezért a 0,95-öt kell megkeresnünk. Ez pedig valahol 1,64 és 1,65 között van. Érdemes az 1,65-öt választani, hogy inkább nagyobb területet fedjünk le, mint kisebbet. A szimmetria miatt az alsó határérték -1,65.<br />
 (Online kalkulátorral <span class="math inline">\(\pm 1,645\)</span>)</p>
 </div>
 <p><img src="normalis-eloszlas_files/figure-html/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" /></p>

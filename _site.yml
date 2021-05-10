@@ -22,22 +22,30 @@ navbar:
           href: vizualizacio.html
         - text: "Normális eloszlás"
           href: normalis-eloszlas.html
+        - text: "Nemparaméteres próbák"
+          href: nemparameteres.html
     - text: "Órák slide-jai"
       menu:
         - text: "Műveletek valószínűségekkel"
-          href: 01_valszam_muveletek.html
+          href: slides/01_valszam_muveletek.html
         - text: "Feltételes valószínűségek"
-          href: 02_felteteles.html
+          href: slides/02_felteteles.html
         - text: "Valószínűségi változók"
-          href: 03_val_valtozok.html
+          href: slides/03_val_valtozok.html
         - text: "Valószínűségi változós feladatok"
-          href: 03_var_shooting.html
+          href: slides/03_var_shooting.html
         - text: "Nevezetes eloszlások"
-          href: 04_val_valtozok_2.html
+          href: slides/04_val_valtozok_2.html
         - text: "Leíró statisztikák"
-          href: 05_leiro_stat.html
+          href: slides/05_leiro_stat.html
         - text: "Becsléselmélet"
-          href: 06_becsles.html
+          href: slides/06_becsles.html
+        - text: "Hipotézisvizsgálat - egymintás próbák"
+          href: slides/07_hipotezis.html
+        - text: "Független mintás próbák"
+          href: slides/08_ketmintas.html
+        - text: "Páros t-próba"
+          href: slides/09_paros.html
   right: 
     - icon: fa-envelope
       href: mailto:morauszki.andras@gmail.com

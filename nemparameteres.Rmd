@@ -1,0 +1,225 @@
+---
+title: "Nemparaméteres próbák"
+output: 
+  html_document:
+    toc: true
+    toc_float: 
+        collapsed: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(dplyr)
+```
+
+<style>
+  p {
+    text-align: justify;
+    line-height: 1.5;
+  }
+  strong {
+    color: #a82727;
+  }
+</style>
+
+  
+
+## A független mintás és páros próbák nem paraméteres alternatívái
+
+* Az utolsó tananyag, amelyről ez az összefoglaló szól olyan nemparaméteres próbák, amelyekkel kiváltható a kétmintás t, illetve Welch-próba, valamint a páros t-próba, ha **nem teljesül a változók normális eloszlására vonatkozó feltétel**.
+* Ilyen esetekben rangosoroláson alapuló ún. nemparaméteres próbákat használunk.
+* Két ilyen próbát fogunk megnézni:
+  + A **Mann-Whitney próbát** a kétmintás t-/Welch-próba kiváltására
+  + A **Wilcoxon-féle előjeles rangpróbát** a páros t-próba kiváltására
+* Mindkettőnek az alapja a **rangtranszformáció**, vagyis a mintaelemek rangsorolása.
+<br>
+<br>
+
+### Mann-Whitney U-próba
+
+* Olyankor használjuk a kétmintás t-próba vagy Welch-próba kiváltására, ha nem teljesül, hogy a változók normális eloszlást követnek az egyes populációkban. 
+* Ezt a minták alapján különböző tesztekkel (pl. Shapiro-Wilks, Kolmogorov-Smirnor) tudjuk ellenőrizni. Ezek nullhipotézise szerint a változók eloszlása normális. Ha a próba szignifikáns eredményt hoz (a szig. szint alacsony), elvetjük ezt a nullhipotézist, és nem feltételezhetjük, hogy az eloszlás a populációban normális. 
+* Ilyenkor használjuk a Mann-Whitney U-próbát.
+* Utóbbi **nullhipotézise** szerint a változó **mediánja** a két mintában egyenlő, az ellenhipotézis szerint pedig nem egyenlő.
+  
+Előnyök:  
+
+* Nincs meghatározott eloszláshoz kötve a használata.
+* Ordinális mérési szintű változók esetében is használható.
+  
+Hátrány:  
+
+* Információt veszítünk, mivel intervallum- vagy arányskáláról ordinális skálára térünk át. Ezáltal a próba ereje csökken.
+
+
+#### A kulcslépés: Rangsorolás  
+  
+
+* Ez az első és legfontosabb lépés. Ehhez a két minta elemeit összevonjuk, nagyság szerint növekvő sorrendbe rendezzük, és együtt rangsoroljuk.
+* Ha több elem esetében is ugyanaz az érték: **kapcsolt rangokat** adunk, vagyis az egyes elemek a sorszámaik átlagát kapják: pl. ha a 6. és 7. helyen holtverseny van, akkor $\frac{6+7}{2}=6,5$-t, a következő a 8-ast, ha a 9-11. helyeken ismét holtverseny van, akkor $\frac{9+10+11}{3}=10$-et, a következő elem a 12-t, és így tovább.
+* A két csoportra külön-külön összeadjuk a rangokat. A további számítás ezeken a rangszámösszegeken alapul.
+* Mindegyik módszer a **kisebbik elemszámú csoport rangszámösszegével** dolgozik tovább.
+* Kis elemszám esetén külön [\underline{U-eloszlástábla}](resources/eloszlas_Mann_Whitney.pdf) használható, ezzel veti össze a kisebbik elemszámú csoport rangszámösszegét (a *two-tailed* táblázatot érdemes nézni, ez felel meg a kétoldali próbának).
+* Nagyobb elemszámok esetén pedig kiszámítható egy **megközelítőleg standard normális eloszlást** követő statisztikai próba. Nézzük ez utóbbit. Ennek több változata létezik az interneten, egyesek bonyolultabbaknak tűnnek, mások egyszerűbbnek, de ugyanazon a számításon alapulnak, csak más-más stádiumú képletet közölnek, de ugyanazt az eredményt hozzák.
+* Legyen a **kisebbik elemszámú** csoport az 1-es: elemszáma N~1~ és rangszámösszeg a csoportban R~1~.
+* A **nagyobbik elemszámú** csoport elemszáma N~2~, rangszámösszege R~2~.
+* Az első lépés egy U-statisztika kiszámítása: 
+
+$$U=N_1N_2+\frac{N_1(N_1+1)}{2}-R_1$$  
+
+* Ennek ismert a várható értéke és szórása:
+
+$$\mu_u=\frac{N_1N_2}{2}$$
+$$\sigma_u=\sqrt{\frac{N_1 N_2 (N_1 + N_2 + 1)}{12}}$$  
+
+* Vagyis (a normális eloszlás tulajdonságaiból adódóan), mivel U viszonylag nagyobb elemszámok esetén, normális eloszlású változó, ha igaz a nullhipotézis, akkor az alábbi képlettel egy standard normális eloszlású változót kapunk:
+
+$$z = \frac{U-\mu_u}{\sigma_u}$$  
+
+* Behelyettesítve és kicsit átrendezve az alábbi, szerintem - még ha elsőre nem is tűnik úgy - egyszerűbben használható képletet kapjuk (mivel egy lépésben mindent be tudunk helyettesíteni):
+
+$$z=\frac{\frac{N_1(N_1+N_2+1)}{2}-R_1}{\sqrt{\frac{N_1 N_2 (N_1 + N_2 + 1)}{12}}}$$  
+
+**PÉLDA**
+Nézzünk egy konkrét példát:  
+Két iskola diákjainak egy-egy mintája lefutotta a Cooper-tesztet, és az alábbi táblázat mutatja, hány km-t futottak 12 perc alatt.  
+
+```{r, echo = FALSE}
+school <- c(rep("A iskola", 10), rep("B iskola", 12))
+dist_a <- sample(c(1.8, 1.9, 1.9, 2, 2.2, 2.3, 2.3, 2.4, 2.7, 2.9))
+dist_b <- sample(c(1.9, 2.2, 2.3, 2.4, 2.4, 2.5, 2.6, 2.7, 2.7, 2.8, 2.9, 2.9, 3.0))
+school <- c(rep("A iskola", 10), rep("B iskola", 13))
+dist <- c(dist_a, dist_b)
+df_cooper <- data.frame(iskola = school, tav = dist)
+colnames(df_cooper) <- c("Iskola", "Lefutott táv (km)")
+knitr::kable(df_cooper) %>%
+  kableExtra::kable_styling(full_width = FALSE)
+```
+  
+1. Az első lépés, hogy iskolától függetlenül növekvő sorrendbe rakjuk a diákokat a lefutott táv szerint, és a fenti szabályt követve rangsoroljuk őket. (Az egyik oszlop, a sorszám csak segítség - hogy látható legyen, melyik számokat átlagoljuk a holtversenyek esetén - pl. a 2-4. helyen lévők 3-ast, a 6-7. helyen lévők 6,5-et kapnak, stb.)  
+
+```{r, echo = FALSE}
+colnames(df_cooper)[2] <- "distance"
+df_cooper <- df_cooper %>% arrange(distance) %>% mutate(row.no = row_number(), rank = rank(distance))
+colnames(df_cooper) <- c("Iskola", "Táv", "Sorszám", "Rang")
+knitr::kable(df_cooper) %>%
+  kableExtra::kable_styling(full_width = FALSE)
+```
+  
+
+2. Csoportonként összeadjuk a rangszámokat, és megnézzük, melyik csoportnak kisebb az elemszáma. Ennek a csoportnak (a példában az A iskola: N~1~ = 10) a rangszámösszegével (R~1~ = 86,5) számolunk tovább.  
+
+```{r, echo = FALSE}
+df_cooper %>% group_by(Iskola) %>% summarise(n = n(), R = sum(Rang)) %>% knitr::kable() %>%
+  kableExtra::kable_styling(full_width = FALSE)
+```
+  
+
+Ellenőrzésképpen: a rangszámok összege 276, ugyanannyi, mint az 1-től 23-ig (ennyi az összes elem) tartó számok összege: $\frac{23\times24}{2}=276$.  
+
+3. Ezt a rangszámösszeget (R~1~-et) helyettesítjük a képletekbe, hogy megkapjuk a próba értékét (*z*).
+
+$$U=N_{1} N_{2} + \frac{N_{1} (N_{1}+1)}{2}-R_{1}=10\times13+\frac{10\times(10+1)}{2}-86,5=98,5$$  
+$$\mu_u=\frac{N_1N_2}{2}=\frac{10\times13}{2}=65$$
+$$\sigma_u=\sqrt{\frac{N_1 N_2 (N_1 + N_2 + 1)}{12}}=\sqrt{\frac{10\times13\times(10+13+1)}{12}}=16,12$$  
+$$z = \frac{U-\mu_u}{\sigma_u}=\frac{98,5-65}{16,12}=2,08$$  
+
+Vagy közvetlenül az "egylépéses" képletbe:
+
+$$z=\frac{\frac{N_1(N_1+N_2+1)}{2}-R_1}{\sqrt{\frac{N_1 N_2 (N_1 + N_2 + 1)}{12}}}
+=\frac{\frac{10\times(10+13+1)}{2}-86,5}{\sqrt{\frac{10\times13\times(10+13+1)}{12}}}=\frac{33,5}{16,12}=2,08$$  
+  
+
+4. A próba értékét a standard normális eloszlás megfelelő határértétével vetjük össze: ha 5%-os szignifikanciaszintre törekszünk, akkor &plusmn;1,96-tal; ha 1%-osra, akkor &plusmn;2,58-cal.
+5. Döntés: 5%-os szignifikanciaszint mellett elvetjük a nullhipotézist, vagyis a 12 perc alatt lefutott táv medián értéke a két populációban (a két iskolában) eltér.  
+
+&nbsp;&nbsp;&nbsp;&nbsp;*Kiegészítés*: a pontos szig. szint: p = `r round(pnorm(-2.08)*2, 3)`
+
+### Wilcoxon-féle előjeles rangpróba
+
+* A páros t-próba kiváltására használható, ha **nem teljesül**, hogy **a különbségek normális eloszlást követnek**.
+* Hogy szép, és egyszerű legyen az élet, ennek is több változata lelhető fel az interneten. Van olyan módszer, amely kis elemszámok esetén alkalmazható, és egy külön [\underline{W-eloszlástáblát}](resources/eloszlas_Wilcoxon.pdf) használ, és vannak olyanok, amelyek a tesztstatisztikát standardizálják. Mi most is ez utóbbiakat nézzük meg.
+* Alapja viszont mindenképpen a különbségek rangsorolása, abszolút értékük szerint: a rangsorolás erejéig elfelejtjük a különbségek előjeleit, és a fenti szabály szerint rangsoroljuk őket (a holtversenyben lévő helyeket átlagolva), azzal a kiegészítéssel, hogy azokat az eseteket, amelyekben 0 a különbség, kihagyhatjuk, és ennyivel csökkentjük az elemszámot (jelölje *N~r~* a csökkentett elemszámot)
+
+**1. módszer**  
+
+* Az egyik módszer elgondolása azon alapul, hogy ha nem történt változás (a változás medián értéke 0), akkor az előjelüket visszakapó rangszámok összegének a várható értéke 0. (Legyen az előjeles rangszámok összege *W*)
+* Ezt a rangszámot a következő képletbe helyettesíti, amely igaz nullhipotézis esetén egy standard normális változót eredményez:
+
+$$z=\frac{W}{\sqrt{\frac{N_r(N_r+1)(2N_r+1)}{6}}}$$  
+
+**2. módszer**  
+
+* A másik módszer azon alapul, hogy ha nem történt változás, akkor a pozitív rangok és a negatív rangok (abszolút értékének) összege várhatóan azonos. Látszik, hogy ez ugyanaz a feltételezés, csak más számokat vesz alapul. (Legyen a pozitív rangszámok összege T^+^) 
+* Kiegészítés: Van olyan változat is, amelyben a két érték (a pozitív és a negatív rangszámok összege) közül a nagyobbal számolnak tovább, de ennek nincs jelentősége, mert csak az eredmény előjele változik.
+* A pozitív rangszámok összegét (vagy a nagyobb összeget) az alábbi képletbe helyettesítjük (megértem, ha az első változat szimpatikusabb):
+
+$$z = \frac{T^+-\frac{N_r(N_r+1)}{4}}{\sqrt{\frac{N_r(N_r+1)(2N_r+1)}{24}}}$$  
+
+* Sőt, ha vannak holtversenyek, akkor egyesek javasolják minden holtverseny esetében egy korrekciós tényező kivonását a gyök alatti törtből, amelynek képlete (*t* azt jelöli, hány elem van holtversenyben, holtversenyenként - ld. példa): $\frac{t^3-t}{48}$  
+* Ha mindezeket végrehajtottuk, a kapott z érték standard normális eloszlású, ha igaz a nullhipotézis, mely szerint a változás medián értéke 0.
+  
+***
+
+**PÉLDA**
+  
+Nézzük a konkrét példát:  
+20 gyermek esetében nézzük egy új írás-olvasás oktatási módszertan hatékonyságát. A kutatók az új módszertan bevezetése előtt és után is kitöltettek a gyermekekkel egy-egy tesztet, amely 0 és 10 közötti skálán mérte az írás-olvasás készségeket. Mivel az eloszlás nem normális, ezért a páros t-próba nem használható. Mivel a két mérés nem független egymástól, hanem ugyanazok a gyerekek töltötték ki a tesztet kétszer, ezért nem is független mintás Mann-Whitney-próbát használunk, hanem Wilcoxon-féle előjeles rangpróbát.
+
+1. Rögtön a változást feltüntetve mutatom az adatokat:  
+
+```{r, echo = FALSE}
+case <- 1:20
+fst <- c(1, 5, 4, 5, 5, 0, 5, 5, 0, 4, 5, 3, 6, 6, 5, 0, 0, 1, 2, 2)
+sec <- c(7, 7, 10, 9, 8, 3, 2, 2, 10, 10, 6, 10, 10, 6, 10, 5, 10, 8, 9, 10)
+dif <- sec - fst
+table <- data.frame(case, fst, sec, dif)
+colnames(table) <- c("Azonosítószám", "Első mérés", "Második mérés", "Különbség")
+knitr::kable(table, align = rep("r", 6)) %>%
+  kableExtra::kable_styling(full_width = FALSE)
+```
+  
+
+2. Sorbarakjuk a különbség abszolút értéke szerint (ld. + és -3 egymás mellé került), és a tanult módon rangsoroljuk, azzal a kiegészítéssel, hogy a 0 különbség(ek)et figyelmen kívül hagyjuk (ld. első sor). Az elemszám mostantól N~r~=19. A végén "visszaadjuk" az előjelet (ld. 4,5-ek):  
+```{r, echo = FALSE}
+o <- order(abs(dif))
+rnk <- (rank(abs(dif)) - sum(dif == 0))*sign(dif)
+table <- data.frame(case[o], fst[o], sec[o], dif[o], no = c("", 1:19),  c("", rnk[o][-1]))
+colnames(table) <- c("Azonosítószám", "Első mérés", "Második mérés", "Különbség", "Sorszám", "Előjeles rangszám")
+knitr::kable(table, align = rep("r", 6)) %>%
+  kableExtra::kable_styling(full_width = FALSE)
+```
+  
+
+3a. Összeadjuk a rangszámokat: W = `r sum(rnk)`  
+4a. Behelyettesítünk:
+$$z = \frac{W}{\sqrt{\frac{N_r(N_r+1)(2N_r+1)}{6}}}=\frac{`r sum(rnk)`}{\sqrt{\frac{19(19+1)(2\times19+1)}{6}}}
+= `r round(sum(rnk)/sqrt(19*20*39/6), 2)`$$  
+  
+VAGY:  
+  
+3b. Összeadjuk csak a pozitív rangszámokat (vagy, mint fent írtam, bármelyiket, legfeljebb az előjel lesz más): $T^+=`r sum(rnk[rnk>0])`$  
+
+4b. Behelyettesítünk:
+$$z = \frac{T^+-\frac{N_r(N_r+1)}{4}}{\sqrt{\frac{N_r(N_r+1)(2N_r+1)}{24}}}=\frac{`r sum(rnk[rnk>0])`-\frac{19(19+1)}{4}}{\sqrt{\frac{19(19+1)(2\times19+1)}{24}}}=`r round((sum(rnk[rnk>0])-19*20/4)/sqrt(19*20*39/24), 2)`$$  
+
+Ez még kiegészíthető a holtversenyek miatti korrekcióval:
+  + Van egy 4-es holtverseny (3-6. hely), három 2-es holtverseny (7-8., 9-10. és 18-19. hely) és két hármas holtverseny (11-13. és 14-16. hely)
+  + A korrigált képlet ezért kiegészül:
+  
+$$z = \frac{T^+-\frac{N_r(N_r+1)}{4}}{\sqrt{\frac{N_r(N_r+1)(2N_r+1)}{24}-\frac{4^3-4}{48}-3\times\frac{2^3-2}{48}-2\times\frac{3^3-3}{48}}}=...=3,47$$  
+
+5. Összevetjük a kapott tesztértéket a standard normális eloszlás határértékeivel: 5% esetén &plusmn;1,96; 1% esetén &plusmn;2,58, stb. Ez alapján az eredmény 1%-os szignifikanciaszint esetén is szignifikáns  
+
+&nbsp;&nbsp;&nbsp;&nbsp;Kiegészítés: a pontos szig. szint `r round(pnorm(-3.46)*2, 3)`  
+  
+## Összefoglalás  
+
+* Vannak esetek, amikor a változó nem normális eloszlást követ, ezért a szokásos próbák helyett nem paraméteres próbákat használunk, amelyek **nem feltételezik a normális eloszlást**.
+* A t-próba (és Welch-próba) alternatívája a **Mann-Whitney-féle U-próba**.
+* A páros t-próba nem paraméteres alternatívája a **Wilcoxon-féle előjeles rangpróba**.
+* Ezek alapja a **rangszámtranszformáció**. A mai anyagból ez az, amit mindenképp érdemesnek tartok a megjegyzésre.
+* A rangszámtranszformáció lényege, hogy a változók értékeit növekvő sorrendbe rendezzük és rangsoroljuk. Ennek eredményeképpen ugyan elvész információ (az értékek közötti különbségek), de legalább az értékek sorrendjével tovább tudunk számolni.
+* Ezáltal a skála mérési szintű változókból ordinális változók lesznek, és ennek megfelelően, a hipotézisek sem az átlagokra vonatkoznak, hanem a mediánokra.
+* A próbák sokszor többféleképpen is kiszámíthatók, de mint látható volt, az eredmény ugyanaz.
+* Kis elemszám esetén külön eloszlás-táblázatok állnak rendelkezésünkre, de viszonylag nagyobb minták esetében már van lehetőség olyan statisztika kiszámítására, amely igaz nullhipotézis esetén közel standard normális eloszlású.

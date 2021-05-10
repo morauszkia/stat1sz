@@ -1,0 +1,706 @@
+---
+title: "Normális eloszlás"
+output: 
+  html_document:
+    toc: true
+    toc_float: 
+        collapsed: false
+---
+
+<style>
+  p {
+    text-align: justify;
+    line-height: 1.5;
+  }
+  h1 {
+    margin-top: 2em;
+    margin-bottom: 1em;
+  }
+  h2 {
+    margin-top: 2em;
+    margin-bottom: 1em;
+  }
+  h3 {
+    margin-top: 2em;
+    margin-bottom: 1em;
+  }
+  h4 {
+    margin-top: 2em;
+    margin-bottom: 1em;
+  }
+  .centered {
+    text-align: center;
+  }
+  strong {
+    color: #a82727;
+  }
+  .exercise {
+    background-color: rgba(255, 88, 77, 0.1);
+    padding: 10px;
+  }
+  .solution {
+    background-color: rgba(0, 280, 140, 0.1);
+    padding: 10px;
+  }
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, fig.align = "center", fig.height = 3, message = FALSE)
+library(tidyverse)
+library(patchwork)
+library(here)
+source(here("../05 Statisztika anyagok/Statisztika 1/02 scripts/shadecurve.R"))
+source(here("../05 Statisztika anyagok/Statisztika 1/02 scripts/plot_normal.R"))
+
+
+round2 = function(x, n) {
+  posneg = sign(x)
+  z = abs(x)*10^n
+  z = z + 0.5 + sqrt(.Machine$double.eps)
+  z = trunc(z)
+  z = z/10^n
+  z*posneg
+}
+```
+
+A normális eloszlás sokszor elő fog jönni statisztika órákon, mivel számos változó, illetve statisztika ezt az eloszlást követi, illetve több teszt elvégzésének feltétele is, hogy a változók, amelyeken elvégezzük az adott tesztet, normális eloszlást kövessenek.  
+  
+A normális eloszlást két paraméterrel tudunk megadni:  
+
+- a várható értékkel: $\mu$
+- és a szórással: $\sigma$
+
+A $\mu$ várható értékű és $\sigma$ szórású normális eloszlást $N(\mu;\sigma)$-ként jelöljük.  
+
+A normális eloszlás speciális esete az ún. **standard normális eloszlás**: $N(0; 1)$
+  
+A normális eloszlás sűrűségfüggvénye az ún. Gauss-görbe:  
+
+```{r, echo = FALSE, fig.height = 3, fig.width = 10}
+mean.1 <- 170
+sd.1 <- 10
+x <- seq(mean.1 - 3*sd.1, mean.1 + 3*sd.1, by = 0.01)
+normaldata1 <- data.frame(
+  x = x,
+  y = dnorm(x, mean = mean.1, sd = sd.1)
+)
+
+mean.1 <- 0
+sd.1 <- 1
+x <- seq(mean.1 - 3*sd.1, mean.1 + 3*sd.1, by = 0.01)
+normaldata <- data.frame(
+  x = x,
+  y = dnorm(x, mean = mean.1, sd = sd.1),
+  yc = pnorm(x, mean = mean.1, sd = sd.1)
+)
+
+n.170.10 <- ggplot(normaldata1, aes(x = x, y = y)) + geom_line() + 
+  geom_area(fill = "lightblue", alpha = 0.7) + theme_classic() + ylab("") + xlab("") +
+  ggtitle("N(170;10)") +
+  scale_x_continuous(breaks = seq(140, 200, 10)) +
+  geom_vline(xintercept = 170, linetype = "dotted", size = 1.2)
+
+n.0.1 <- ggplot(normaldata, aes(x = x, y = y)) + geom_line() +
+  geom_area(fill = "lightblue", alpha = 0.7) + theme_classic() + ylab("") + xlab("") + 
+  ggtitle("N(0;1)") +
+  scale_x_continuous(breaks = seq(-3, 3, 1)) +
+  geom_vline(xintercept = 0, linetype = "dotted", size = 1.2)
+
+n.170.10 + n.0.1
+```
+
+A fenti sűrűségfüggvény legfontosabb tulajdonságai:  
+
+- **szimmetrikus** a várható értékre
+- a függvény alatti terület összesen 1 (100%) - ez minden sűrűségfüggvényre igaz - ezáltal
+- annak valószínűsége, hogy a változó két érték közé esik egyenlő a függvény alatti területtel az adott intervallumon.
+  
+Akárcsak korábban a [többi nevezetes eloszlásnál](eloszlasok.html) azt fogjuk vizsgálni, mennyi a valószínűsége, hogy a normális eloszlású változó értéke **kisebb** egy adott értéknél, **nagyobb** annál, illetve, hogy **két megadott érték közé esik**.  
+Az ott leírtak a normális eloszlásra is igazak, miszerint:  
+$$
+\begin{aligned}
+P(\xi < x)&=F(x) \\
+P(\xi > x)&=1-F(x) \\
+P(x_1 < \xi < x_2)&=F(x_2)-F(x_1)
+\end{aligned}
+$$
+
+A fenti képletekben $F(x)$ az **eloszlásfüggvénynek** az adott x értékhez tartozó függvényértéke. És ezért nagyon fontos a standard normális eloszlás, mert a számítás ezúttal nem képletekkel történik, hanem **eloszlástáblázatot** fogunk használni. Ilyeneket is sokféle változatban találni az interneten.  
+
+<p class="centered">[A táblázatot itt találják.](resources/z_eloszlas.pdf)</p>  
+  
+Ebben 0-tól 3,59-ig találhatók a standard normális eloszlású változó értékei, amelyeket gyakran $z$-vel jelölünk, és a hozzájuk tartozó eloszlásfüggvény-értékek ($F(x)$)  
+  
+A z értéket úgy tudják leolvasni, hogy a sorok elején lévő számok adják az egészeket és tizedeket, az oszlopok pedig a századokat. Pl. az 1,25-öt az 1,2-es sorban és az 5-ös oszlopban találják. A hozzátartozó táblázatos érték 0,8944, vagyis annak valószínűsége, hogy a változó 1,25-nél kisebb értéket vesz fel 89,44%.  
+
+```{r, echo = FALSE, fig.height = 3, fig.width = 10}
+cdf.0.1 <- ggplot(normaldata, aes(x = x, y = yc)) + geom_area(fill = "lightblue", alpha = 0.7) + geom_line(size = 1.3)
+cdf.0.1 <- cdf.0.1 + geom_vline(xintercept = 1.35, lty = "dashed") + 
+  geom_hline(yintercept = pnorm(1.25, 0, 1), lty = "dashed") +
+  scale_x_continuous(breaks = c(0, 1.25)) + 
+  scale_y_continuous(breaks = c(0, 0.5, pnorm(1.25, 0, 1), 1), 
+                     labels = paste(c(0, 0.5, round(pnorm(1.25, 0, 1), 4), 1)*100, "%")) +
+  theme_classic() + ylab("F(x)")
+
+n.0.1 <- ggplot(normaldata, aes(x = x, y = y)) + geom_line() 
+pdf.1 <- n.0.1 + shade_curve(normaldata, zstart = -3, zend = 1.25, fill = "darkgreen", alpha = 0.7) +
+  shade_curve(normaldata, zstart = 1.25, zend = 3, fill = "grey", alpha = 0.3) + 
+  theme_classic() + ylab("") + xlab("") +
+  scale_x_continuous(breaks = 1.25)
+  
+
+cdf.0.1 + (pdf.1 + annotate("text", x = 0, y = 0.1, label = "89,44%", col = "white"))
+```
+
+A normális eloszlással kapcsolatban három dolgot kell mindenképpen megnéznünk:  
+
+1. hogyan tudjuk kikeresni annak a valószínűségét, hogy a változó értéke megadott határok közé esik
+2. hogyan tudunk megadott valószínűségeket lehatárolni
+3. hogyan tudjuk a standard normális és más normális eloszlású változókat oda-vissza konvertálni
+  
+## Valószínűségek kikeresése
+
+Először azt nézzük meg, hogyan keressük ki a táblázatból annak valószínűségét, hogy a változó megadott értékek közé esik. Ez egyúttal a sűrűségfüggvény alatti területtel egyenlő az adott intervallumon, ezért így is fogom ábrázolni.  
+Többféle eset lehetséges:  
+
+- -&infin; és egy pozitív értékek közötti terület - ez az alapeset
+- pozitív érték és +&infin; közötti terület
+- negatív érték és +&infin; közötti terület
+- -&infin; és egy negatív érték közötti terület
+- terület a 0-ra szimmetrikus intervallumon és azon kívül
+- terület aszimmetrikus intervallumon és azon kívül
+
+### Valószínűség -&infin;-től pozitív értékekig
+
+$$P(\xi < x)=F(x)$$
+  
+Ha a keresett határérték 0 és 3,59 közötti, egyszerűen leolvassuk a táblázatos értéket a következő módon:  
+
+Pl. a 0 sor 0 oszlop a 0,00 értéknek felel meg, és a függvény alatti terület eddig a pontig 0,5 = 50%.
+
+```{r, echo = FALSE, fig.height = 3}
+x <- 0
+pdf.1 <- plot_normal(x, 1)
+
+pdf.1 + annotate("text", x = -0.7, y = 0.1, 
+                 label = pnorm(x, 0, 1) %>% 
+                   round2(4) %>% 
+                   magrittr::multiply_by(100) %>%
+                   paste0("%"), 
+                 col = "white")
+```
+  
+<div class="exercise">
+**FELADAT:**  
+Mennyi annak valószínűsége, hogy a standard normális eloszlású változó értéke kisebb, vagy egyenlő 1,73-mal?  
+</div>
+  
+<div class="solution">
+**MEGOLDÁS:**  
+$$P(\xi \le 1,73) = F(1,73)$$
+  
+Ehhez a táblázatban megkeressük az 1,7-es sor 3-as oszlopában szereplő értéket, és ennyi lesz a valószínűség/terület.
+</div>
+
+```{r, echo = FALSE, fig.height = 3}
+x <- 1.73
+pdf.1 <- plot_normal(x, 1)
+
+pdf.1 + annotate("text", x = 0, y = 0.1, 
+                 label = pnorm(x, 0, 1) %>% 
+                   round2(4) %>% 
+                   magrittr::multiply_by(100) %>%
+                   paste0("%"), 
+                 col = "white")
+```
+
+### Valószínűség pozitív értékektől +&infin;-ig
+
+$$P(\xi>x)=1-F(x)$$
+  
+Ezek az esetek az előzőek komplementerei, ezért a keresett valószínűségeket megkapjuk, ha 1-ből kivonjuk a táblázatból kikeresett valószínűségeket.  
+  
+<div class="exercise">
+**FELADAT:**  
+Mennyi annak valószínűsége, hogy a standard normális eloszlású változó értéke nagyobb, mint 1,73?  
+</div>
+  
+<div class="solution">
+**MEGOLDÁS:**  
+$$P(\xi > 1,73) = 1-F(1,73)$$
+  
+Ehhez a táblázatban megkeressük az 1,7-es sor 3-as oszlopában szereplő értéket, és kivonjuk egyből &rArr; ennyi lesz a valószínűség/terület. Az ábrán látható, hogy a keresett terület (zöld) és az 1,73 alatti (narancssárga) együtt fedik le a függvény alatti teljes területet, ami 100%.
+</div>
+
+```{r, echo = FALSE, fig.height = 3}
+x <- 1.73
+pdf.1 <- plot_normal(x, 2, color=c("darkgreen", "orange"))
+
+pdf.1 + annotate("text", x = 0, y = 0.1, 
+                 label = pnorm(x, 0, 1) %>% 
+                   round2(4) %>% 
+                   magrittr::multiply_by(100) %>%
+                   paste0("%"), 
+                 col = "black") +
+  annotate("text", x = 2.1, y = 0.02,
+           label = pnorm(x, 0, 1, lower.tail = FALSE) %>%
+             round2(4) %>%
+             magrittr::multiply_by(100) %>%
+             paste0("%"),
+           col = "white")
+```
+
+### Valószínűség negatív értékektől +&infin;-ig
+
+$$P(\xi > x) = F(-x)$$  
+
+Ezek tükörképei az első esetnek, ezért a keresett valószínűséget úgy kapjuk meg, ha a táblázatban az abszolút értékhez tartozó függvényértéket keressük ki (a képletben a $-$ jel megváltoztatja az előjelet negatívról pozitívra).  
+  
+<div class="exercise">
+**FELADAT:**  
+Mennyi annak valószínűsége, hogy a standard normális eloszlású változó értéke nagyobb, mint -1,73?  
+</div>
+  
+<div class="solution">
+**MEGOLDÁS:**  
+$$P(\xi > -1,73) = F(-(-1,73))=F(1,73)$$
+  
+Ehhez a táblázatban megkeressük az 1,7-es sor 3-as oszlopában szereplő értéket, ennyi lesz a valószínűség/terület.
+</div>
+
+```{r, echo = FALSE, fig.height = 3, fig.width = 10}
+x <- -1.73
+pdf.1 <- plot_normal(x, 2) +
+  annotate("text", x = 0, y = 0.1,
+           label = pnorm(x, 0, 1, lower.tail = FALSE) %>% 
+                   round2(4) %>% 
+                   magrittr::multiply_by(100) %>%
+                   paste0("%"), 
+                 col = "white")
+pdf.2 <- plot_normal(-x, 1, color=c("orange", "grey")) +
+    annotate("text", x = 0, y = 0.1,
+           label = pnorm(-x, 0, 1) %>% 
+                   round2(4) %>% 
+                   magrittr::multiply_by(100) %>%
+                   paste0("%"), 
+                 col = "black")
+
+pdf.1 + pdf.2
+```
+
+### Valószínűség -&infin;-től negatív értékekig
+
+$$P(\xi < x)=1-F(-x)$$
+
+Ezek az esetek az előző komplementerei, egyben a második eset (pozitív értéktől &infin;-ig) tükörképei.
+  
+<div class="exercise">
+**FELADAT:**  
+Mennyi annak valószínűsége, hogy a standard normális eloszlású változó értéke kisebb, vagy egyenlő -1,73-mal?  
+</div>
+  
+<div class="solution">
+**MEGOLDÁS:**  
+$$P(\xi \le -1,73) = 1-F(-(1,73))=1-F(1,73)$$
+<p class="centered">vagy</p>
+$$P(\xi \le -1,73) = P(\xi \ge 1,73) = 1-F(1,73)$$
+  
+Ehhez a táblázatban megkeressük az 1,7-es sor 3-as oszlopában szereplő értéket, és kivonjuk 1-ből &rArr; ennyi lesz a valószínűség/terület.
+</div>
+
+```{r, echo = FALSE, fig.height = 3}
+x <- -1.73
+pdf.1 <- plot_normal(c(x, -x), c(1, 3), color=c("darkgreen", "grey", "orange")) 
+
+pdf.1 + annotate("text", x = -2.1, y = 0.02,
+           label = pnorm(x, 0, 1) %>%
+             round2(4) %>%
+             magrittr::multiply_by(100) %>%
+             paste0("%"),
+           col = "white") +
+  annotate("text", x = 2.1, y = 0.02,
+           label = pnorm(-x, 0, 1, lower.tail = FALSE) %>%
+             round2(4) %>%
+             magrittr::multiply_by(100) %>%
+             paste0("%"),
+           col = "black")
+```
+
+## Szimmetrikusan lehatárolt területek
+
+$$P(x_1 < \xi < x_2)=F(x_2)-F(x_1)$$
+
+A leggyakoribb eset, hogy a keresett valószínűség a 0-ra szimmetrikus intervallumhoz tartozik. A kiszámításához az eddigi ismereteinket kell kombinálnunk.
+  
+<div class="exercise">
+**FELADAT:**  
+Mennyi annak valószínűsége, hogy a standard normális eloszlású változó értéke -1,73 és +1,73 közé esik?  
+</div>
+  
+<div class="solution">
+**MEGOLDÁS:**  
+Mint az alábbi ábrából kiolvasható, kétféleképpen számíthatjuk ki ezt a területet:  
+
+1. Egyrészt a -&infin;-től 1,73-ig lefedett területből (95,82%) vonjuk ki a -&infin; és -1,73 közötti részt (4,18%), ami egyenlő az 1,73 és &infin; közötti területtel (mindkettőt korábban kiszámítottuk már)
+2. A másik lehetőség, hogy 1-ből vonjuk ki a két kimaradó valószínűséget (kétszer 4,18%-ot).  
+
+Ugyanazt az eredményt kapjuk.
+
+Lépések: A táblázatban ismét az 1,73-hoz tartozó területet keressük ki, ezt 1-ből kivonva megkapjuk a fenti kimaradó területet, ami a szimmetria miatt egyenlő a negatív tartományban kimaradó területettel. Valamelyik fenti kivonással megkapjuk a végeredményt.
+</div>
+
+```{r, fig.height = 3}
+pdf.1 <- plot_normal(c(x, -x), 2) 
+
+pdf.1 + annotate("text", x = -2.1, y = 0.02,
+           label = pnorm(x, 0, 1) %>%
+             round2(4) %>%
+             magrittr::multiply_by(100) %>%
+             paste0("%"),
+           col = "black") +
+  annotate("text", x = 2.1, y = 0.02,
+           label = pnorm(-x, 0, 1, lower.tail = FALSE) %>%
+             round2(4) %>%
+             magrittr::multiply_by(100) %>%
+             paste0("%"),
+           col = "black") +
+  annotate("text", x = 0, y = 0.1,
+           label = (pnorm(-x, 0, 1) - pnorm(x, 0, 1)) %>%
+             round2(4) %>%
+             magrittr::multiply_by(100) %>%
+             paste0("%"),
+           col = "white")
+```
+
+## Aszimmetrikusan lehatárolt területek
+
+$$P(x_1 < \xi < x_2)=F(x_2)-F(x_1)$$
+
+Ilyen viszonylag ritkán fordul elő, de a fenti ismereteket alapul véve ezek a valószínűségek is kiszámíthatók, ha az egyes részterületeket ki sikerül számítani.
+
+<div class="exercise">
+**FELADAT:**  
+Mennyi annak valószínűsége, hogy a standard normális eloszlású változó értéke -1,52 és +1,73 közé esik?  
+</div>
+  
+<div class="solution">
+**MEGOLDÁS:**  
+A legegyszerűbb megoldás, ha a -&infin; és 1,73 közötti részből (95,82%) vonjuk ki a -&infin; és -1,52 közötti részt. Utóbbit úgy kapjuk meg, hogy 1-ből kivonjuk a -&infin és +1,52 közötti területet (ezt tudjuk közvetlenül kiolvasni a táblázatból). Hogy miért, azt az alábbi képek segíTik átlátni.
+
+</div>
+
+```{r, fig.height = 6, fig.width = 10}
+x <- 1.52
+pdf.1 <- plot_normal(x, 2, color = c("darkgreen", "orange")) +
+  annotate("text", x = 0, y = 0.1,
+           label = pnorm(x, 0, 1) %>%
+             round2(4) %>%
+             magrittr::multiply_by(100) %>%
+             paste0("%"),
+           col = "black") +
+  annotate("text", x = 1.9, y = 0.02,
+           label = pnorm(x, 0, 1, lower.tail = FALSE) %>%
+             round2(4) %>%
+             magrittr::multiply_by(100) %>%
+             paste0("%"),
+           col = "white")
+
+pdf.2 <- plot_normal(-x, 1, color = c("darkgreen", "orange")) +
+  annotate("text", x = -1.9, y = 0.02,
+           label = pnorm(-x, 0, 1) %>%
+             round2(4) %>%
+             magrittr::multiply_by(100) %>%
+             paste0("%"),
+           col = "white") +
+  annotate("text", x = 0, y = 0.1,
+           label = pnorm(-x, 0, 1, lower.tail = FALSE) %>%
+             round2(4) %>%
+             magrittr::multiply_by(100) %>%
+             paste0("%"),
+           col = "black")
+pdf.3 <- plot_normal(c(-1.52, 1.73), 2, color = c("darkgreen", "orange")) +
+    annotate("text", x = 0, y = 0.1,
+           label = (pnorm(1.73, 0, 1) - pnorm(-1.52, 0, 1)) %>%
+             round2(4) %>%
+             magrittr::multiply_by(100) %>%
+             paste0("%"),
+           col = "white") +
+  annotate("text", x = 2.1, y = 0.02,
+           label = pnorm(1.73, 0, 1, lower.tail = FALSE) %>%
+             round2(4) %>%
+             magrittr::multiply_by(100) %>%
+             paste0("%"),
+           col = "black") +
+  annotate("text", x = -1.9, y = 0.02,
+           label = pnorm(-1.52, 0, 1) %>%
+             round2(4) %>%
+             magrittr::multiply_by(100) %>%
+             paste0("%"),
+           col = "black")
+
+layout <- "
+AAABBB
+#CCCC#
+"
+
+pdf.1 + pdf.2 + pdf.3 + plot_layout(design = layout)
+```
+
+Az aszimmetrikus lehatárolás történhet két pozitív vagy két negatív érték között. Ezeknek a kilogikázását Önökre bízom, nem nehezebb, mint az egy negatív és egy pozitív érték közötti, és ugyanúgy megoldható a fenti lépések segítségével.
+
+### Összefoglaló
+
+1. Ha egy határérték (jelöljük *a*-val) van:
+  + **-&infin;-től pozitív határértékig**: kiolvassuk a táblázatból (ez *F(a)*, pl. F(1,73) = 0,9582 = 95,82%)
+  + **negatív értéktől +infin;-ig**: kikeressük a táblázatból az abszolút értékének megfelelő valószínűséget. Ugyanez lesz a keresett valószínűség (pl. -1,73-tól +&infin;-ig: F(+1,73) = 0,9582)
+  + **pozitív értéktől +infin;-ig**: kiolvassuk a táblázatból a területet eddig az értékig: pl. F(1,73) = 0,9582. Ezt a valószínűséget 1-ből kivonva megkapjuk a keresett valószínűséget: 1 - 0,9582 = 0,0418
+  + **-&infin;-től negatív határértékig**: kikeressük az abszolút értéknek megfelelő valószínűséget. Ezt egyből kivonva megkapjuk a keresett valósznűséget: pl. -&infin;-től -1,73-ig: 1 - F(1,73) = 0,0418
+    + 3,59-nél nagyobb és -3,59 kisebb értékekkel azért nem foglalkozunk, mert 3,59-ig lefedjük a 99,98%-ot, vagyis alig fordul elő 3,59 fölötti érték (és emiatt -3,59 alatti is alig fordul elő)
+  
+**Ugyanez vizuálisan**  
+
+```{r, fig.width = 10}
+under1 <- plot_normal(1, 1, color = c("darkgreen", "blue")) +
+  scale_x_continuous(breaks = c("a" = 1)) +
+  annotate("text", x = -0.3, y = 0.1, label = "F(a)", col = "white") +
+  annotate("text", x = 1.65, y = 0.03, label = "1 - F(a)", col = "white")
+
+over.minus1 <- plot_normal(-1, 1, color = c("red", "orange")) +
+  scale_x_continuous(breaks = c("a" = -1)) +
+  annotate("text", x = 0.3, y = 0.1, label = "F(|a|)", col = "black") +
+  annotate("text", x = -1.65, y = 0.03, label = "1 - F(|a|)", col = "black")
+
+under1 + over.minus1
+```
+    
+2. Ha két határérték (legyen *a* és *b*) van:
+  + Ki kell számítani a területet a felsőig (azokat a szabályokat követve, mint az egy határértéknél leírtam)
+  + És ki kell számítani a területet az alsóig (ugyancsak a fenti szabályokat követve)
+  + Végül a keresett terület a kettő különbsége
+
+**Ugyanez vizuálisan**   
+  
+```{r, fig.width = 10}
+sim <- plot_normal(c(-1.3, 1.3), c(2, 3), color = c("darkgreen", "orange", "grey")) +
+  scale_x_continuous(breaks = c("a" = -1.3, "b" = 2)) +
+  annotate("text", x = -1.75, y = 0.03, label = "F(a)", col = "black") +
+  annotate("text", x = 0.3, y = 0.1, label = "F(b) - F(a)", col = "white")
+asim <- plot_normal(c(0.5, 2), c(2, 3), color = c("darkgreen", "orange", "grey")) +
+  scale_x_continuous(breaks = c("a" = 0.5, "b" = 2)) +
+  annotate("text", x = -0.4, y = 0.1, label = "F(a)", col = "black") +
+  annotate("text", x = 1.25, y = 0.05, label = "F(b) - F(a)", col = "black")
+
+sim + asim
+```
+
+## Határértékek megkeresése 
+
+A fentiek fordítottja, amikor meghatározott területet szeretnénk lehatárolni, és ehhez keressük az egy vagy két határértéket. Az alábbi esetek a legegyszerűbbtől haladnak a többlépéses problémákig.
+
+### 50%-nál nagyobb terület lehatárolása -&infin;-től
+
+Ez a legegyszerűbb eset. Egy lépésben megoldható: a táblázat belsejében megkeressük az adott valószínűséget (ha ez nem szerepel a táblázatban, akkor az első annál nagyobb valószínűséget), és összeolvassuk a soreleji és oszlop tetején lévő számokat.
+
+<div class="exercise">
+**FELADAT:**  
+-&infin; és mennyi között van a terület 75%-a?
+</div>
+  
+<div class="solution">
+**MEGOLDÁS:**  
+A táblázatban megkeressük a 0,75-öt: 0,7517 az első ennél nagyobb, ami a 0,6-os sorban és 8-as oszlopban van. A keresett határérték valahol a 0,67 és 0,68 között van. Általában a nagyobbat érdemes választanunk, amivel a keresett valószínűségnél valamivel többet fedünk le.  
+(Online kalkulátorral megtalálható a pontos határérték: 0,674)
+
+</div>
+
+```{r}
+x <- qnorm(0.75) %>% round2(3)
+plot_normal(x, 1) +
+  annotate("text", x = 0, y = 0.1, 
+           label = "75%",
+           color = "white")
+```
+### 50%-nál nagyobb terület lehatárolása +&infin;-ig
+
+Úgy teszünk, mintha -&infin;-től akarnánk lehatárolni, de a kapott határértéket negatív előjellel vesszük (a szimmetria miatt)
+
+<div class="exercise">
+**FELADAT:**  
+Mennyi és +&infin; között van a terület 80%-a?
+</div>
+  
+<div class="solution">
+**MEGOLDÁS:**  
+A táblázatban megkeressük a 0,8-at: 0,84 és 0,85 között van valahol. A keresett határérték (inkább nagyobb területet határolunk le) -0,85.  
+(Online kalkulátorral megtalálható a pontos határérték: -0,842)
+
+</div>
+```{r}
+x <- qnorm(0.2) %>% round2(3)
+plot_normal(x, 2) +
+  annotate("text", x = 0, y = 0.1, 
+           label = "80%",
+           color = "white")
+```
+
+### 50%-nál kisebb terület lehatárolása +&infin;-ig
+
+Ebben az esetben a komplementer valószínűséget határoljuk le a fenti szabályok alapján.
+  
+<div class="exercise">
+**FELADAT:**  
+Mennyi és +&infin; között van a terület 15%-a?
+</div>
+  
+<div class="solution">
+**MEGOLDÁS:**  
+A táblázatban megkeressük az $1-0,15= 0,85$-öt: a keresett határérték 1,04.  
+(Online kalkulátorral: 1,036)
+
+</div>
+
+```{r}
+x <- qnorm(0.85) %>% round2(3)
+plot_normal(x, 2, color = c("darkgreen", "orange")) +
+  annotate("text", x = 0, y = 0.1, 
+           label = "85%",
+           color = "black") +
+  annotate("text", x = 1.5, y = 0.05,
+           label = "15%",
+           color = "white")
+```
+
+### 50%-nál kisebb terület lehatárolása -&infin;-től
+
+Ezúttal is a komplementer valószínűséghez keressük a határértéket, és a végén még az előjelet is negatívra változtatjuk.
+  
+<div class="exercise">
+**FELADAT:**  
+-&infin; és mennyi között van a terület 9%-a?
+</div>
+  
+<div class="solution">
+**MEGOLDÁS:**  
+A táblázatban megkeressük az $1-0,09= 0,91$-et: 1,34 és 1,35 között van, ezért a keresett határérték -1,35.  
+(Online kalkulátorral: -1,341)
+
+</div>
+```{r}
+x <- qnorm(0.09) %>% round2(3)
+plot_normal(x, 1, color = c("darkgreen", "orange")) +
+  annotate("text", x = 0, y = 0.1, 
+           label = "91%",
+           color = "black") +
+  annotate("text", x = -1.7, y = 0.05,
+           label = "9%",
+           color = "white")
+```
+
+### Szimmetrikusan
+
+Ez a leggyakoribb eset. A neheze, hogy a táblázatból nem közvetlenül a megadott valószínűséget kell kikeresni, hanem ehhez hozzá kell adni a kimaradó terület felét, hiszen a táblázatban -&infin;-től adott határértékig szerepelnek a valószínűségek.  
+Általánosan: $1-\alpha$ terület lefedéséhez a táblázatban az $1-\frac{\alpha}{2}$ valószínűséget kell megkeresni.
+  
+<div class="exercise">
+**FELADAT:**  
+Milyen értékek között van a terület 90%-a?
+</div>
+  
+<div class="solution">
+**MEGOLDÁS:**  
+Mint az alábbi ábrán is látszik, ha középen a terület 90%-át határoljuk le, akkor marad két egyenlő nagyságú terület, amelyek összesen 10%-ot tesznek ki, vagyis egyenként 5-5%-osak. Mivel a táblázatban -&infin; és az adott határérték közötti területek vannak feltüntetve, az "alsó" szürke terület hozzáadódik a lefedni kívánt 90%-hoz, és a táblázatban ezért a 0,95-öt kell megkeresnünk. Ez pedig valahol 1,64 és 1,65 között van. Érdemes az 1,65-öt választani, hogy inkább nagyobb területet fedjünk le, mint kisebbet. A szimmetria miatt az alsó határérték -1,65.  
+(Online kalkulátorral $\pm 1,645$)
+</div>
+
+```{r}
+x <- qnorm(0.95) %>% round2(3)
+
+plot_normal(c(-x, x), 2) + 
+  annotate("text", x = 0, y = 0.1, label = "90%", col = "white")
+```
+
+### Aszimmetrikusan
+
+Ezt nem nézzük meg konkrétan. A fenti szabályok alapján, ha felírják a különböző részterületeket, meg tudják találni a határértékeket, de összességében nem túl valószínű, hogy ilyen problémával találkozzanak.
+
+## Konvertálás
+
+Mivel normális eloszlásból végtelen sok létezik, ezért arra nincs lehetőség, hogy mindegyikhez táblázatot gyártsanak. De ez nem is szükséges, mert egyszerű a normális eloszlások és a standard normális eloszlás közötti konvertálás.  
+  
+Bármely normális eloszlású változó bármely értéke ($x$) az alábbi képlettel átszámítható a standard normális eloszlás megfelelő értékére (általában $z$-vel jelölik). Ezt hívják **standardizálásnak**:
+$$z = \frac{x-\mu}{\sigma}$$
+
+A konvertálás révén például kiszámítható, hogy egy tetszőleges $N(\mu;\sigma)$ eloszlású változó esetében mennyi a valószínűsége, hogy értéke $x_1$ és $x_2$ közé esik:  
+
+1. az $x_1$ és $x_2$ értéket standardizáljuk
+2. a standard normális eloszlás táblázata segítségével, a fenti szabályokat követve kiszámítjuk annak valószínűségét, hogy a standard normális eloszlású változó ezek közé esik.
+3. ennyi lesz az $x_1$ és $x_2$ közötti intervallumon is a sűrűségfüggvény alatti terület, vagyis annak valószínűsége, hogy a változó értéke ezek közé esik.
+
+  
+<div class="exercise">
+**FELADAT:**  
+A felnőttkori testmagasság a vizsgált populációban 170cm várható értékű és 10cm szórású normális eloszlást követ. Mennyi a valószínűsége, hogy valaki felnőttkori testmagassága 160 és 195 cm közé esik?
+</div>
+  
+<div class="solution">
+**MEGOLDÁS:**  
+
+1. Először standardizáljuk a két értéket:
+$$z_1 = \frac{160 - 170}{10}=-1; \quad z_2 = \frac{195 - 170}{10}=2,5$$  
+2. Ezt követően a fent tárgyalt módon kiszámítjuk, a standard normális eloszlású változó milyen valószínűséggel vesz fel -1 és 2,5 közötti értéket: 
+$$P(-1 < \xi < 2,5)=F(2,5)-F(-1)=F(2,5)-(1-F(1))= \\
+= 0,9938- (1-0,8413)=0,9938-0,1587=0,8351$$  
+3. Ennyi (83,51%) annak a valószínűsége, hogy valaki magassága felnőtt korában 160 és 195 cm között van.
+</div>  
+
+```{r, fig.width = 10}
+pdf.1 <- plot_normal(c(160, 195), 2, mean = 170, sd = 10, title = TRUE)
+pdf.2 <- plot_normal(c(-1, 2.5), 2, title = TRUE)
+
+(pdf.1 + annotate("text", x = 170, y = 0.01, 
+                  label = (pnorm(195, 170, 10)-pnorm(160, 170, 10)) %>%
+                    round2(4) %>%
+                    magrittr::multiply_by(100) %>%
+                    paste0("%"), 
+                  col = "white")) +
+  (pdf.2 + annotate("text", x = 0, y = 0.1, 
+                  label = (pnorm(2.5)-pnorm(-1)) %>%
+                    round2(4) %>%
+                    magrittr::multiply_by(100) %>%
+                    paste0("%"), 
+                  col = "white"))
+```
+Visszafelé pedig bármilyen, a standard normális eloszláson lehatárolt területhez (pl. 90%, 95%, stb.) meg tudjuk találni a $N(\mu;\sigma)$ eloszlás megfelelő határértékeit, és így ugyanekkora területet le tudunk fedni. Ezen alapul az intervallumbecslés.  
+  
+A fenti képletből kifejezve $x$-et megkapjuk a visszaalakítás képletét: 
+$$x = \mu + z*\sigma$$
+  
+<div class="exercise">
+**FELADAT:**  
+Korábban néztük, hogy a standard normális eloszlású változó értéke 95%-os valószínűséggel esik -1,96 és 1,96 közé. Milyen értékek közé esik a testmagasság 95%-os valószínűséggel, ha az $N(170;10)$ eloszlású?
+</div>
+  
+<div class="solution">
+**MEGOLDÁS:**  
+
+1. Azt már tudjuk, hogy a standard normális eloszlású változó értéke [-1,96;+1,96] intervallumba 95%-os valószínűséggel esik. Azt, hogy ezeknek mely magasságértékek felelnek meg, a 2. képlettel tudjuk kiszámítani:
+$$x_1 = 170 +(-1,96*10)=150,4; \quad x_2 = 170+1,96*10=189,6$$   
+Ugyanígy bármilyen területet kijelölhetünk a standard normális eloszláson, és a képlettel megkereshetjük, milyen határértékek felelnek meg e terület határainak. Ezt tesszük akkor is, ha konfidenciaintervallumot számolunk, de a várható érték helyére (amit nem ismerünk) a mintából becsült átlagot helyettesítjük. 
+</div>  
+
+```{r, fig.width = 10}
+pdf.1 <- plot_normal(c(-1.96, 1.96), 2, title = TRUE)
+pdf.2 <- plot_normal(170 + 10 * 1.96 * c(-1, 1), 2, mean = 170, sd = 10, title = TRUE)
+
+(pdf.1 + annotate("text", x = 0, y = 0.1, label = "95%", col = "white")) +
+  (pdf.2 + annotate("text", x = 170, y = 0.01, label = "95%", col = "white"))
+```
+
+## Linkek: normális eloszlás kalkulátorok
+  
+
+- [1. kalkulátor](https://homepage.divms.uiowa.edu/~mbognar/applets/normal.html)
+- [2. kalkulátor](https://stattrek.com/online-calculator/normal.aspx)
+- [3. kalkulátor (területhez)](https://onlinestatbook.com/2/calculators/normal_dist.html)
+- [4. kalkulátor (határértékekhez)](https://onlinestatbook.com/2/calculators/inverse_normal_dist.html)
+- [5. kalkulátor (point&click)](https://www.mathsisfun.com/data/standard-normal-distribution-table.html)

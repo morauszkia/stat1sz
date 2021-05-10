@@ -13,7 +13,6 @@
 
 <title>Nevezetes eloszlások</title>
 
-<script src="site_libs/header-attrs-2.7/header-attrs.js"></script>
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
@@ -291,12 +290,12 @@ div.tocify {
 
 <!-- setup 3col/9col grid for toc_float and main content  -->
 <div class="row">
-<div class="col-sm-12 col-md-4 col-lg-3">
+<div class="col-xs-12 col-sm-4 col-md-3">
 <div id="TOC" class="tocify">
 </div>
 </div>
 
-<div class="toc-content col-sm-12 col-md-8 col-lg-9">
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
 
 
 
@@ -344,6 +343,9 @@ div.tocify {
     <li>
       <a href="normalis-eloszlas.html">Normális eloszlás</a>
     </li>
+    <li>
+      <a href="nemparameteres.html">Nemparaméteres próbák</a>
+    </li>
   </ul>
 </li>
 <li class="dropdown">
@@ -354,25 +356,34 @@ div.tocify {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="01_valszam_muveletek.html">Műveletek valószínűségekkel</a>
+      <a href="slides/01_valszam_muveletek.html">Műveletek valószínűségekkel</a>
     </li>
     <li>
-      <a href="02_felteteles.html">Feltételes valószínűségek</a>
+      <a href="slides/02_felteteles.html">Feltételes valószínűségek</a>
     </li>
     <li>
-      <a href="03_val_valtozok.html">Valószínűségi változók</a>
+      <a href="slides/03_val_valtozok.html">Valószínűségi változók</a>
     </li>
     <li>
-      <a href="03_var_shooting.html">Valószínűségi változós feladatok</a>
+      <a href="slides/03_var_shooting.html">Valószínűségi változós feladatok</a>
     </li>
     <li>
-      <a href="04_val_valtozok_2.html">Nevezetes eloszlások</a>
+      <a href="slides/04_val_valtozok_2.html">Nevezetes eloszlások</a>
     </li>
     <li>
-      <a href="05_leiro_stat.html">Leíró statisztikák</a>
+      <a href="slides/05_leiro_stat.html">Leíró statisztikák</a>
     </li>
     <li>
-      <a href="06_becsles.html">Becsléselmélet</a>
+      <a href="slides/06_becsles.html">Becsléselmélet</a>
+    </li>
+    <li>
+      <a href="slides/07_hipotezis.html">Hipotézisvizsgálat - egymintás próbák</a>
+    </li>
+    <li>
+      <a href="slides/08_ketmintas.html">Független mintás próbák</a>
+    </li>
+    <li>
+      <a href="slides/09_paros.html">Páros t-próba</a>
     </li>
   </ul>
 </li>
@@ -409,12 +420,12 @@ div.tocify {
 </style>
 <p><br><br></p>
 <div id="nevezetes-eloszlások" class="section level1 tabset tabset-pills">
-<h1 class="tabset tabset-pills">Nevezetes eloszlások</h1>
+<h1>Nevezetes eloszlások</h1>
 <p><br><br />
 A vizsgált valószínűségi változók időnként nevezetes eloszlásokat követnek. Ilyenek például azok a változók, amelyek visszatevés nélküli vagy visszatevéses mintavétel eredményeképpen jönnek létre, de sok más is. Ez az összefoglaló ezeket tekinti át.<br />
 <br></p>
 <div id="diszkrét-valószínűségi-eloszlások" class="section level2 tabset tabset-pills">
-<h2 class="tabset tabset-pills">Diszkrét valószínűségi eloszlások</h2>
+<h2>Diszkrét valószínűségi eloszlások</h2>
 <p>Diszkrét változónak azokat nevezzük, amelyek véges sok vagy megszámlálhatóan végtelen sok értéket vehetnek fel (pl. csak egész számok lehetnek - ld. Poisson és negatív binomiális eloszlások).</p>
 <p>Minden esetben azt vizsgáljuk, mennyi a valószínűsége, hogy a változó egy adott értéket vesz fel, mennyi a változó várható értéke és szórása.</p>
 <div id="hipergeometrikus" class="section level3">
@@ -467,11 +478,11 @@ n = 7; p = 0.1; k = 1</p>
 </div>
 <div id="negatív-binomiális" class="section level3">
 <h3>Negatív binomiális</h3>
-<p>Ellentétben a korábbiakkal, ebben az esetben nem azt vizsgáljuk, hányszor következik be egy esemény, hanem hogy hányadikra következik be ez az esemény valahányadik alkalommal. Ezt az eloszlást követi az “orosz rulett”, amelyben a kérdés, hogy hányadszorra dördül el a revolver.</p>
+<p>Ellentétben a korábbiakkal, ebben az esetben nem azt vizsgáljuk, hányszor következik be egy esemény, hanem hogy hányadikra következik be ez az esemény valahányadik alkalommal. Ezt az eloszlást követi az &quot;orosz rulett&quot;, amelyben a kérdés, hogy hányadszorra dördül el a revolver.</p>
 <p>Fontos figyelmeztetés: ezt az eloszlást többféleképpen szokták értelmezni:</p>
 <ul>
-<li>van, hogy csak az első bekövetkezésig nézik a “körök” számát, és a változó értékébe beleszámítják a bekövetkezést (pl. hányadszorra dobok először 6-ost a kockával)</li>
-<li>van, hogy csaz az első bekövetkezés előtti “köröket” számítják, magát a bekövetkezést már nem számolják (pl. hányszor kell dobnom a dobókockával, <em>mielőtt</em> először 6-ost dobnék?)</li>
+<li>van, hogy csak az első bekövetkezésig nézik a &quot;körök&quot; számát, és a változó értékébe beleszámítják a bekövetkezést (pl. hányadszorra dobok először 6-ost a kockával)</li>
+<li>van, hogy csaz az első bekövetkezés előtti &quot;köröket&quot; számítják, magát a bekövetkezést már nem számolják (pl. hányszor kell dobnom a dobókockával, <em>mielőtt</em> először 6-ost dobnék?)</li>
 <li>van, hogy az r. bekövetkezésig nézik a körök számát, beleszámítva a k. bekövetkezést (pl. hányszor kell dobnom, mire lesz 3db 6-os a dobások között?)</li>
 <li>van, hogy az r. bekövetkezésig nézik, de ezt már nem számítják (pl. hányszor kell dobnom, <em>mielőtt</em> harmadszor is 6-ost dobnék?)</li>
 <li>és van, hogy az r. bekövetkezésig csak azokat a köröket számolják, amikor az esemény <em>nem</em> következett be (pl. hányszor dobok várhatóan <em>más számot</em>, mire 3db 6-ost sikerül dobnom?)</li>
@@ -495,7 +506,7 @@ Ez megfelel a <span class="math inline">\(P(\xi=4)\)</span> esetnek, ha az r. be
 </div>
 </div>
 <div id="folytonos-valószínűségi-eloszlások" class="section level2 tabset tabset-pills">
-<h2 class="tabset tabset-pills">Folytonos valószínűségi eloszlások</h2>
+<h2>Folytonos valószínűségi eloszlások</h2>
 <p>Folytonos változónak azokat nevezzük, amelyek megszámlálhatatlanul végtelen sok értéket vehetnek fel (pl. egy adott intervallumon belül, vagy a valós számok egy részhalmazán bármilyen valós számot).</p>
 <p>Ellentétben a diszkrét eloszlásokkal, ezekben az esetekben nincs értelme olyan valószínűségeket keresni, hogy a változó éppen egy adott számmal egyenlő. Mivel megszámlálhatatlanul végtelen sok értéket felvehetnek a változók, ezért minden egyes konkrét érték valószínűsége 0. Ezért ezekben az esetekben mindig valamilyen intervallumok valószínűségét fogjuk keresni.</p>
 <p>A <span class="math inline">\(P(\xi &lt; x)\)</span> valószínűségeket közvetlenül ki tudjuk számítani az F(x) eloszlásfüggvények képlete segítségével. A <span class="math inline">\(P(\xi &gt; x)\)</span> valószínűségek az előbbiek komplementerei, a <span class="math inline">\(P(x_1 &lt; \xi &lt; x_2)\)</span> valószínűségek pedig az eloszlásfüggvény két függvényértéke közötti különbségként:</p>

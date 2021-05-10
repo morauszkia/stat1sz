@@ -1,0 +1,497 @@
+---
+title: "Adatvizualizáció"
+output: 
+  html_document:
+    toc: true
+    toc_float: 
+        collapsed: false
+---
+
+<style>
+  p {
+    text-align: justify;
+    line-height: 1.5;
+  }
+  h1 {
+    margin-top: 1em;
+    margin-bottom: 1em;
+  }
+  h2 {
+    margin-top: 1em;
+    margin-bottom: 1em;
+  }
+  h3 {
+    margin-top: 1em;
+    margin-bottom: 1em;
+  }
+  h4 {
+    margin-top: 1em;
+    margin-bottom: 1em;
+  }
+  strong {
+    color: #a82727;
+  }
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(RColorBrewer)
+library(wesanderson)
+library(patchwork)
+library(readxl)
+library(janitor)
+library(scales)
+library(tidyverse)
+```
+
+* Sokszor hasznos az adataink képi megjelenítése (ábrák, grafikonok formájában)
+* Az elemzés során: rávilágíthatnak összefüggésekre, amelyeket statisztikai próbákkal megvizsgálhatunk
+* Prezentációk során, tanulmányokban: könnyebben áttekinthető a közönség számára, mint egy táblázat
+
+Ez az összefoglaló természetesen nem tud teljes képet adni a vizualizációban rejlő lehetőségek teljes palettájáról, csak arra vállalkozik, hogy a legfontosabb, leggyakrabban használt ábrákból mutasson néhány példát. A konkrét megvalósítás, a választott formák, színek, elrendezés függ a használt programtól is, attól is, hová szánjuk a diagrammokat (ettől függően elképzelhető, hogy fekete-fehér ábrákra lesz szükség), és hogy az adatok maguk milyenek (tehát például hány csoport van, mennyire van összefüggés, különbség a csoportok között, stb.)
+
+# Egy változó bemutatása
+
+## Diszkrét változók esetében
+
+Ha nominális, ordinális, vagy olyan skála mérési szintű változót szeretnénk ábrázolni, amelynek viszonylag kevés lehetséges értéke van, akkor választhatjuk a kördiagramot vagy az oszlopdiagramot. 
+
+```{r generate data, fig.height = 3}
+n <- 1000
+female_number <- n * 0.51
+sex_data <- data.frame(
+  gender = c("nő", "férfi"),
+  n = c(female_number, n - female_number),
+  prop = c(100 * female_number / n, 100 * (1 - female_number / n))
+)
+
+n2 <- 200
+props <- c(0.2, 0.35, 0.2, 0.25)
+set_data <- data.frame(
+  type = c("főváros", "megyeszékhely", "egyéb város", "község"),
+  n = n2 * props,
+  prop = 100 * props
+)
+
+sex_data <- sex_data %>%
+  mutate(label_ypos = cumsum(prop) - 0.5 * prop)
+
+set_data <- set_data %>%
+  mutate(type = factor(type, levels = c("község", "egyéb város", "megyeszékhely", "főváros"))) %>%
+  arrange(desc(type)) %>%
+  mutate(label_ypos = cumsum(prop) - 0.5 * prop)
+
+rel_data <- data.frame(
+  religion = factor(c("katolikus", "református", "evangélikus", "egyéb keresztény", 
+               "egyéb", "felekezeten kívüli", "nem válaszolt"),
+               levels = c("katolikus", "református", "evangélikus", "egyéb keresztény", 
+               "egyéb", "felekezeten kívüli", "nem válaszolt")),
+  prop = c(39, 12, 2, 1, 1, 18, 27)
+)
+```
+
+### Kördiagram
+
+Ha kevés kategóriánk van, akkor jól használható ábrák a kördiagramok (esetleg a középen "lyukas" fánkdiagramok).
+
+```{r pie2, fig.height = 5, fig.width = 10}
+plot_sex <- ggplot(sex_data, aes(x= "", y = prop, fill = gender)) +
+  geom_bar(width = 1, stat = "identity", color = "white", alpha = 0.7) +
+  coord_polar("y", start = 0) +
+  geom_text(aes(y = label_ypos, label = paste0(prop, "%")), color = "white", size = 6) +
+  scale_fill_brewer(name = "Nem", 
+                    palette = "Set1") +
+  theme_void()
+
+plot_set <- ggplot(set_data, aes(x= 2, y = prop, fill = type)) +
+  geom_bar(width = 1, stat = "identity", color = "white", alpha = 0.7) +
+  coord_polar("y", start = 0) +
+  geom_text(aes(y = label_ypos, label = paste0(prop, "%")), color = "white", size = 6) +
+  scale_fill_brewer(name = "Településtípus", 
+                    labels = c("főváros", "megyeszékhely", "egyéb város", "község"),
+                    palette = "Set1") +
+  theme_void() +
+  xlim(0.5, 2.5)
+
+plot_sex + plot_set
+```
+
+### Oszlopdiagram
+
+Ha a kategóriák száma nagyobb, a kördiagram nehezen áttekinthető, ezért az oszlopdiagram hasznosabb. 
+Oszlopdiagramnál arra vigyázzanak, hogy, ha az y tengelyen olyan adatot jelölnek, amelynek van abszolút 0 pontja, akkor a tengely 0-tól kezdódjön!
+
+```{r bar, fig.height = 4, fig.align = 'center'}
+rel_plot <- ggplot(rel_data, aes(x = religion, y = prop), color = "black") +
+  geom_bar(stat = "identity", fill = "dodgerblue4", alpha = 0.7) +
+  theme_classic() +
+  xlab("") +
+  ylab("%") +
+  scale_x_discrete(labels = c("katolikus", "református", "evangélikus", "egyéb\nkeresztény", 
+                              "egyéb", "felekezeten\nkívüli", "nem\nválaszolt"))
+
+rel_plot
+```
+ 
+## Folytonos
+
+Ha a kategóriák száma túl nagy, a fenti ábrák áttekinthetetlenné válnak. Ez történik jellemzően azoknak az intervallum- vagy arányskála mérési szintű változóknak az esetében, amelyek sokféle értéket vesznek fel a mintában (pl. testmagasság, jövedelem)  
+
+### Hisztogram és sűrűségfüggvény
+
+A hisztogram első ránézésre oszlopdiagramnak tűnhet, de a különbség, hogy míg utóbbi esetében minden értékhez tartozik oszlop, a hisztogramokon intervallumokat használunk. Az y tengelyen jelölhetők a gyakoriságok vagy a százalékos arányok.
+A hisztogram alternatívája lehet a sűrűségfüggvény, amely jobban érzékelteti az eloszlás alakját. 
+
+Az alábbi ábrán egy hisztogramon (bal) és egy sűrűségfüggvények (jobb) láthatják a testmagasságok eloszlását egy 500 elemű mintában:
+
+```{r hist, fig.height = 4, message = FALSE}
+height_data <- data.frame(
+  height = rnorm(500, 170, 10) %>% round(1)
+)
+
+height_plot <- ggplot(height_data, aes(x = height)) +
+  geom_histogram(fill = "dodgerblue4", alpha = 0.7, binwidth = 3, color = "black") +
+  theme_classic() +
+  xlab("Testmagasság") +
+  ylab("Gyakoriság") +
+  scale_x_continuous(breaks = seq(130, 240, by = 10))
+
+```
+
+
+
+```{r density, fig.height = 4, fig.width = 10}
+height_plot_2 <- ggplot(height_data, aes(x = height)) +
+  geom_density(fill = "dodgerblue4", alpha = 0.7, color = "black") +
+  theme_classic() +
+  xlab("Testmagasság") +
+  ylab("") +
+  scale_x_continuous(breaks = seq(130, 240, by = 10))
+
+height_plot + height_plot_2
+```
+
+### Dobozábra és hegedűábra
+
+Szintén kedvelt diagram a dobozábra, amely a változó mediánját, alsó és felső kvartilisét és terjedelmét (beállításoktól függően a kiugró értékeket is - az ábrán a különálló pontok) mutatja.
+A hegedűábra a sűrűségfüggvény és a dobozábra furcsa hibridje, amely majd a több kategória összehasonlításában lesz igazán praktikus.
+A fenti magasság-eloszlás egy dobozábrán és egy hegedűábrán: 
+
+```{r boxplot, fig.height = 2, fig.width = 10}
+height_box <- ggplot(height_data, aes(x = "", y = height)) +
+  geom_boxplot(fill = "dodgerblue4", alpha = 0.7) +
+  coord_flip() +
+  theme_classic() +
+  xlab("") +
+  ylab("Testmagasság")
+
+height_violin <- ggplot(height_data, aes(x = "", y = height)) +
+  geom_violin(fill = "dodgerblue4", alpha = 0.7) +
+  coord_flip() +
+  theme_classic() +
+  xlab("") +
+  ylab("Testmagasság")
+
+height_box + height_violin
+```
+
+# Két változó összefüggése
+
+Ugyan egyelőre még nem foglalkoztunk azokkal a statisztikai módszerekkel, amelyek két változó összefüggését vizsgálják, érdemes már most megismerkedni azokkal a diagrammokkal, amelyekkel az ilyen összefüggések jól bemutathatók.
+
+## Két diszkrét változó összefüggése
+
+### Halmozott oszlopdiagram
+
+A legkézenfekvőbb módja az összefüggés bemutatása a halmozott oszlopdiagram, amely százalékos arányban adja meg az egyik (ha van: a független) változó kategóriáin belül a másik (függő) változó megoszlását.
+
+```{r stacked, fig.height = 4, fig.width = 8}
+stacked_data <- read_excel("data_sets/ess.xlsx") %>%
+  dplyr::select(cntry, rlgblg, rlgdnm, rlgatnd, pray) %>%
+  mutate(rlgdnm = case_when(
+    rlgblg == "No" ~ "felekezeten kívüli",
+    rlgdnm == "Roman Catholic" ~ "római katolikus",
+    rlgdnm == "Protestant" ~ "protestáns",
+    rlgdnm == "Eastern Orthodox" ~ "pravoszláv",
+    TRUE ~ "egyéb"
+  ))
+
+st_data <- stacked_data %>% 
+  tabyl(cntry, rlgdnm) %>%
+  pivot_longer(!cntry, names_to = "Felekezet", values_to = "count") %>%
+  filter(Felekezet != "NA_") %>%
+  mutate(Felekezet = factor(Felekezet, levels = c("római katolikus", "protestáns", "pravoszláv", "egyéb", 
+                                               "felekezeten kívüli")),
+         cntry = recode(cntry,
+                        "Czechia" = "Csehország", 
+                        "Germany" = "Németország",
+                        "Hungary" = "Magyarország", 
+                        "Poland" = "Lengyelország",
+                        "Serbia" = "Szerbia",
+                        "Slovakia" = "Szlovákia"))
+
+stacked_plot <- ggplot(st_data, aes(x = cntry, y = count/sum(count), fill = Felekezet)) +
+  geom_bar(position = "fill", stat = "identity", alpha = 0.7, color = "black") +
+  theme_classic() + 
+  scale_fill_brewer(palette = "Set1") +
+  scale_y_continuous(labels = percent) +
+  xlab("Ország") +
+  ylab("Megoszlás")
+
+stacked_plot
+```
+
+## Egy diszkrét és egy skála mérési szintű változó összefüggése
+
+### Dobozábrák és hegedűábrák
+
+A dobozábrák nem csak egy csoport vagy változó bemutatására alkalmasak, hanem használhatjuk egy változó értékeinek összevetésére több csoportban, vagy akár még arra is van lehetőség, hogy kétféle bontásban (pl. ország és nem) mutassuk be az értékeket.
+
+A tengelyek felcserélhetők, ennek nincs jelentősége. 
+
+```{r box_compare, message = FALSE, warning = FALSE, fig.width = 10, fig.height = 10}
+boxplot_data <- read_csv("data_sets/weight-height.txt") %>%
+  mutate(Height = Height * 2.54,
+         Weight = Weight / 2.2046)
+
+box_plot <- ggplot(boxplot_data, aes(x = Gender, y = Height), alpha = 0.7) +
+  theme_classic() +
+  xlab("Nem") +
+  ylab("Testmagasság") +
+  coord_flip() +
+  scale_x_discrete(labels = c("nő", "férfi")) +
+  scale_fill_brewer(name = "Nem", labels = c("nő", "férfi"),
+                    palette = "Set1")
+
+p1 <- box_plot +
+  geom_boxplot(aes(fill = Gender), alpha = 0.7)
+
+p2 <- box_plot +
+  geom_violin(aes(fill = Gender), alpha = 0.7)
+
+data(airquality)
+airquality <- airquality %>%
+  mutate(Temperature = (Temp - 32) * 0.5556)
+
+temp_plot <- ggplot(airquality, aes(x = as.factor(Month), y = Temperature)) +
+  theme_classic() +
+  xlab("Hónap") +
+  ylab("Hőmérséklet") +
+  scale_x_discrete(labels = c("Május", "Június", "Július", "Augusztus", "Szeptember"))
+
+p3 <- temp_plot +
+  geom_boxplot(fill = "dodgerblue4", alpha = 0.7)
+
+p4 <- temp_plot +
+  geom_violin(fill = "dodgerblue4", alpha = 0.7)
+
+levels_factors <- c("Never", "Seldom", "Sometimes", "Often", "Very often")
+height_issp <- read_excel("data_sets/issp.xlsx") %>%
+  mutate(V61 = as.numeric(V61),
+         V62 = as.numeric(V62),
+         SEX = factor(SEX, levels = c("Female", "Male")),
+         across(V37:V41, factor, levels = levels_factors),
+         C_ALPHAN = factor(C_ALPHAN) %>%
+           fct_reorder(V61, median, na.rm = T)) %>%
+  rename(country = C_ALPHAN,
+         sex = SEX,
+         height = V61,
+         weight = V62,
+         p4w_healthp = V37,
+         p4w_pains = V38,
+         p4w_unhappy = V39,
+         p4w_confidlost = V40,
+         p4w_probnotover = V41) %>%
+  filter(sex != "NA")
+
+height_multi <- ggplot(height_issp, aes(x = country, y = height, fill = sex)) +
+  theme_classic() +
+  xlab("Ország") +
+  ylab("Testmagasság") +
+  scale_fill_brewer(name = "Nem",
+                    labels = c("nő", "férfi"),
+                    palette = "Set1") +
+  scale_x_discrete(labels = c("Japán", "Kína", "USA", "Ausztrália", "Szlovákia", "Dánia"))
+
+p5 <- height_multi +
+  geom_boxplot(alpha = 0.7)
+
+p6 <- height_multi +
+  geom_violin(alpha = 0.7)
+
+(p1 | p2) /
+  (p3 | p4) /
+  (p5 | p6)
+```
+
+### Hisztogramok vagy sűrűségfüggvények
+
+A hisztorgramok és sűrűségfüggvények is használhatók két vagy több (de általában nem túl sok, mert áttekinthetetlenekké válnak) csoport összehasonlítására. Az alábbi ábrák ugyanazokat az adatokat mutatják be más-más formában.
+Az egyik lehetőség (1. ábra), hogy a csoportok egymásra rakódnak, vagyis nem külön-külön látjuk a két csoport hisztogramját, hanem egy, a teljes mintára vonatkozó hisztogram van felosztva. Itt például látszik, hogy a magas személyek között a férfiak vannak többségben (az eloszlás jobb oldala nagyrészt kék).
+A másik lehetőség (2. és 3. ábra), hogy a két vagy több csoportra külön-külön készítjük a hisztogramot, amelyek átfedhetik egymást (2. ábra) vagy külön is megjeleníthetők, azonos x tengellyel (3. ábra) az összevetés érdekében.
+Hisztogramok helyett ebben az esetben is használhatunk empirikus sűrűségfüggvényeket.
+
+```{r hist_compare, message = FALSE, fig.width = 10, fig.height = 6}
+hist_plot <- ggplot(boxplot_data, aes(x = Height, fill = Gender)) +
+  theme_classic() +
+  xlab("Testmagasság") +
+  scale_fill_brewer(name = "Nem", labels = c("nő", "férfi"),
+                    palette = "Set1")
+
+p1 <- hist_plot + geom_histogram(alpha = 0.7)
+p2 <- hist_plot + geom_histogram(alpha = 0.7, position = "identity")
+p3 <- hist_plot + facet_grid(rows = vars(Gender)) + geom_histogram(alpha = 0.7)
+p4 <- hist_plot + geom_density(alpha = 0.7) +
+  guides(fill = FALSE)
+
+p1 + p2 + p3 + p4 + plot_layout(ncol = 2, guides = "collect")
+```
+
+## Két skála mérési szintű változó összefüggése
+
+### Felhődiagram
+
+Két skála mérési szintű változó kapcsolatát felhődiagrammal (másképpen: szórásdiagram) szokás ábrázolni (angolul: scatter plot). 
+
+```{r scatter, message = FALSE}
+scatter_data <- read_csv("data_sets/weight-height.txt") %>%
+  mutate(Height = Height * 2.54,
+         Weight = Weight / 2.2046)
+
+scatter_plot <- ggplot(scatter_data, aes(x = Height, y = Weight, group = Gender)) +
+  theme_classic() +
+  xlab("Testmagasság") +
+  ylab("Testsúly") 
+
+scatter_plot +
+  geom_point(alpha = 0.1, size = 3)
+```
+
+Ez a diagram alkalmas egy további kvalitatív szempont ábrázolására (pl. csoportok szerinti bontás vagy színezés). A két változó közötti kapcsolatot ábrázolhatjuk például a lineáris regressziós becslés egyenesével (Statisztika 2. kurzuson tanuljuk majd)
+
+```{r, message = FALSE, fig.width = 10}
+s1 <- scatter_plot + 
+  geom_point(aes(color = Gender), alpha = 0.1, size = 3) +
+  scale_color_brewer(name = "Nem", palette = "Set1") +
+  geom_smooth(method = "lm", se = FALSE, linetype = "dashed", color = "black")
+
+s2 <- scatter_plot +
+  facet_grid(rows = vars(Gender)) +
+  geom_point(aes(color = Gender), alpha = 0.1, size = 3) +
+  guides(color = FALSE) +
+  scale_color_brewer(palette = "Set1")
+
+s1 + s2
+```
+
+# Több azonos formán mért változó megoszlásának összehasonlítása
+
+Nem mutatok be ismét minden lehetőséget, de az egy diszkrét és egy másik változó összefüggését bemutató ábrák egy másik esetben - az azonos formán mért változók megoszlásának összevetése - is jól használhatók. Ebben az esetben a diszkrét változó helyét az ábrán az veszi át, hogy melyik változóról van szó, míg a másik tengely ugyanúgy működik, tehát a diszkrét változó százalékos megoszlását vagy a folytonos változó értékeit mutatja.
+
+```{r, fig.width = 10}
+p1 <- height_issp %>%
+  filter(country == "US") %>%
+  rownames_to_column(var = "id") %>%
+  dplyr::select(id, starts_with("p4w")) %>%
+  pivot_longer(!id, names_to = "var", values_to = "response") %>%
+  tabyl(var, response) %>%
+  pivot_longer(!var, names_to = "response", values_to = "count") %>%
+  filter(response != "NA_") %>%
+  mutate(response = factor(response, levels = c("Never", "Seldom", "Sometimes", "Often", "Very often")) %>%
+           fct_rev()) %>%
+  ggplot(aes(x = var, y = count/sum(count), fill = response)) +
+  geom_bar(position = "fill", stat = "identity", alpha = 0.7, color = "black") +
+  theme_classic() + 
+  xlab("\nMilyen gyakran fordult elő az elmúlt 4 hétben") +
+  ylab("Megoszlás") +
+  scale_fill_brewer(name = NULL, labels = c("nagyon gyakran", "gyakran", "néha", "ritkán", "soha"), 
+                    palette = "Set1") +
+  scale_y_continuous(labels = percent) + 
+  scale_x_discrete(labels = c("elveszítette\nönbizalmát", "egészségügyi\nprobléma", "fájdalom",
+  "nem sikerült\núrrá lenni\negy problémán", "boldogtalanság,\ndepresszió"))
+
+galton_data <- HistData::GaltonFamilies %>%
+  dplyr::select(!midparentHeight:childNum) %>%
+  rename(child = childHeight) %>%
+  pivot_longer(cols = c(mother, father, child), 
+               names_to = "person", values_to = "height") %>%
+  mutate(person = case_when(
+    person == "child" & gender == "male" ~ "male child",
+    person == "child" & gender == "female" ~ "female child",
+    TRUE ~ person
+  ),
+  height = height * 2.54
+  )
+
+parents <- ggplot(galton_data, aes(x = person, y = height, fill = person)) +
+  theme_classic() +
+  xlab("Kinek a magassága?") +
+  ylab("Testmagasság") +
+  scale_fill_brewer(palette = "Set1") +
+  guides(fill = FALSE) +
+  scale_x_discrete(limits = c("female child", "mother", "male child", "father"),
+                   labels = c("lány", "anya", "fiú", "apa")) +
+  coord_flip()
+
+p2 <- parents + geom_boxplot(alpha = 0.7, varwidth = TRUE)
+
+p1 + p2
+```
+
+# Idősorok: Vonal- vagy területdiagram
+
+A vonaldiagramot változók időbeli változásának ábrázolására szokás használni. Akárcsak az oszlopdiagramnál, arra kell figyelni, hogy ha az ábrázolt változónak van 0 pontja, akkor az y tengely a 0-tól induljon!
+A területdiagram ugyanerre használható, a különbség annyi, hogy a vonal alatti terület is színezve van. Utóbbi akkor hasznos, ha a teljes összeg több részből tevődik össze, amelyeket egymásra rakódva mutatunk be (ld. utolsó ábra)
+
+```{r, fig.height = 3, fig.width = 10, message = FALSE, warning=FALSE}
+marriage_data <- read_excel("data_sets/ts_demography.xlsx") %>%
+  dplyr::select(year, marriages) %>%
+  filter(year >= 1950) %>%
+  mutate(marriages = as.numeric(marriages))
+
+marriage_plot <- ggplot(marriage_data, aes(x = year, y = marriages)) +
+  ylim(0, max(marriage_data$marriages) + 100) +
+  theme_classic() +
+  xlab("Év") +
+  ylab("Házasságkötések száma") +
+  scale_x_continuous(breaks = seq(1950, 2020, by = 5))
+
+l1 <- marriage_plot +
+  geom_line(color = "dodgerblue4", size = 1.2)
+
+l2 <- marriage_plot +
+  geom_area(fill = "dodgerblue4", alpha = 0.7)
+
+lineplot_data <- read_excel("data_sets/migracio.xlsx") %>%
+  pivot_longer(!datum, names_to = "nat", values_to = "count") %>%
+  mutate(nat = recode(nat,
+                      "afgan" = "afgán",
+                      "egyeb" = "egyéb",
+                      "koszovoi" = "koszovói",
+                      "pakisztani" = "pakisztáni",
+                      "szir" = "szír")) %>%
+  mutate(nat = factor(nat) %>%
+           fct_reorder(count, sum) %>%
+           fct_rev())
+```
+
+```{r, fig.height = 12, fig.width = 10, message = FALSE, warning = FALSE}
+line_plot <- ggplot(lineplot_data, aes(x = as.Date(datum), y = count, color = nat, fill = nat)) +
+  theme_classic() +
+  xlab("Nap") +
+  ylab("Regisztráltak száma") +
+  scale_color_brewer(name = "Nemzetiség",
+                     palette = "Set1") +
+  scale_fill_brewer(name = "Nemzetiség",
+                    palette = "Set1") +
+  scale_x_date(date_breaks = "1 month", date_labels = "%Y.%b%d")
+
+l3 <- line_plot +
+  geom_line(size = 1)
+
+l4 <- line_plot +
+  geom_area(alpha = 0.7)
+
+l1 + l2 + l3 + l4 + plot_layout(nrow = 4, heights = c(1, 1, 2, 2))
+```
+

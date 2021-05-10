@@ -1,14 +1,24 @@
 ---
 title: "Kombinatorika összefoglaló"
-subtitle: "Statisztika 1. szeminárium"
-author: "Morauszki András"
-output: html_document
+output: 
+  html_document:
+    toc: true
+    toc_float: 
+        collapsed: false
 ---
 
 <style>
   p {
     text-align: justify;
     line-height: 1.5;
+  }
+  strong {
+    color: #a82727;
+  }
+  .addition a {
+    color: #5940ff;
+    text-align: center;
+    font-size: 25px;
   }
 </style>
 
@@ -152,10 +162,12 @@ $$C_4^{i,5}=\binom{4+5-1}{5}=\binom{8}{5}=\frac{8!}{5!*3!}=56$$
 Az alapesetekhez képest lehetnek olyan kikötések, amelyek bonyolultabbá teszik a feladatot. Ilyenekre találnak példát a gyakorló feladatsorban. Először próbálkozzanak meg a feladatokkal, a megoldásokat csak azután nézzék meg, ha már küzdöttek velük egy kicsit!  
 <br>
 
-<div style="text-align:center;">
-### [A feladatokat itt találják](00_kombinatorika.pdf)  
-### [A megoldásokat pedig itt](00_kombinatorika_megoldas.pdf)  
-### [Itt pedig egy másik (nem saját) összefoglalót](https://www.mateking.hu/valoszinusegszamitas/kombinatorika/nagy-kombinatorikai-osszefoglalo)  
+<div class="addition centered">
+
+[A feladatokat itt találják](00_kombinatorika.pdf)  
+[A megoldásokat pedig itt](00_kombinatorika_megoldas.pdf)  
+[Itt pedig egy másik (nem saját) összefoglalót](https://www.mateking.hu/valoszinusegszamitas/kombinatorika/nagy-kombinatorikai-osszefoglalo)  
+
 </div>
   
 <br> 
