@@ -424,8 +424,7 @@ Vagyis annak a valószínűsége, hogy az esemény a kezdőpont előtt bekövetk
   
 A bekövetkezés várhatóan hol következik be az intervallumon?
 $$E(\xi)=\frac{1}{\lambda}$$
-Vagyis várhatóan az intervallum közepén következik be az esemény.  
-  
+
 A szórás:
 $$D(\xi)=\frac{1}{\lambda}$$  
 ```{r expon, results='asis'}
@@ -497,10 +496,10 @@ Ha 60 perc alatt várhatóan `r in_hour` autó érkezik, akkor átlagosan `r ev`
 
 További nevezetes folytonos eloszlások:  
 
-1. normális eloszlás
-2. standard normális eloszlás, amely az előző egy speciális alesete
+1. [normális eloszlás](https://morauszkia.github.io/stat1sz/normalis-eloszlas.html)
+2. [standard normális eloszlás](https://morauszkia.github.io/stat1sz/normalis-eloszlas.html), amely az előző egy speciális alesete
 3. Student-féle t-eloszlás
-4. &chi;^2^ eloszlás (e: khí-négyzet)
+4. &chi;^2^ eloszlás (ejtsd: kí-négyzet)
 5. F-eloszlás
 
-Ezekkel is fokozatosan meg fognak ismerkedni. A normális és standard normális eloszlásról a közeljövőben külön összefoglaló készül majd. 
+Ezekkel is fokozatosan meg fognak ismerkedni, mert a statisztikában nagy hasznukat vesszük. A normális és standard normális eloszlással a közeljövőben fogunk foglalkozni, erről külön összefoglaló áll rendelkezésre, és a t- és F-eloszlás is biztosan előkerül még ebben a félévben.
