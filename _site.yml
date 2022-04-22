@@ -22,6 +22,8 @@ navbar:
           href: vizualizacio.html
         - text: "Normális eloszlás"
           href: normalis-eloszlas.html
+        - text: "Becsléselmélet"
+          href: becsles.html
         - text: "Nemparaméteres próbák"
           href: nemparameteres.html
     - text: "Órák slide-jai"

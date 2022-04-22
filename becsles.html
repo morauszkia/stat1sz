@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Becsléselmélet</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Statisztika 1. szeminárium</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Főoldal</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Kombinatorika és valószínűségszámítás
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="kombinatorika.html">Kombinatorika</a>
+    </li>
+    <li>
+      <a href="eloszlasok.html">Nevezetes eloszlások</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Matematikai statisztika
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="vizualizacio.html">Adatvizualizáció</a>
+    </li>
+    <li>
+      <a href="normalis-eloszlas.html">Normális eloszlás</a>
+    </li>
+    <li>
+      <a href="becsles.html">Becsléselmélet</a>
+    </li>
+    <li>
+      <a href="nemparameteres.html">Nemparaméteres próbák</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Órák slide-jai
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="slides/01_valszam_muveletek.html">Műveletek valószínűségekkel</a>
+    </li>
+    <li>
+      <a href="slides/02_felteteles.html">Feltételes valószínűségek</a>
+    </li>
+    <li>
+      <a href="slides/03_val_valtozok.html">Valószínűségi változók</a>
+    </li>
+    <li>
+      <a href="slides/03_var_shooting.html">Valószínűségi változós feladatok</a>
+    </li>
+    <li>
+      <a href="slides/04_val_valtozok_2.html">Nevezetes eloszlások</a>
+    </li>
+    <li>
+      <a href="slides/05_leiro_stat.html">Leíró statisztikák</a>
+    </li>
+    <li>
+      <a href="slides/06_becsles.html">Becsléselmélet</a>
+    </li>
+    <li>
+      <a href="slides/07_hipotezis.html">Hipotézisvizsgálat - egymintás próbák</a>
+    </li>
+    <li>
+      <a href="slides/08_ketmintas.html">Független mintás próbák</a>
+    </li>
+    <li>
+      <a href="slides/09_paros.html">Páros t-próba</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="mailto:morauszki.andras@gmail.com">
+    <span class="fas fa-envelope"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Becsléselmélet</h1>
+
+</div>
+
+
+<style>
+  p {
+    line-height: 1.5;
+  }
+  h1 {
+    margin-top: 2em;
+    margin-bottom: 1em;
+  }
+  h2 {
+    margin-top: 2em;
+    margin-bottom: 1em;
+  }
+  h3 {
+    margin-top: 2em;
+    margin-bottom: 1em;
+  }
+  h4 {
+    margin-top: 2em;
+    margin-bottom: 1em;
+  }
+  div {
+  padding: 10px 0;
+  }
+  .centered {
+    text-align: center;
+  }
+  strong {
+    color: #a82727;
+  }
+  .exercise {
+    background-color: rgba(255, 88, 77, 0.1);
+    padding: 10px;
+  }
+  .solution {
+    background-color: rgba(0, 280, 140, 0.1);
+    padding: 10px;
+  }
+</style>
+<div id="az-előző-rész-tartalmából" class="section level2">
+<h2>Az előző rész tartalmából</h2>
+<p>A leíró statisztikáknál megnéztük, hogyan kell becsülni (többet között) a kvantitatív változó várható értékét (a számtani átlaggal) és a szórást (a korrigált tapasztalati szórással). Ezentúl a változó várható értékét (ez a populációra vonatkozik) a görög <em>mű</em> (<span class="math inline">\(\mu\)</span>), a szórását pedig a kis <em>szigma</em> (<span class="math inline">\(\sigma\)</span>) fogja jelölni. Ezek tehát a populációra vonatkozó értékek, amelyeket nem szoktunk ismerni. A becsléseket <span class="math inline">\(\overline{X}\)</span> (átlag) és s* (szórás) jelöli majd. Ezeket a mintából számítjuk.</p>
+<p>A normális eloszlást pedig két paraméterrel adjuk meg (ld. összefoglaló): a várható értékkel és szórással: N(μ, σ) lesz a bevett jelölés. Ez az eloszlás azért fontos, mert sok változó, illetve statisztika (pl. átlag, különböző tesztek eredményei) normális eloszlású, vagy pedig sok statisztikai módszerhez ilyen eloszlásra van szükség.</p>
+<p>Pl.: a testmagasságok egy populációban N(170, 7) eloszlásúak, vagyis 170 cm a várható magasság, és ahhoz képest 7 cm a várható eltérés (szórás).</p>
+<p>Az átlag és szórás becsléséhez vegyük hozzá, hogy egy-egy érték valószínűségét a <strong>relatív gyakorisággal</strong> becsülhetjük (p-vel jelöljük): Például, ha egy 1000 fős mintában 470-en beszélnek angolul, akkor az angol-tudás valószínűségét a populációban <span class="math inline">\(p = \frac{k}{N} = \frac{470}{1000} = 0,47 = 47\%\)</span>-ra becsülhetjük.</p>
+</div>
+<div id="pontbecslés-és-intervallumbecslés" class="section level2">
+<h2>Pontbecslés és intervallumbecslés</h2>
+<p>Mivel a becslés eredménye egy-egy szám volt mindhárom esetben, ezeket <strong>pontbecslésnek</strong> nevezzük. Ezekkel kapcsolatban fontos tudatában lennünk, hogy a mintaátlag, a tapasztalati szórás, a relatív gyakoriság is (és később ez igaz lesz minden más statisztikára is) változók, mivel mintáról mintára eltér az értékük. Biztosak lehetünk tehát, hogy a mintából kapott értékeink eltérnek a tényleges populációs értékektől.</p>
+<p>A fenti állításokat egy szimuláció segítségével tudjuk alátámasztani.<br />
+Vegyünk három mintát egy μ = 170 várható értékű és σ = 10 szórású normális eloszlású változóból. Ezt jelöljük úgy, hogy <span class="math inline">\(\xi \sim N(170, 10)\)</span>, vagyis a kszível jelölt változó 170 várható értékű, 10 szórású normális eloszlást követ.</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">Elemszám</th>
+<th align="right">Átlag</th>
+<th align="right">Szórás</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">1. minta</td>
+<td align="right">100</td>
+<td align="right">169.33</td>
+<td align="right">8.62</td>
+</tr>
+<tr class="even">
+<td align="left">2. minta</td>
+<td align="right">500</td>
+<td align="right">169.34</td>
+<td align="right">9.65</td>
+</tr>
+<tr class="odd">
+<td align="left">3. minta</td>
+<td align="right">200</td>
+<td align="right">169.94</td>
+<td align="right">9.73</td>
+</tr>
+</tbody>
+</table>
+<p>Látható, hogy mintáról mintára kisebb-nagyobb mértékben eltér az átlag és a szórás, és a kapott értékek a tényleges értékektől is eltérnek. Ugyanez lenne a helyzet valamilyen tulajdonság relatív gyakoriságával, mint azt néztük is annak idején a hipergeometrikus eloszlásnál (pl. a selejt termékek száma mintáról mintára változott). Az egyik mintában pl. 30% a szőkék aránya, egy másik mintában 32%, egy harmadikban 27%. Tehát ez is változó.</p>
+<p>Ha pedig az átlag, szórás és relatív gyakoriság változók, akkor ezeknek is van <strong>várható értéke</strong> és <strong>szórása</strong>. Előbbi megegyezik a változó várható értékével (a mintaátlag esetében), szórásával (a tapasztalati szórás esetében) vagy pedig az adott esemény valószínűségével (a relatív gyakoriság esetén). Ezt nevezzük a becslés <strong>torzítatlanságának</strong>.</p>
+<p>A becslések szórását pedig az adott statisztika <strong>standard hibájának</strong> nevezzük. Ez is végső soron csak egy szórás, de a külön név talán segít megkülönböztetni az adott statisztika szórását a változónak magának a szórásától. Hamarosan megnézzük, mennyi a st. hiba az egyes esetekben.</p>
+<p>A pontbecslés, illetve a standard hiba (vagy az arra vonatkozó becslés) segítségével megadhatunk <strong>intervallumbecslést</strong> is. Egy olyan intervallumot, amelybe az ismeretlen, becsülni kívánt paraméter (pl. a várható érték, szórás, arány) megadott valószínűséggel beleesik. Ezt az intervallumot <strong>konfidenciaintervallumnak</strong>, a valószínűséget <strong>konfidenciaszintnek</strong> nevezzük, és <span class="math inline">\(1 - \alpha\)</span>-val jelöljük, az intervallum határait pedig <strong>konfidenciahatároknak</strong>. A konfidenciaszintet mi választjuk: bevett értéke a társadalomtudományokban 95%, de ez csak irányadó, ennél kisebb vagy nagyobb értéket is választhatunk (pl. 90%-ot vagy 99%-ot).</p>
+<div id="az-átlag-eloszlása" class="section level3">
+<h3>Az átlag eloszlása</h3>
+<p>Az átlag pontbecsléséről mondtuk, hogy torzítatlan, vagyis várható értéke egyenlő a populációs várható értékkel. Ezt úgy tudjuk elképzelni, hogy ha ismételten tudnánk mintákat venni, akkor az átlagok átlagos értéke a várható értéket közelítené meg.</p>
+<p>Az átlag esetében pedig a standard hiba értéke: <span class="math display">\[SE=\frac{\sigma}{\sqrt{N}}\]</span> A fenti képletben σ a változó szórása, N pedig a mintaelemszám.</p>
+<p>Nézzünk erre is egy szimulációt: Tegyük fel, hogy a testmagasság egy populációban a fent is említett N(170, 10) eloszlást követi. Vegyünk ebből a populációból 100 elemű mintákat. A fentiek értelmében arra számítunk, hogy a mintaátlag normális eloszlású lesz, várható értéke 170 lesz, a standard hibája (szórása) pedig <span class="math inline">\(SE=\frac{10}{\sqrt{100}}=1\)</span>. A gyakorlatban egy mintát tudnánk venni, és nem ismernénk sem a tényleges várható értéket, sem a szórást. De erre tartjuk a szimulációkat. Vegyünk 10 000 mintát, és nézzük a mintaátlag eloszlását! (A kék szaggatott az elméleti eloszlás, a fekete szaggatott vonal pedig a mintaátlagok átlaga)</p>
+<p><img src="becsles_files/figure-html/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>A legkisebb átlag, amit kaptunk 166.27 volt, a legnagyobb pedig 173.51, de az ábrán látható, hogy az átlagok túlnyomó többsége 168 és 172 közé esik. Az átlagok átlaga pedig 169.98, a szórásuk pedig 1. Ez elég közel esik a várakozásainkhoz: 170-es átlaghoz és 1-es standard hibához.</p>
+<p>Korábban, a <a href="https://morauszkia.github.io/stat1sz/normalis-eloszlas.html">normális eloszlásnál</a> néztük egyrészt, hogyan tudunk adott valószínűségeknek megfelelő területeket lehatárolni, illetve hogyan tudunk standard és nem standard normális eloszlásokat egymássá konvertálni. Így például láttuk, hogy a standard normális eloszlás értéke 95%-os valószínűséggel -1,96 és +1,96 közé esik. Ezeknek a határoknak a fenti N(170, 1) eloszlás esetében a</p>
+<p><span class="math display">\[170 \pm 1.96*1=[168,04;171,96]\]</span></p>
+<p>határértékek felelnek meg. Vagyis a mintaátlag 95%-os valószínűséggel ezek közé fog esni. A fenti 10 000 mintából 94.98%-ban esett a mintaátlag a megadott tartományba (Kb. 95% - kis eltérések mindig vannak a gyakorlatban)</p>
+<p>Jó hír: a várakozásaink bejöttek, az átlag tényleg úgy viselkedik, ahogy kell neki. További jó hír, hogy a <strong>centrális határeloszlás tétel</strong> miatt az átlag akkor is normális eloszlású, ha a változó maga nem. Ezt <a href="https://seeing-theory.brown.edu/probability-distributions/index.html#section3">itt is</a> ellenőrizhetik, ha kicsit eljátszanak a beállításokkal. (Ne felejtsék kipipálni a &quot;Theoretical&quot;-t)</p>
+<p>Az alábbi ábrán egy egyenletes és egy exponenciális változóból vett, 100 elemű mintákból számított, mintaátlagok eloszlásait láthatják:</p>
+<p><img src="becsles_files/figure-html/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Figyelem: az ábrák a szimulált <em>átlagok</em> (esetenként 10 000 db 100 elemű mintából számított) sűrűségfüggyvényei, nem pedig a változóké, amelyek teljesen más alakú eloszlást (egyenletest és exponenciálist) követnek.</p>
+</div>
+<div id="intervallumbecslés-várható-értékre-ismert-populációs-szórással" class="section level3">
+<h3>Intervallumbecslés várható értékre ismert populációs szórással</h3>
+<p>A várható értékre vonatkozó intervallumbecslés a fentieken alapul. Viszont a gyakorlatban egyetlen mintával dolgozunk, és nem tudjuk, mennyi a tényleges várható érték (és azt sem, mennyi a tényleges szórás, de egyszerre egy problémával birkózzunk meg)</p>
+<p>Azt ugyan nem tudjuk, a kapott átlagunk magasabb, vagy alacsonyabb a tényleges várható értéknél, de azt tudjuk, hogy nagy valószínűséggel legfeljebb mennyire tér el tőle.</p>
+<p>Tegyük fel, hogy a mintából 169,13 átlagot kaptunk. Azt tudjuk, hogy a változó (!) szórása 10, a mintánk pedig 100 elemű. Vagyis a mintaátlagok 95%-os valószínűséggel legfeljebb 1.96 standard hibányira, vagyis <span class="math inline">\(\pm1.96*\frac{10}{\sqrt{100}}=\pm1.96\)</span>-nyira térnek el a várható értéktől. Mivel pedig a különbség szimmetrikus, az egészet megfordíthatjuk, és azt mondhatjuk, hogy 95%-os valószínűséggel a várható érték legfeljebb <span class="math inline">\(\pm1.96\)</span>-nyira tér el a mintaátlagtól.</p>
+<p>Mindez képletszerűen:</p>
+<p><span class="math display">\[ \overline{X} \pm 1,96* \frac{\sigma}{\sqrt{N}}\]</span></p>
+<p>Általánosan (hogy ne csak 95%-os intervallumot tudjunk számítani):</p>
+<p><span class="math display">\[ \overline{X} \pm z_{1-\frac{\alpha}{2}}* \frac{\sigma}{\sqrt{N}}\]</span> Ebben <span class="math inline">\(z_{1-\frac{\alpha}{2}}\)</span> a st. normális eloszlásnak az adott 1 - α konfidenciaszinthez tartozó értéke. <strong>FIGYELEM</strong>: Mi 1 - α konfidenciaszintre törekszünk, de ehhez a táblázatban az <span class="math inline">\(z_{1-\frac{\alpha}{2}}\)</span> valószínűséget kell megkeresni, tehát pl. 95%-hoz 0,975-öt.</p>
+<p>Mindez szintén megmutatható egy szimuláció segítségével. Korábban megnéztük, hogy a minták kb. 95%-ában az átlag a populációbeli várható értéktől legfeljebb 1,96 standard hibányira volt. Nézzük meg a 10 000 szimulált minta közül az esetek hány százalékában van a várható érték (170) a mintaátlagtól legfeljebb 1,96 st. hibányira, vagyis a fenti szabályokat betartva megszerkesztett intervallumon belül: 94.98%</p>
+<p>Vessék ezt össze a néhány bekezdéssel feljebb kapott aránnyal - nem véletlen, hogy egyezik: ha az átlag beleesik a várható érték 1,96 st. hibányi környezetébe, akkor a várható érték is beleesik az átlag 1,96 st. hibányi környezetébe. A szimuláció tehát megerősíti, hogy ha az egyetlen mintánkból becsült átlag köré szerkesztjük meg az intervallumot, a várható érték az elérni kívánt megbízhatósággal (pl. 95%) bele fog esni.</p>
+<p><strong>Mi a különbség a 95%, 90% és 99%-os intervallumok között?</strong><br />
+Az alábbi ábra véletlenszerűen kiválasztott 200 mintára számított 95%-os konfidenciaintervallumokat mutat (a mintákat az átlag szerint sorbaraktuk):</p>
+<p><img src="becsles_files/figure-html/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Látható, hogy vannak esetek, amikor a konfidenciaintervallum nem tartalmazza a 100-as várható értéket. Ezért 95%-os és nem 100%-os. Ezzel sajnos számolnunk kell. A középső szaggatott vonal az egyébként ismeretlen várható érték, a felső és alsó pontozott vonalak pedig a várható érték köré felrajzolt konfidenciaintervallumok. Élesben ezeket sem tudjuk kiszámítani, de látszik, hogy épp azoknak a mintáknak az esetében &quot;lóg rá&quot; a konfidenciaintervallumot mutató sáv a várható értékre, amelyek átlaga a szaggatott vonalak között van.</p>
+<p>Ha nagyobb (99%) megbízhatóságot szeretnénk, növelni kell az intervallum szélességét:<br />
+<img src="becsles_files/figure-html/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>De választhatunk kisebb (90%) konfidenciaszintet is:<br />
+<img src="becsles_files/figure-html/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Az átlagok mindhárom esetben ugyanazok. Látható, hogy minél nagyobb a konfidenciaszint, annál kevesebb esetben nem tartalmazza az intervallum a becsült paramétert. Cserébe viszont a becslési intervallumok hosszabbak. A fenti képletben az intervallum hosszát a <span class="math inline">\(\pm z_{1-\frac{\alpha}{2}}* \frac{\sigma}{\sqrt{N}}\)</span> rész adja meg: az intervallum hossza <span class="math inline">\(2* z_{1-\frac{\alpha}{2}}* \frac{\sigma}{\sqrt{N}}\)</span> Látható, hogy az intervallum hossza három tényezőtől függ:</p>
+<ul>
+<li>Minél nagyobb a <strong>változó szórása</strong>, annál nagyobb lesz a szükséges intervallum</li>
+<li>Minél nagyobb <strong>konfidenciaszintre</strong> törekszünk, annál nagyobb intervallumot kell használnunk</li>
+<li>Minél nagyobb a <strong>mintaelemszám</strong>, annál kisebb intervallumra van szükségünk - de: a mintanagyság négyzetgyök alatt van, vagyis pl. az intervallum megfelezéséhez az elemszám négyszeresére van szükség.</li>
+</ul>
+<div class="exercise">
+<p>Egy 100 elemű mintában a mintaátlag 169.28. A populációban a szórás értéke 10. Adjon intervallumbecslést a várható értékre <span class="math inline">\(1-\alpha=0.95\)</span> konfidenciaszint mellett!</p>
+</div>
+<div class="solution">
+<p>Az alábbi képletet használjuk:<br />
+<span class="math display">\[\overline{X} \pm z_{1-\frac{\alpha}{2}}* \frac{\sigma}{\sqrt{N}}\]</span> Az átlag, szórás és mintanagyság ismert, így ezeket csak behelyettesítjük. A <span class="math inline">\(z_{1-\frac{\alpha}{2}}\)</span> értéket a standard normális eloszlás táblázatából kapjuk: Ha <span class="math inline">\(1-\alpha = 0,95\)</span> akkor a táblázatos valószínűség: <span class="math inline">\(1-\frac{\alpha}{2} = 0,975\)</span>. Ennek a táblázatban az 1,96-os érték felel meg.</p>
+<p>Behelyettesítve:<br />
+<span class="math display">\[ \overline{X} \pm z_{1-\frac{\alpha}{2}}* \frac{\sigma}{\sqrt{N}}=169.28 \pm1,96* \frac{10}{\sqrt{100}}\]</span></p>
+<p>A két határérték: 167.32 és 171.24.</p>
+<p>Válasz:<br />
+A populációban a változó várható értéke 95%-os megbízhatósággal a 167.32 és 171.24 közötti intervallumba esik.</p>
+</div>
+</div>
+<div id="intervallumbecslés-várható-értékre-mintából-becsült-szórással" class="section level3">
+<h3>Intervallumbecslés várható értékre mintából becsült szórással</h3>
+<p>Az előző részben megnéztük, hogyan tudunk intervallumbecslést adni a várható értékre, felhasználva azt, amit a normális elszlású változókról tudunk. Ebben azonban egy olyan adatot használtunk (a <span class="math inline">\(\sigma\)</span> populációs szórást), amelyet jellemzően nem ismerünk, hanem a mintából próbálunk becsülni. Emiatt ez is egy változó, és mint ilyen, tudatában kell lennünk, hogy mintáról mintára változik, ingadozik, és ezt a bizonytalanságot be kell kalkulálni az intervallumbecslésbe.</p>
+<p>A megoldás az lesz, hogy a standard normális eloszlás helyett az arra sok tekintetben hasonlító <strong>Student-féle t-eloszlást</strong> használjuk. Ennek egy paramétere van: az ún. <strong>szabadságfok</strong> (df). Akárcsak a st. normális eloszlás, ez is szimmetrikus, várható értéke 0, ráadásul minél nagyobb szabadságfokú, annál inkább megközelíti a st. normális eloszlást. Ezt úgy mondjuk, a kettő <em>aszimptotikusan ekvivalens</em> (ha df = ∞ lenne, akkor egybeesne a st. normálissal).</p>
+<p>Különböző szabadságfokú t-eloszlások és a st. normális eloszlás sűrűségfüggvényei:</p>
+<p><img src="becsles_files/figure-html/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Látható, hogy minél kisebb a szabadságfok, annál nagyobb terület van messzebb a középső tengelytől: a szélek nagyobbak, a középső rész kisebb. Ez azzal jár, hogy kisebb szabadságfok esetén (tehát kisebb mintáknál) még nagyobb intervallumra van szükség ahhoz, hogy megadott konfidenciaszintet elérjünk.</p>
+<div class="centered">
+<p style="font-size: 24px">
+<a href="https://www.dropbox.com/s/3i8yz80y9i4x4g3/eloszl%C3%A1s_t.pdf?dl=0">Student t-eloszlás táblázat</a>
+</p>
+<p style="font-size: 24px">
+<a href="https://homepage.divms.uiowa.edu/~mbognar/applets/t.html">Online kalkulátor</a>
+</p>
+</div>
+<p>A t-eloszlás használata annyit változtat az intervallumbecslésen, hogy a korábbi képletben <span class="math inline">\(z_{1-\frac{\alpha}{2}}\)</span>-t lecseréljük <span class="math inline">\(t_{df; 1-\frac{\alpha}{2}}\)</span>-re, vagyis a df szabadságfoknak és <span class="math inline">\(1-\frac{\alpha}{2}\)</span> valószínűségnek megfelelő táblázatos értékre, a <span class="math inline">\(\sigma\)</span> helyett pedig a becsült <span class="math inline">\(s\ast\)</span> szórásértéket használjuk. Ebben az esetben is az <strong><span class="math inline">\(1-\frac{\alpha}{2}\)</span></strong> valószínűséget használjuk, hogy az <span class="math inline">\(1-\alpha\)</span> konfidenciaszintet elérjük. A valószínűséget ugyanúgy kell kiszámítani a választott konfidenciaszintből, mint korábban. Tehát pl. 95%-os konfidenciaintervallumhoz a táblázatban a 0,975-ös oszlopot nézzük. A sort a szabadságfok adja meg.</p>
+<p>A képlet tehát ez lesz:</p>
+<p><span class="math display">\[\overline{X} \pm t_{df;1-\frac{\alpha}{2}}* \frac{s^{\ast}}{\sqrt{N}}\]</span> <span class="math display">\[df = N-1\]</span></p>
+<div class="exercise">
+<p>Egy 100 elemű mintában a mintaátlag 169.28, a szórás pedig 10.65. Adjon intervallumbecslést a várható értékre <span class="math inline">\(1-\alpha=0.95\)</span> konfidenciaszint mellett!</p>
+</div>
+<div class="solution">
+<p>Mivel itt most a szórás is a mintából becsült, ezért az alábbi képletet használjuk:<br />
+<span class="math display">\[\overline{X} \pm t_{df;1-\frac{\alpha}{2}}* \frac{s^{\ast}}{\sqrt{N}}\]</span> Az átlag, szórás és mintanagyság ismert, így ezeket csak behelyettesítjük. A <span class="math inline">\(t_{df;1-\frac{\alpha}{2}}\)</span> értéket a t-eloszlás táblázatából kapjuk: Ha <span class="math inline">\(1-\alpha = 0,95\)</span> akkor a táblázatos valószínűség: <span class="math inline">\(1-\frac{\alpha}{2} = 0,975\)</span>. A szabadságfok <span class="math inline">\(N-1 = 99\)</span>. Mivel azonban ez nem szerepel a táblázatban, választani kell a 60-as és 120-as sor között (nem kell választani, ha kalkulátort használnak, mert az kezelni tudja a 99-es sz.fokot). A 60-ast választjuk, mert ezzel kicsit nagyobb intervallumot kapunk, következésképp kicsit nagyobb konfidenciaszintet érünk el. Inkább nagyobb, mint kisebb konfidenciaszintre törekszünk, a 120-as sz.fok pedig 95%-nál egy kicsit kisebb konf.szintet eredményezne. A 60-as df-nek a táblázatban a 2,00 érték felel meg.</p>
+<p>Behelyettesítve:<br />
+<span class="math display">\[\overline{X} \pm t_{df;1-\frac{\alpha}{2}}* \frac{s^{\ast}}{\sqrt{N}}=169.28 \pm 2* \frac{10.65}{\sqrt{100}}=169.28\pm2* 1.065=169.28 \pm 2.13\]</span></p>
+<p>A két határérték: 167.15 és 171.41.</p>
+<p>Válasz:<br />
+A populációban a változó várható értéke 95%-os megbízhatósággal a [167.15;171.41] intervallumba esik.</p>
+</div>
+</div>
+<div id="intervallumbecslés-valószínűségre-arányra" class="section level3">
+<h3>Intervallumbecslés valószínűségre (arányra)</h3>
+<p>Az átlaghoz (és szóráshoz) hasonlóan a mintából becsült arányok (relatív gyakoriságok) is változók. A <a href="https://morauszkia.github.io/stat1sz/eloszlasok.html">nevezetes eloszlásoknál</a> vettük, hogy a visszatevés nélküli mintavétel típusú folyamatok <strong>hipergeometrikus</strong> eloszlású változókat eredményeznek. Ennek paraméterei a populáció mérete (N), a vizsgált típusú elemek száma a populációban (K) és a mintanagyság (n). Várhatóan <span class="math inline">\(E(\xi)=n*\frac{K}{N}\)</span> vizsgált típusú elem kerül a mintába, a szórás pedig</p>
+<p><span class="math display">\[D(\xi)=\sqrt{n*\frac{K}{N}*(1-\frac{K}{N})*\frac{N-n}{N-1}}\]</span> A gyakorlatban viszont nem kell a fenti, bonyolult szórásképletet használni, mivel legtöbbször az <em>n</em> mintanagyság csak töredéke a populáció méretének, ezért <span class="math inline">\(\frac{N-n}{N-1}\)</span> ez szinte 1-gyel egyenlő. Pl. 10 milliós populációból vett 1000 fős minta esetében a tört értéke 4 tizedesre kerekítve 0.9999.</p>
+<p>A gyakorlatban a <strong>binomiális</strong> eloszlással közelítik az értéket, amely a visszatevéses mintavételnek megfelelő eloszlás. Ha nagy a populáció és kicsi a minta, még ha visszatevéses is a mintavétel, nagyon kicsi a valószínűsége, hogy bárki is többször szerepeljen a mintában. Legyen <span class="math inline">\(p=\frac{K}{N}\)</span> és hagyjuk el az utolsó tagot, így a binomiális eloszlás szórásképletét kapjuk:</p>
+<p><span class="math display">\[D(\xi)=\sqrt{n*p*(1-p)}\]</span></p>
+<p>A binomiális eloszlást pedig jól tudjuk <strong>normális</strong> eloszlással közelíteni, mégpedig <span class="math inline">\(N(n * p;\sqrt{n* p*(1-p)})\)</span> eloszlással.</p>
+<p>Az alábbi ábrán láthatják, hogy a normális eloszlás görbéje valóban jól követi a változó hisztogramját:</p>
+<p><img src="becsles_files/figure-html/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>A mintavétel egy olyan szimulált 1 milliós populációból történt, amelyben van 300 ezer bizonyos típusú elem. A szemléltetés kedvéért 1000 db 100-elemű mintát vettünk. Arra számítunk tehát, hogy a mintában is 30% lesz a speciális elemek aránya, tehát várhatóan 30 elem.</p>
+<p>A szórás, ha a hipergeometrikus eloszlás képletével számolunk: 4.58<br />
+Ha a binomiális eloszlás képletével számolunk: 4.58</p>
+<p>Most már csak annyit kell változtatunk, hogy a darabszámokból arányokat kapjunk. Mi ugyanis nem azt akarjuk megbecsülni, hogy N elemre hány db előfordulás jut, hanem, hogy mennyi az a p valószínűség, amellyel egy elem adott típusú lesz. Az arányt úgy kapjuk, hogy a darabszámot elosztjuk a mintanagysággal: ez a már említett relatív gyakoriság <span class="math inline">\(p = \frac{k}{N}\)</span><br />
+A várható érték éppen a populációban érvényes valószínűség. A szórás úgy változik, hogy <span class="math inline">\(\sqrt{n* p* (1-p)}\)</span> szórást elosztjuk a mintanagysággal:</p>
+<p><span class="math display">\[\frac{\sqrt{n*  p* (1-p)}}{n}=\sqrt{\frac{n*  p* (1-p)}{n^2}}=\sqrt{\frac{p* (1-p)}{n}}\]</span> Ez lesz az arány becslésének <strong>standard hibája</strong>.</p>
+<p>Az intervallumbecslés képlete ugyanúgy épül fel, mint korábban: a ponbecslés ±valahányszor a standard hiba. Az arány esetében így kapjuk az alábbi képletet, ahol N a mintaelemszám, p a relatív gyakoriság, <span class="math inline">\(z_{1-\frac{\alpha}{2}}\)</span> pedig a st. normális eloszlás konfidenciaszintnek megfelelő értéke:</p>
+<p><span class="math display">\[p \pm z_{1-\frac{\alpha}{2}}* \sqrt{\frac{p* (1-p)}{N}}\]</span></p>
+<p>A képletben a <span class="math inline">\(\pm z_{1-\frac{\alpha}{2}}* \sqrt{\frac{p* (1-p)}{N}}\)</span> részből következően az intervallum hossza <span class="math inline">\(2* z_{1-\frac{\alpha}{2}}* \sqrt{\frac{p* (1-p)}{N}}\)</span>. Látható, hogy a becslési intervallum hossza három tényezőtől függ:</p>
+<ul>
+<li>Akárcsak a várható értéknél, függ a <strong>konfidenciaszinttől</strong> és a <strong>mintanagyságtól</strong></li>
+<li>Szintén függ magától a becsült aránytól.</li>
+</ul>
+<p>Nézzük meg, hogyan függ az aránytól: <span class="math inline">\(p* (1-p)\)</span> egy másodfokú függvény:</p>
+<p><span class="math display">\[ p(1-p)=-p^2+p\]</span></p>
+<p>A másodfokú függvények <span class="math inline">\(y=ax^2+bx+c\)</span> képlettel írhatók fel. Függvényük egy parabola. Ha a &gt; 0, akkor konvex parabola, ha a &lt; 0, akkor konkáv.</p>
+<p>Itt most a = -1 (ez a négyzetes tag szorzótényezője: -1p<sup>2</sup>), ezért konkáv.<br />
+A parabola a 0 &lt; p &lt; 1 értékekre, tehát a [0;1] intervallumon van értelmezve, hiszen valószínűségről van szó, ami nem lehet sem negatív, sem 1-nél nagyobb.<br />
+A függvény a 0 értéket a p = 0 és p = 1 pontokban veszi fel: -0<sup>2</sup>+0 = 0 és -1<sup>2</sup>+1 = 0.<br />
+<strong>Maximumát &quot;félúton&quot;, tehát p = 0,5 értéknél veszi fel</strong>: -0,5<sup>2</sup>+0,5 = 0,25. Vagyis minél közelebb van a becsült valószínűség 0,5-höz, annál nagyobb intervallummal tudjuk csak becsülni.</p>
+<p>Íme a függvény ábrája:</p>
+<p><img src="becsles_files/figure-html/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<div class="exercise">
+<p>Tegyük fel, hogy egy 200 elemű mintában &quot;A&quot; párt szimpatizánsainak aránya 25%. Adjanak intervallumbecslést 95%-os konfidenciaszint mellett &quot;A&quot; párt szimpatizánsainak populációbeli arányára!</p>
+</div>
+<div class="solution">
+<p>Megkeressük a konfidenciaszinthez tartozó <span class="math inline">\(z_{1-\frac{\alpha}{2}}\)</span> értéket (módját ld. fent): ez 1,96. Behelyettesítünk:</p>
+<p><span class="math display">\[p \pm z_{1-\frac{\alpha}{2}}* \sqrt{\frac{p* (1-p)}{N}}=0,25\pm1,96* \sqrt{\frac{0,25* (1-0,25)}{200}}=0,25\pm0,0588\]</span></p>
+<p>A populációban &quot;A&quot; párt szimpatizánsainak aránya 95%-os megbízhatósággal a [19,12%; 30,88%] intervallumba esik.</p>
+</div>
+</div>
+<div id="intervallumbecslés-szórásra" class="section level3">
+<h3>Intervallumbecslés szórásra</h3>
+<p>Ez teljesen másképp működik, és nem is képezi részét az alap tananyagnak, úgyhogy inkább <em>hardcore</em> hallgatóknak ajánlom. Maga a módszer egyébként nem vészesen nehéz. Az alábbi képletbe helyettesítünk:</p>
+<p><span class="math display">\[\left[\frac{(N-1)*  s^{*2}}{\chi_{N-1;1-\frac{\alpha}{2}}^2}; \frac{(N-1)*  s^{*2}}{\chi_{N-1;\frac{\alpha}{2}}^2} \right]\]</span> Az <span class="math inline">\(s^{\ast2}\)</span> a becsült szórás négyzete, N az elemszám, <span class="math inline">\(\chi_{N-1;1-\frac{\alpha}{2}}^2\)</span> és <span class="math inline">\(\chi_{N-1;\frac{\alpha}{2}}^2\)</span> pedig egy új eloszlás, a <span class="math inline">\(\chi^2\)</span>-eloszlás (e: khí-négyzet) N-1 szabadságfoknak és <span class="math inline">\(1-\frac{\alpha}{2}\)</span>, illetve <span class="math inline">\(\frac{\alpha}{2}\)</span> valószínűségeknek megfelelő értékei. A két érték a két végpont lesz, de szórásnégyzetekként, úgyhogy, ha a szórást szeretnénk kiszámítani, mindkettőnek a pozitív négyzetgyökét kell venni.</p>
+<div class="exercise">
+<p>A 30 elemű mintából becsült szórás 15. Adjanak 95%-os intervallumbecslést a szórásra!</p>
+</div>
+<div class="solution">
+<p>Ha <span class="math inline">\(1-\alpha = 0,95\)</span>, akkor <span class="math inline">\(1-\frac{\alpha}{2}=0,975\)</span> és <span class="math inline">\(\frac{\alpha}{2}=0,025\)</span>. A <span class="math inline">\(\chi^2\)</span>-eloszlás <a href="https://www.dropbox.com/s/csu0nrv1vnye5xo/chi2.pdf?dl=0">táblázatában</a> kikeressük a megfelelő értékeket: N-1 = 29. sor és 0,025-ös és 0,975-ös oszlop: 16,0 és 45,7<br />
+Behelyettesítünk: <span class="math display">\[\left[\frac{29*  15^2}{45,7}; \frac{29*  15^2}{16,0} \right]=\left[142,78; 407,81 \right]\]</span><br />
+Gyököt vonunk mindkét végpontból: <span class="math display">\[\left[11,95; 20,19\right]\]</span></p>
+<p>A változó szórása a populációban 95%-os megbízhatósággal ebbe az intervallumba esik.</p>
+</div>
+</div>
+</div>
+<div id="összefoglalás" class="section level2">
+<h2>ÖSSZEFOGLALÁS</h2>
+<ul>
+<li>A pontbecslés mellett van lehetőség intervallumbecslést adni.</li>
+<li>Ennek lényege, hogy a pontbecslés köré megadunk egy intervallumot (<strong>konfidenciaintervallum</strong>), amelybe a becsülni kívánt populációs paraméter (pl. várható érték, valami valószínűsége, szórás) általunk megadott megbízhatósággal (<strong>konfidenciaszint</strong>, általában 1 - α = 95%) beleesik.</li>
+<li>Ehhez legtöbbször ismerni kell az adott becslés <strong>standard hibáját</strong>.</li>
+<li>Az átlag standard hibája (becsült szórással): <span class="math inline">\(\frac{s^*}{\sqrt{N}}\)</span></li>
+<li>Az arány standard hibája: <span class="math inline">\(\sqrt{\frac{p* (1-p)}{N}}\)</span></li>
+<li>A szórás becslése nem így működik.</li>
+<li>A pontbecslésből kivonjuk és hozzáadjuk a standard hiba valahányszorosát.</li>
+<li>Hogy hányszorosát, azt a konfidenciaszint (és szabadságfok) függvényében tudjuk megtalálni:</li>
+<li>A standard normális eloszlás táblázatából (arány becslése és átlag becslése ismert elméleti szórás esetén)</li>
+<li>A Student-féle t-eloszlás táblázatából (átlag becslése becsült szórás esetén)</li>
+<li>Arra vigyázzanak, hogy a táblázatokban nem <span class="math inline">\(1-\alpha\)</span>, hanem <span class="math inline">\(1-\frac{\alpha}{2}\)</span> valószínűséget kell keresni (pl. 0,95 esetén 0,975-öt)</li>
+</ul>
+<div id="példagyűjtemény" class="section level3">
+<h3>Példagyűjtemény</h3>
+<p><strong>Intervallumbecslés átlagra</strong></p>
+<p><strong>Szükségünk lesz</strong>: egy átlagra, szórásra, mintaelemszámra, illetve ki kell választani, hogy milyen konfidenciaszintet szeretnénk.</p>
+<ul>
+<li>Az <strong>átlag</strong> vagy meg van adva, vagy a minta elemeiből kiszámítható.</li>
+<li>A <strong>szórás</strong> lehet elméleti (populációra vonatkozó), ez esetben meg van adva.<br />
+</li>
+<li>Vagy lehet becsült is, amit - ha nincs megadva - ki lehet számítani a minta elemeiből.<br />
+</li>
+<li>Az <strong>elemszám</strong> ismert.<br />
+</li>
+<li>A <strong>konfidenciaszint</strong> (1-α) általában 95%, ritkábban 90% vagy 99%, de bármilyen valószínűség választható (ha nem szabadon választható, akkor én megadom).</li>
+</ul>
+<ol style="list-style-type: decimal">
+<li>A konfidenciaszinthez kiszámítjuk a táblázatban szereplő valószínűséget (<span class="math inline">\(1-\frac{\alpha}{2}\)</span>), majd ehhez kikeressük a megfelelő határértéket</li>
+</ol>
+<ul>
+<li>Ha az elméleti szórás ismert, akkor a standard normális eloszlás (z-eloszlás) táblázatából az <span class="math inline">\(1-\frac{\alpha}{2}\)</span> valószínűségnek megfelelő értéket, vagy pedig a t-eloszlás ∞ sorából, az <span class="math inline">\(1-\frac{\alpha}{2}\)</span> oszlopból.</li>
+<li>Ha a becsült szórást ismerjük, akkor a Student-féle t-eloszlás táblázatából az <span class="math inline">\(1-\frac{\alpha}{2}\)</span> oszlopból és a df = N-1 sorból, vagy ha ilyen nincs, akkor az első kisebb sorból (pl. 73 helyett a 60-as sor). Ha df&gt;200, akkor azt is elfogadom, ha a 120-as sort nézik, de azt is, ha a végtelent (Jobban örülök a 120-nak).</li>
+</ul>
+<ol start="2" style="list-style-type: decimal">
+<li>Behelyettesítünk, és az átlagból egyszer kivonjuk, másodszor pedig hozzáadjuk a szorzatot.</li>
+</ol>
+<p><strong>Átlagra adott intervallumbecslés elméleti szórással</strong>:</p>
+<p><strong>Példa</strong>: Legyen egy N = 200 elemű mintában a magasság átlaga <span class="math inline">\(\overline{X}=169,3\)</span>, a populációban pedig a magasság szórása σ=7. Válasszunk ezúttal 90%-os konfidenciaszintet!</p>
+<ol style="list-style-type: decimal">
+<li>Mivel ismert a populációbeli (elméleti) szórás, ezért a standard normális eloszlásból keressük a határértéket.</li>
+<li>Az <span class="math inline">\(1-\alpha = 0,9\)</span> konfidenciaszinthez a táblázatban <span class="math inline">\(1-\frac{\alpha}{2}=0,95\)</span> valószínűséget kell keresni.</li>
+<li>A st. normális eloszlás táblázatában 1,65-nél szerepel először ennél nagyob érték, úgyhogy ez lesz a határértékünk.</li>
+<li>Behelyettesítünk a képletbe: <span class="math display">\[\overline{X} \pm z_{1-\frac{\alpha}{2}}* \frac{\sigma}{\sqrt{N}}=169,3\pm1,65* \frac{7}{\sqrt{200}}=169,3\pm0,82\]</span><br />
+</li>
+<li>A konfidenciaintervallum határai: [168,48;170,12] - A populációban a felnőttkori várható testmagasság 90%-os megbízhatósággal 168,48 és 170,12 cm közé esik.</li>
+</ol>
+<p><strong>Átlagra adott intervallumbecslés becsült szórással</strong>:</p>
+<p><strong>Példa</strong>: Legyen egy N = 150 elemű mintában a tavaly elolvasott könyvek átlaga 13,5, mintából becsült szórása pedig 4,2. Legyen a választott konfidenciaszint 99%!</p>
+<ol style="list-style-type: decimal">
+<li>Mivel becsült szórással dolgozunk, a t-eloszlásból keressük ki a határértéket.</li>
+<li>Az <span class="math inline">\(1-\alpha = 0,99\)</span> konfidenciaszinthez a táblázatban <span class="math inline">\(1-\frac{\alpha}{2}=0,995\)</span> valószínűséget kell keresni.</li>
+<li>A szabadságfok df = N - 1 = 150 - 1 = 149. Mivel ilyen nincs a táblázatban, a 120-as sort nézzük: 2,62 a határérték.</li>
+<li>Behelyettesítünk a képletbe: <span class="math display">\[\overline{X} \pm t_{df;1-\frac{\alpha}{2}}* \frac{s^{\ast}}{\sqrt{N}}=13,5\pm2,62* \frac{4,2}{\sqrt{150}}=13,5\pm0,90\]</span><br />
+</li>
+<li>A konfidenciahatárok: [12,6;14,4] - A populációban az elolvasott könyvek várható értéke 99%-os megbízhatósággal 12,6 és 14,4 közé esik.</li>
+</ol>
+<p><strong>Intervallumbecslés arányra</strong></p>
+<p><strong>Szükségünk van</strong>: becsült arányra, mintaelemszámra és választanunk kell konfidenciaszintet.</p>
+<ul>
+<li>A becsült <strong>arány</strong> vagy meg van adva, vagy kiszámítható, ha tudjuk az adott dolog gyakoriságát és a mintaelemszámot.</li>
+<li>A <strong>mintaelemszám</strong> ismert.</li>
+<li>A <strong>konfidenciaszintet</strong> mi választjuk, ha nincs megadva.</li>
+</ul>
+<ol style="list-style-type: decimal">
+<li>A táblázatos értéket a st. normális eloszlás táblázatából vesszük, mégpedig az <span class="math inline">\(1-\frac{\alpha}{2}\)</span> valószínűségnek megfelelőt.</li>
+<li>Behelyettesítünk a képletbe, és a szorzatot egyszer levonva, egyszer pedig hozzáadva az arány becsléséhez, megkapjuk a konfidenciaintervallumot.</li>
+</ol>
+<p><strong>Példa</strong>: Tegyük fel, hogy 300 elemű mintában 90 szőke van. Adjünk intervallumbecslést a szőkék arányára a populációban, 95%-os szinten!</p>
+<ol style="list-style-type: decimal">
+<li>Az <span class="math inline">\(1-\alpha = 0,95\)</span> konfidenciaszinthez a táblázatban <span class="math inline">\(1-\frac{\alpha}{2}=0,975\)</span> valószínűséget kell keresni, amit az 1,96-os értéknél találunk.</li>
+<li>A mintában a szőkék relatív gyakorisága <span class="math inline">\(p = \frac{k}{N}=\frac{90}{300}=0,3\)</span></li>
+<li>Behelyettesítünk a képletbe: <span class="math display">\[p \pm z_{1-\frac{\alpha}{2}}* \sqrt{\frac{p* (1-p)}{N}}=0,3\pm1,96* \sqrt{\frac{0,3* (1-0,3)}{300}}=0,3\pm0,052\]</span><br />
+</li>
+<li>A konfidenciahatárok:[0,248;0,352]</li>
+</ol>
+<p><strong>Konfidenciaintervallum hossza</strong></p>
+<p>Az intervallum hosszát mindig a ±-os rész adja: az intervallum hossza ennek kétszerese: <span class="math display">\[2*  z_{1-\frac{\alpha}{2}}* \frac{\sigma}{\sqrt{N}}\]</span> <span class="math display">\[2*  t_{df;1-\frac{\alpha}{2}}* \frac{s^{\ast}}{\sqrt{N}}\]</span> <span class="math display">\[2*  z_{1-\frac{\alpha}{2}}* \sqrt{\frac{p* (1-p)}{N}}\]</span><br />
+Ha ismerjük a paramétereket, akkor behelyettesítve megkapható, mekkora az intervallum hossza.<br />
+Arány becslésénél sokszor a maximális hiba érdekel minket: ehhez p = 0,5-öt kell behelyettesíteni. (Ha nem világos, miért, a választ megtalálják a vonatkozó résznél)</p>
+<p>Ha arra vagyunk kíváncsiak, milyen elemszám fölött lesz az intervallum legfeljebb adott hosszúságú (jelöljük ezt mondjuk <em>d</em>-vel), akkor a képletekből ki kell fejezni N-t: <span class="math display">\[N\ge \left(2*  z_{1-\frac{\alpha}{2}}* \frac{\sigma}{d}\right)^2\]</span> <span class="math display">\[N\ge \left(2*  t_{df;1-\frac{\alpha}{2}}* \frac{s^{\ast}}{d}\right)^2\]</span><br />
+Ezt a legutóbbit ritkán nézzük a gyakorlatban, mivel ezt a számítást bonyolítja, hogy maga a t-érték is függ N-től.</p>
+<p>Az arány becslésénél jellemzően a maximális hibát akarjuk, hogy az adott érték alatt legyen. A maximális hibát 0,5-ös becsült aránynál kapjuk (ld. fönt).<br />
+Ha az intervallum hosszával dolgozunk, akkor az alábbi képletet kapjuk: <span class="math display">\[N\ge4*  z_{1-\frac{\alpha}{2}}^2* \frac{0,5* (1-0,5)}{d^2}\]</span><br />
+Ha ± értékekkel dolgozunk (pl. a becslés maximális hibája ne legyen nagyobb ±2%-nál), akkor a 4-gyel (2<sup>2</sup>) való szorzás kiesik: <span class="math display">\[N\ge z_{1-\frac{\alpha}{2}}^2* \frac{0,5* (1-0,5)}{d^2}\]</span></p>
+<p><strong>Példa</strong>: Tegyük fel, hogy a magasság szórása a populációban 7 cm. Mekkora mintát kell ahhoz vennünk, hogy a magasság várható értékét legfeljebb 2 cm hosszú intervallummal becsüljük 95%-os megbízhatósággal?<br />
+<span class="math display">\[N\ge \left(2*  z_{1-\frac{\alpha}{2}}* \frac{\sigma}{d}\right)^2\]</span> <span class="math display">\[N\ge \left(2*  1,96* \frac{7}{2}\right)^2\]</span> <span class="math display">\[N\ge 188,2384\]</span><br />
+Vagyis legalább 189 elemű mintára van ehhez szükség.</p>
+<p><strong>Példa</strong>: Mekkora minta kell ahhoz, hogy az aránybecslés maximális hibája 90%-os megbízhatóság mellett ±3% legyen?<br />
+a) megoldás: <span class="math display">\[N\ge z_{1-\frac{\alpha}{2}}^2* \frac{0,5* (1-0,5)}{d^2}\]</span> <span class="math display">\[N\ge 1,65^2* \frac{0,5* (1-0,5)}{0,03^2}\]</span> <span class="math display">\[N\ge 756,25\]</span><br />
+b) megoldás (±3% az d = 6%-os intervallumhosszt jelent) <span class="math display">\[N\ge4*  z_{1-\frac{\alpha}{2}}^2* \frac{0,5* (1-0,5)}{d^2}\]</span> <span class="math display">\[N\ge4* 1,65^2* \frac{0,5* (1-0,5)}{0,06^2}\]</span> <span class="math display">\[N\ge 756,25\]</span><br />
+Vagyis mindkét esetben azt kapjuk, hogy legalább 757 elemű mintára van ehhez szükség.</p>
+<p><strong>Példa</strong>: Mekkora az arány becslésének maximális hibája 99%-os konfidenciaszint mellett egy 500 elemű mintából? <span class="math display">\[d=2*  z_{1-\frac{\alpha}{2}}* \sqrt{\frac{0,5* (1-0,5)}{N}}\]</span><br />
+<span class="math display">\[d=2*  2,58* \sqrt{\frac{0,5* (1-0,5)}{500}}\]</span><br />
+<span class="math display">\[d=0,115=11,5\%=\pm5,75\%\]</span><br />
+500 elemű mintából 99%-os konf.szinten legfeljebb ±5,75%-os hibahatár mellett tudunk becsülni.</p>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
