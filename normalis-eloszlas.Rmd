@@ -49,8 +49,8 @@ knitr::opts_chunk$set(echo = FALSE, fig.align = "center", fig.height = 3, messag
 library(tidyverse)
 library(patchwork)
 library(here)
-source(here("../05 Statisztika anyagok/Statisztika 1/02 scripts/shadecurve.R"))
-source(here("../05 Statisztika anyagok/Statisztika 1/02 scripts/plot_normal.R"))
+source(here("scripts/shadecurve.R"))
+source(here("scripts/plot_normal.R"))
 
 
 round2 = function(x, n) {

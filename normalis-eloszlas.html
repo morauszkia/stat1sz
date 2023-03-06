@@ -13,7 +13,8 @@
 
 <title>Normális eloszlás</title>
 
-<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="site_libs/header-attrs-2.18/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
@@ -52,6 +53,7 @@
 
 
 
+
 <style type = "text/css">
 .main-container {
   max-width: 940px;
@@ -72,6 +74,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -129,11 +134,15 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark it active
-  menuAnchor.tab('show');
-
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
 
   // Navbar adjustments
   var navHeight = $(".navbar").first().height() + 15;
@@ -162,8 +171,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -171,16 +180,9 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -303,7 +305,7 @@ div.tocify {
 <div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -316,7 +318,7 @@ div.tocify {
   <a href="index.html">Főoldal</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Kombinatorika és valószínűségszámítás
      
     <span class="caret"></span>
@@ -331,7 +333,7 @@ div.tocify {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Matematikai statisztika
      
     <span class="caret"></span>
@@ -352,7 +354,7 @@ div.tocify {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Órák slide-jai
      
     <span class="caret"></span>
@@ -394,7 +396,7 @@ div.tocify {
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="mailto:morauszki.andras@gmail.com">
-    <span class="fas fa-envelope"></span>
+    <span class="fa fa-envelope"></span>
      
   </a>
 </li>
@@ -448,23 +450,35 @@ div.tocify {
     padding: 10px;
   }
 </style>
-<p>A normális eloszlás sokszor elő fog jönni statisztika órákon, mivel számos változó, illetve statisztika ezt az eloszlást követi, illetve több teszt elvégzésének feltétele is, hogy a változók, amelyeken elvégezzük az adott tesztet, normális eloszlást kövessenek.</p>
+<p>A normális eloszlás sokszor elő fog jönni statisztika órákon, mivel
+számos változó, illetve statisztika ezt az eloszlást követi, illetve
+több teszt elvégzésének feltétele is, hogy a változók, amelyeken
+elvégezzük az adott tesztet, normális eloszlást kövessenek.</p>
 <p>A normális eloszlást két paraméterrel tudunk megadni:</p>
 <ul>
 <li>a várható értékkel: <span class="math inline">\(\mu\)</span></li>
 <li>és a szórással: <span class="math inline">\(\sigma\)</span></li>
 </ul>
-<p>A <span class="math inline">\(\mu\)</span> várható értékű és <span class="math inline">\(\sigma\)</span> szórású normális eloszlást <span class="math inline">\(N(\mu;\sigma)\)</span>-ként jelöljük.</p>
-<p>A normális eloszlás speciális esete az ún. <strong>standard normális eloszlás</strong>: <span class="math inline">\(N(0; 1)\)</span></p>
+<p>A <span class="math inline">\(\mu\)</span> várható értékű és <span
+class="math inline">\(\sigma\)</span> szórású normális eloszlást <span
+class="math inline">\(N(\mu;\sigma)\)</span>-ként jelöljük.</p>
+<p>A normális eloszlás speciális esete az ún. <strong>standard normális
+eloszlás</strong>: <span class="math inline">\(N(0; 1)\)</span></p>
 <p>A normális eloszlás sűrűségfüggvénye az ún. Gauss-görbe:</p>
 <p><img src="normalis-eloszlas_files/figure-html/unnamed-chunk-1-1.png" width="960" style="display: block; margin: auto;" /></p>
 <p>A fenti sűrűségfüggvény legfontosabb tulajdonságai:</p>
 <ul>
 <li><strong>szimmetrikus</strong> a várható értékre</li>
-<li>a függvény alatti terület összesen 1 (100%) - ez minden sűrűségfüggvényre igaz - ezáltal</li>
-<li>annak valószínűsége, hogy a változó két érték közé esik egyenlő a függvény alatti területtel az adott intervallumon.</li>
+<li>a függvény alatti terület összesen 1 (100%) - ez minden
+sűrűségfüggvényre igaz - ezáltal</li>
+<li>annak valószínűsége, hogy a változó két érték közé esik egyenlő a
+függvény alatti területtel az adott intervallumon.</li>
 </ul>
-<p>Akárcsak korábban a <a href="eloszlasok.html">többi nevezetes eloszlásnál</a> azt fogjuk vizsgálni, mennyi a valószínűsége, hogy a normális eloszlású változó értéke <strong>kisebb</strong> egy adott értéknél, <strong>nagyobb</strong> annál, illetve, hogy <strong>két megadott érték közé esik</strong>.<br />
+<p>Akárcsak korábban a <a href="eloszlasok.html">többi nevezetes
+eloszlásnál</a> azt fogjuk vizsgálni, mennyi a valószínűsége, hogy a
+normális eloszlású változó értéke <strong>kisebb</strong> egy adott
+értéknél, <strong>nagyobb</strong> annál, illetve, hogy <strong>két
+megadott érték közé esik</strong>.<br />
 Az ott leírtak a normális eloszlásra is igazak, miszerint:<br />
 <span class="math display">\[
 \begin{aligned}
@@ -473,22 +487,40 @@ P(\xi &gt; x)&amp;=1-F(x) \\
 P(x_1 &lt; \xi &lt; x_2)&amp;=F(x_2)-F(x_1)
 \end{aligned}
 \]</span></p>
-<p>A fenti képletekben <span class="math inline">\(F(x)\)</span> az <strong>eloszlásfüggvénynek</strong> az adott x értékhez tartozó függvényértéke. És ezért nagyon fontos a standard normális eloszlás, mert a számítás ezúttal nem képletekkel történik, hanem <strong>eloszlástáblázatot</strong> fogunk használni. Ilyeneket is sokféle változatban találni az interneten.</p>
+<p>A fenti képletekben <span class="math inline">\(F(x)\)</span> az
+<strong>eloszlásfüggvénynek</strong> az adott x értékhez tartozó
+függvényértéke. És ezért nagyon fontos a standard normális eloszlás,
+mert a számítás ezúttal nem képletekkel történik, hanem
+<strong>eloszlástáblázatot</strong> fogunk használni. Ilyeneket is
+sokféle változatban találni az interneten.</p>
 <p class="centered">
 <a href="resources/z_eloszlas.pdf">A táblázatot itt találják.</a>
 </p>
-<p>Ebben 0-tól 3,59-ig találhatók a standard normális eloszlású változó értékei, amelyeket gyakran <span class="math inline">\(z\)</span>-vel jelölünk, és a hozzájuk tartozó eloszlásfüggvény-értékek (<span class="math inline">\(F(x)\)</span>)</p>
-<p>A z értéket úgy tudják leolvasni, hogy a sorok elején lévő számok adják az egészeket és tizedeket, az oszlopok pedig a századokat. Pl. az 1,25-öt az 1,2-es sorban és az 5-ös oszlopban találják. A hozzátartozó táblázatos érték 0,8944, vagyis annak valószínűsége, hogy a változó 1,25-nél kisebb értéket vesz fel 89,44%.</p>
+<p>Ebben 0-tól 3,59-ig találhatók a standard normális eloszlású változó
+értékei, amelyeket gyakran <span class="math inline">\(z\)</span>-vel
+jelölünk, és a hozzájuk tartozó eloszlásfüggvény-értékek (<span
+class="math inline">\(F(x)\)</span>)</p>
+<p>A z értéket úgy tudják leolvasni, hogy a sorok elején lévő számok
+adják az egészeket és tizedeket, az oszlopok pedig a századokat. Pl. az
+1,25-öt az 1,2-es sorban és az 5-ös oszlopban találják. A hozzátartozó
+táblázatos érték 0,8944, vagyis annak valószínűsége, hogy a változó
+1,25-nél kisebb értéket vesz fel 89,44%.</p>
 <p><img src="normalis-eloszlas_files/figure-html/unnamed-chunk-2-1.png" width="960" style="display: block; margin: auto;" /></p>
-<p>A normális eloszlással kapcsolatban három dolgot kell mindenképpen megnéznünk:</p>
+<p>A normális eloszlással kapcsolatban három dolgot kell mindenképpen
+megnéznünk:</p>
 <ol style="list-style-type: decimal">
-<li>hogyan tudjuk kikeresni annak a valószínűségét, hogy a változó értéke megadott határok közé esik</li>
+<li>hogyan tudjuk kikeresni annak a valószínűségét, hogy a változó
+értéke megadott határok közé esik</li>
 <li>hogyan tudunk megadott valószínűségeket lehatárolni</li>
-<li>hogyan tudjuk a standard normális és más normális eloszlású változókat oda-vissza konvertálni</li>
+<li>hogyan tudjuk a standard normális és más normális eloszlású
+változókat oda-vissza konvertálni</li>
 </ol>
 <div id="valószínűségek-kikeresése" class="section level2">
 <h2>Valószínűségek kikeresése</h2>
-<p>Először azt nézzük meg, hogyan keressük ki a táblázatból annak valószínűségét, hogy a változó megadott értékek közé esik. Ez egyúttal a sűrűségfüggvény alatti területtel egyenlő az adott intervallumon, ezért így is fogom ábrázolni.<br />
+<p>Először azt nézzük meg, hogyan keressük ki a táblázatból annak
+valószínűségét, hogy a változó megadott értékek közé esik. Ez egyúttal a
+sűrűségfüggvény alatti területtel egyenlő az adott intervallumon, ezért
+így is fogom ábrázolni.<br />
 Többféle eset lehetséges:</p>
 <ul>
 <li>-∞ és egy pozitív értékek közötti terület - ez az alapeset</li>
@@ -501,116 +533,172 @@ Többféle eset lehetséges:</p>
 <div id="valószínűség---től-pozitív-értékekig" class="section level3">
 <h3>Valószínűség -∞-től pozitív értékekig</h3>
 <p><span class="math display">\[P(\xi &lt; x)=F(x)\]</span></p>
-<p>Ha a keresett határérték 0 és 3,59 közötti, egyszerűen leolvassuk a táblázatos értéket a következő módon:</p>
-<p>Pl. a 0 sor 0 oszlop a 0,00 értéknek felel meg, és a függvény alatti terület eddig a pontig 0,5 = 50%.</p>
+<p>Ha a keresett határérték 0 és 3,59 közötti, egyszerűen leolvassuk a
+táblázatos értéket a következő módon:</p>
+<p>Pl. a 0 sor 0 oszlop a 0,00 értéknek felel meg, és a függvény alatti
+terület eddig a pontig 0,5 = 50%.</p>
 <p><img src="normalis-eloszlas_files/figure-html/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
 <div class="exercise">
 <p><strong>FELADAT:</strong><br />
-Mennyi annak valószínűsége, hogy a standard normális eloszlású változó értéke kisebb, vagy egyenlő 1,73-mal?</p>
+Mennyi annak valószínűsége, hogy a standard normális eloszlású változó
+értéke kisebb, vagy egyenlő 1,73-mal?</p>
 </div>
 <div class="solution">
 <p><strong>MEGOLDÁS:</strong><br />
 <span class="math display">\[P(\xi \le 1,73) = F(1,73)\]</span></p>
-<p>Ehhez a táblázatban megkeressük az 1,7-es sor 3-as oszlopában szereplő értéket, és ennyi lesz a valószínűség/terület.</p>
+<p>Ehhez a táblázatban megkeressük az 1,7-es sor 3-as oszlopában
+szereplő értéket, és ennyi lesz a valószínűség/terület.</p>
 </div>
 <p><img src="normalis-eloszlas_files/figure-html/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="valószínűség-pozitív-értékektől--ig" class="section level3">
 <h3>Valószínűség pozitív értékektől +∞-ig</h3>
 <p><span class="math display">\[P(\xi&gt;x)=1-F(x)\]</span></p>
-<p>Ezek az esetek az előzőek komplementerei, ezért a keresett valószínűségeket megkapjuk, ha 1-ből kivonjuk a táblázatból kikeresett valószínűségeket.</p>
+<p>Ezek az esetek az előzőek komplementerei, ezért a keresett
+valószínűségeket megkapjuk, ha 1-ből kivonjuk a táblázatból kikeresett
+valószínűségeket.</p>
 <div class="exercise">
 <p><strong>FELADAT:</strong><br />
-Mennyi annak valószínűsége, hogy a standard normális eloszlású változó értéke nagyobb, mint 1,73?</p>
+Mennyi annak valószínűsége, hogy a standard normális eloszlású változó
+értéke nagyobb, mint 1,73?</p>
 </div>
 <div class="solution">
 <p><strong>MEGOLDÁS:</strong><br />
 <span class="math display">\[P(\xi &gt; 1,73) = 1-F(1,73)\]</span></p>
-<p>Ehhez a táblázatban megkeressük az 1,7-es sor 3-as oszlopában szereplő értéket, és kivonjuk egyből ⇒ ennyi lesz a valószínűség/terület. Az ábrán látható, hogy a keresett terület (zöld) és az 1,73 alatti (narancssárga) együtt fedik le a függvény alatti teljes területet, ami 100%.</p>
+<p>Ehhez a táblázatban megkeressük az 1,7-es sor 3-as oszlopában
+szereplő értéket, és kivonjuk egyből ⇒ ennyi lesz a
+valószínűség/terület. Az ábrán látható, hogy a keresett terület (zöld)
+és az 1,73 alatti (narancssárga) együtt fedik le a függvény alatti
+teljes területet, ami 100%.</p>
 </div>
 <p><img src="normalis-eloszlas_files/figure-html/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="valószínűség-negatív-értékektől--ig" class="section level3">
 <h3>Valószínűség negatív értékektől +∞-ig</h3>
 <p><span class="math display">\[P(\xi &gt; x) = F(-x)\]</span></p>
-<p>Ezek tükörképei az első esetnek, ezért a keresett valószínűséget úgy kapjuk meg, ha a táblázatban az abszolút értékhez tartozó függvényértéket keressük ki (a képletben a <span class="math inline">\(-\)</span> jel megváltoztatja az előjelet negatívról pozitívra).</p>
+<p>Ezek tükörképei az első esetnek, ezért a keresett valószínűséget úgy
+kapjuk meg, ha a táblázatban az abszolút értékhez tartozó
+függvényértéket keressük ki (a képletben a <span
+class="math inline">\(-\)</span> jel megváltoztatja az előjelet
+negatívról pozitívra).</p>
 <div class="exercise">
 <p><strong>FELADAT:</strong><br />
-Mennyi annak valószínűsége, hogy a standard normális eloszlású változó értéke nagyobb, mint -1,73?</p>
+Mennyi annak valószínűsége, hogy a standard normális eloszlású változó
+értéke nagyobb, mint -1,73?</p>
 </div>
 <div class="solution">
 <p><strong>MEGOLDÁS:</strong><br />
-<span class="math display">\[P(\xi &gt; -1,73) = F(-(-1,73))=F(1,73)\]</span></p>
-<p>Ehhez a táblázatban megkeressük az 1,7-es sor 3-as oszlopában szereplő értéket, ennyi lesz a valószínűség/terület.</p>
+<span class="math display">\[P(\xi &gt; -1,73) =
+F(-(-1,73))=F(1,73)\]</span></p>
+<p>Ehhez a táblázatban megkeressük az 1,7-es sor 3-as oszlopában
+szereplő értéket, ennyi lesz a valószínűség/terület.</p>
 </div>
 <p><img src="normalis-eloszlas_files/figure-html/unnamed-chunk-6-1.png" width="960" style="display: block; margin: auto;" /></p>
 </div>
 <div id="valószínűség---től-negatív-értékekig" class="section level3">
 <h3>Valószínűség -∞-től negatív értékekig</h3>
 <p><span class="math display">\[P(\xi &lt; x)=1-F(-x)\]</span></p>
-<p>Ezek az esetek az előző komplementerei, egyben a második eset (pozitív értéktől ∞-ig) tükörképei.</p>
+<p>Ezek az esetek az előző komplementerei, egyben a második eset
+(pozitív értéktől ∞-ig) tükörképei.</p>
 <div class="exercise">
 <p><strong>FELADAT:</strong><br />
-Mennyi annak valószínűsége, hogy a standard normális eloszlású változó értéke kisebb, vagy egyenlő -1,73-mal?</p>
+Mennyi annak valószínűsége, hogy a standard normális eloszlású változó
+értéke kisebb, vagy egyenlő -1,73-mal?</p>
 </div>
 <div class="solution">
 <strong>MEGOLDÁS:</strong><br />
-<span class="math display">\[P(\xi \le -1,73) = 1-F(-(1,73))=1-F(1,73)\]</span>
+<span class="math display">\[P(\xi \le -1,73) =
+1-F(-(1,73))=1-F(1,73)\]</span>
 <p class="centered">
 vagy
 </p>
-<p><span class="math display">\[P(\xi \le -1,73) = P(\xi \ge 1,73) = 1-F(1,73)\]</span></p>
-<p>Ehhez a táblázatban megkeressük az 1,7-es sor 3-as oszlopában szereplő értéket, és kivonjuk 1-ből ⇒ ennyi lesz a valószínűség/terület.</p>
+<p><span class="math display">\[P(\xi \le -1,73) = P(\xi \ge 1,73) =
+1-F(1,73)\]</span></p>
+<p>Ehhez a táblázatban megkeressük az 1,7-es sor 3-as oszlopában
+szereplő értéket, és kivonjuk 1-ből ⇒ ennyi lesz a
+valószínűség/terület.</p>
 </div>
 <p><img src="normalis-eloszlas_files/figure-html/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 </div>
 <div id="szimmetrikusan-lehatárolt-területek" class="section level2">
 <h2>Szimmetrikusan lehatárolt területek</h2>
-<p><span class="math display">\[P(x_1 &lt; \xi &lt; x_2)=F(x_2)-F(x_1)\]</span></p>
-<p>A leggyakoribb eset, hogy a keresett valószínűség a 0-ra szimmetrikus intervallumhoz tartozik. A kiszámításához az eddigi ismereteinket kell kombinálnunk.</p>
+<p><span class="math display">\[P(x_1 &lt; \xi &lt;
+x_2)=F(x_2)-F(x_1)\]</span></p>
+<p>A leggyakoribb eset, hogy a keresett valószínűség a 0-ra szimmetrikus
+intervallumhoz tartozik. A kiszámításához az eddigi ismereteinket kell
+kombinálnunk.</p>
 <div class="exercise">
 <p><strong>FELADAT:</strong><br />
-Mennyi annak valószínűsége, hogy a standard normális eloszlású változó értéke -1,73 és +1,73 közé esik?</p>
+Mennyi annak valószínűsége, hogy a standard normális eloszlású változó
+értéke -1,73 és +1,73 közé esik?</p>
 </div>
 <div class="solution">
 <p><strong>MEGOLDÁS:</strong><br />
-Mint az alábbi ábrából kiolvasható, kétféleképpen számíthatjuk ki ezt a területet:</p>
+Mint az alábbi ábrából kiolvasható, kétféleképpen számíthatjuk ki ezt a
+területet:</p>
 <ol style="list-style-type: decimal">
-<li>Egyrészt a -∞-től 1,73-ig lefedett területből (95,82%) vonjuk ki a -∞ és -1,73 közötti részt (4,18%), ami egyenlő az 1,73 és ∞ közötti területtel (mindkettőt korábban kiszámítottuk már)</li>
-<li>A másik lehetőség, hogy 1-ből vonjuk ki a két kimaradó valószínűséget (kétszer 4,18%-ot).</li>
+<li>Egyrészt a -∞-től 1,73-ig lefedett területből (95,82%) vonjuk ki a
+-∞ és -1,73 közötti részt (4,18%), ami egyenlő az 1,73 és ∞ közötti
+területtel (mindkettőt korábban kiszámítottuk már)</li>
+<li>A másik lehetőség, hogy 1-ből vonjuk ki a két kimaradó
+valószínűséget (kétszer 4,18%-ot).</li>
 </ol>
 <p>Ugyanazt az eredményt kapjuk.</p>
-<p>Lépések: A táblázatban ismét az 1,73-hoz tartozó területet keressük ki, ezt 1-ből kivonva megkapjuk a fenti kimaradó területet, ami a szimmetria miatt egyenlő a negatív tartományban kimaradó területettel. Valamelyik fenti kivonással megkapjuk a végeredményt.</p>
+<p>Lépések: A táblázatban ismét az 1,73-hoz tartozó területet keressük
+ki, ezt 1-ből kivonva megkapjuk a fenti kimaradó területet, ami a
+szimmetria miatt egyenlő a negatív tartományban kimaradó területettel.
+Valamelyik fenti kivonással megkapjuk a végeredményt.</p>
 </div>
 <p><img src="normalis-eloszlas_files/figure-html/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="aszimmetrikusan-lehatárolt-területek" class="section level2">
 <h2>Aszimmetrikusan lehatárolt területek</h2>
-<p><span class="math display">\[P(x_1 &lt; \xi &lt; x_2)=F(x_2)-F(x_1)\]</span></p>
-<p>Ilyen viszonylag ritkán fordul elő, de a fenti ismereteket alapul véve ezek a valószínűségek is kiszámíthatók, ha az egyes részterületeket ki sikerül számítani.</p>
+<p><span class="math display">\[P(x_1 &lt; \xi &lt;
+x_2)=F(x_2)-F(x_1)\]</span></p>
+<p>Ilyen viszonylag ritkán fordul elő, de a fenti ismereteket alapul
+véve ezek a valószínűségek is kiszámíthatók, ha az egyes részterületeket
+ki sikerül számítani.</p>
 <div class="exercise">
 <p><strong>FELADAT:</strong><br />
-Mennyi annak valószínűsége, hogy a standard normális eloszlású változó értéke -1,52 és +1,73 közé esik?</p>
+Mennyi annak valószínűsége, hogy a standard normális eloszlású változó
+értéke -1,52 és +1,73 közé esik?</p>
 </div>
 <div class="solution">
 <p><strong>MEGOLDÁS:</strong><br />
-A legegyszerűbb megoldás, ha a -∞ és 1,73 közötti részből (95,82%) vonjuk ki a -∞ és -1,52 közötti részt. Utóbbit úgy kapjuk meg, hogy 1-ből kivonjuk a -&amp;infin és +1,52 közötti területet (ezt tudjuk közvetlenül kiolvasni a táblázatból). Hogy miért, azt az alábbi képek segíTik átlátni.</p>
+A legegyszerűbb megoldás, ha a -∞ és 1,73 közötti részből (95,82%)
+vonjuk ki a -∞ és -1,52 közötti részt. Utóbbit úgy kapjuk meg, hogy
+1-ből kivonjuk a -&amp;infin és +1,52 közötti területet (ezt tudjuk
+közvetlenül kiolvasni a táblázatból). Hogy miért, azt az alábbi képek
+segíTik átlátni.</p>
 </div>
 <p><img src="normalis-eloszlas_files/figure-html/unnamed-chunk-9-1.png" width="960" style="display: block; margin: auto;" /></p>
-<p>Az aszimmetrikus lehatárolás történhet két pozitív vagy két negatív érték között. Ezeknek a kilogikázását Önökre bízom, nem nehezebb, mint az egy negatív és egy pozitív érték közötti, és ugyanúgy megoldható a fenti lépések segítségével.</p>
+<p>Az aszimmetrikus lehatárolás történhet két pozitív vagy két negatív
+érték között. Ezeknek a kilogikázását Önökre bízom, nem nehezebb, mint
+az egy negatív és egy pozitív érték közötti, és ugyanúgy megoldható a
+fenti lépések segítségével.</p>
 <div id="összefoglaló" class="section level3">
 <h3>Összefoglaló</h3>
 <ol style="list-style-type: decimal">
 <li>Ha egy határérték (jelöljük <em>a</em>-val) van:</li>
 </ol>
 <ul>
-<li><strong>-∞-től pozitív határértékig</strong>: kiolvassuk a táblázatból (ez <em>F(a)</em>, pl. F(1,73) = 0,9582 = 95,82%)</li>
-<li><strong>negatív értéktől +infin;-ig</strong>: kikeressük a táblázatból az abszolút értékének megfelelő valószínűséget. Ugyanez lesz a keresett valószínűség (pl. -1,73-tól +∞-ig: F(+1,73) = 0,9582)</li>
-<li><strong>pozitív értéktől +infin;-ig</strong>: kiolvassuk a táblázatból a területet eddig az értékig: pl. F(1,73) = 0,9582. Ezt a valószínűséget 1-ből kivonva megkapjuk a keresett valószínűséget: 1 - 0,9582 = 0,0418</li>
-<li><strong>-∞-től negatív határértékig</strong>: kikeressük az abszolút értéknek megfelelő valószínűséget. Ezt egyből kivonva megkapjuk a keresett valósznűséget: pl. -∞-től -1,73-ig: 1 - F(1,73) = 0,0418
+<li><strong>-∞-től pozitív határértékig</strong>: kiolvassuk a
+táblázatból (ez <em>F(a)</em>, pl. F(1,73) = 0,9582 = 95,82%)</li>
+<li><strong>negatív értéktől +infin;-ig</strong>: kikeressük a
+táblázatból az abszolút értékének megfelelő valószínűséget. Ugyanez lesz
+a keresett valószínűség (pl. -1,73-tól +∞-ig: F(+1,73) = 0,9582)</li>
+<li><strong>pozitív értéktől +infin;-ig</strong>: kiolvassuk a
+táblázatból a területet eddig az értékig: pl. F(1,73) = 0,9582. Ezt a
+valószínűséget 1-ből kivonva megkapjuk a keresett valószínűséget: 1 -
+0,9582 = 0,0418</li>
+<li><strong>-∞-től negatív határértékig</strong>: kikeressük az abszolút
+értéknek megfelelő valószínűséget. Ezt egyből kivonva megkapjuk a
+keresett valósznűséget: pl. -∞-től -1,73-ig: 1 - F(1,73) = 0,0418
 <ul>
-<li>3,59-nél nagyobb és -3,59 kisebb értékekkel azért nem foglalkozunk, mert 3,59-ig lefedjük a 99,98%-ot, vagyis alig fordul elő 3,59 fölötti érték (és emiatt -3,59 alatti is alig fordul elő)</li>
+<li>3,59-nél nagyobb és -3,59 kisebb értékekkel azért nem foglalkozunk,
+mert 3,59-ig lefedjük a 99,98%-ot, vagyis alig fordul elő 3,59 fölötti
+érték (és emiatt -3,59 alatti is alig fordul elő)</li>
 </ul></li>
 </ul>
 <p><strong>Ugyanez vizuálisan</strong></p>
@@ -619,8 +707,10 @@ A legegyszerűbb megoldás, ha a -∞ és 1,73 közötti részből (95,82%) vonj
 <li>Ha két határérték (legyen <em>a</em> és <em>b</em>) van:</li>
 </ol>
 <ul>
-<li>Ki kell számítani a területet a felsőig (azokat a szabályokat követve, mint az egy határértéknél leírtam)</li>
-<li>És ki kell számítani a területet az alsóig (ugyancsak a fenti szabályokat követve)</li>
+<li>Ki kell számítani a területet a felsőig (azokat a szabályokat
+követve, mint az egy határértéknél leírtam)</li>
+<li>És ki kell számítani a területet az alsóig (ugyancsak a fenti
+szabályokat követve)</li>
 <li>Végül a keresett terület a kettő különbsége</li>
 </ul>
 <p><strong>Ugyanez vizuálisan</strong></p>
@@ -629,116 +719,194 @@ A legegyszerűbb megoldás, ha a -∞ és 1,73 közötti részből (95,82%) vonj
 </div>
 <div id="határértékek-megkeresése" class="section level2">
 <h2>Határértékek megkeresése</h2>
-<p>A fentiek fordítottja, amikor meghatározott területet szeretnénk lehatárolni, és ehhez keressük az egy vagy két határértéket. Az alábbi esetek a legegyszerűbbtől haladnak a többlépéses problémákig.</p>
+<p>A fentiek fordítottja, amikor meghatározott területet szeretnénk
+lehatárolni, és ehhez keressük az egy vagy két határértéket. Az alábbi
+esetek a legegyszerűbbtől haladnak a többlépéses problémákig.</p>
 <div id="nál-nagyobb-terület-lehatárolása---től" class="section level3">
 <h3>50%-nál nagyobb terület lehatárolása -∞-től</h3>
-<p>Ez a legegyszerűbb eset. Egy lépésben megoldható: a táblázat belsejében megkeressük az adott valószínűséget (ha ez nem szerepel a táblázatban, akkor az első annál nagyobb valószínűséget), és összeolvassuk a soreleji és oszlop tetején lévő számokat.</p>
+<p>Ez a legegyszerűbb eset. Egy lépésben megoldható: a táblázat
+belsejében megkeressük az adott valószínűséget (ha ez nem szerepel a
+táblázatban, akkor az első annál nagyobb valószínűséget), és
+összeolvassuk a soreleji és oszlop tetején lévő számokat.</p>
 <div class="exercise">
 <p><strong>FELADAT:</strong><br />
 -∞ és mennyi között van a terület 75%-a?</p>
 </div>
 <div class="solution">
 <p><strong>MEGOLDÁS:</strong><br />
-A táblázatban megkeressük a 0,75-öt: 0,7517 az első ennél nagyobb, ami a 0,6-os sorban és 8-as oszlopban van. A keresett határérték valahol a 0,67 és 0,68 között van. Általában a nagyobbat érdemes választanunk, amivel a keresett valószínűségnél valamivel többet fedünk le.<br />
+A táblázatban megkeressük a 0,75-öt: 0,7517 az első ennél nagyobb, ami a
+0,6-os sorban és 8-as oszlopban van. A keresett határérték valahol a
+0,67 és 0,68 között van. Általában a nagyobbat érdemes választanunk,
+amivel a keresett valószínűségnél valamivel többet fedünk le.<br />
 (Online kalkulátorral megtalálható a pontos határérték: 0,674)</p>
 </div>
-<p><img src="normalis-eloszlas_files/figure-html/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /> ### 50%-nál nagyobb terület lehatárolása +∞-ig</p>
-<p>Úgy teszünk, mintha -∞-től akarnánk lehatárolni, de a kapott határértéket negatív előjellel vesszük (a szimmetria miatt)</p>
+<p><img src="normalis-eloszlas_files/figure-html/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" />
+### 50%-nál nagyobb terület lehatárolása +∞-ig</p>
+<p>Úgy teszünk, mintha -∞-től akarnánk lehatárolni, de a kapott
+határértéket negatív előjellel vesszük (a szimmetria miatt)</p>
 <div class="exercise">
 <p><strong>FELADAT:</strong><br />
 Mennyi és +∞ között van a terület 80%-a?</p>
 </div>
 <div class="solution">
 <p><strong>MEGOLDÁS:</strong><br />
-A táblázatban megkeressük a 0,8-at: 0,84 és 0,85 között van valahol. A keresett határérték (inkább nagyobb területet határolunk le) -0,85.<br />
+A táblázatban megkeressük a 0,8-at: 0,84 és 0,85 között van valahol. A
+keresett határérték (inkább nagyobb területet határolunk le)
+-0,85.<br />
 (Online kalkulátorral megtalálható a pontos határérték: -0,842)</p>
 </div>
 <p><img src="normalis-eloszlas_files/figure-html/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="nál-kisebb-terület-lehatárolása--ig" class="section level3">
 <h3>50%-nál kisebb terület lehatárolása +∞-ig</h3>
-<p>Ebben az esetben a komplementer valószínűséget határoljuk le a fenti szabályok alapján.</p>
+<p>Ebben az esetben a komplementer valószínűséget határoljuk le a fenti
+szabályok alapján.</p>
 <div class="exercise">
 <p><strong>FELADAT:</strong><br />
 Mennyi és +∞ között van a terület 15%-a?</p>
 </div>
 <div class="solution">
 <p><strong>MEGOLDÁS:</strong><br />
-A táblázatban megkeressük az <span class="math inline">\(1-0,15= 0,85\)</span>-öt: a keresett határérték 1,04.<br />
+A táblázatban megkeressük az <span class="math inline">\(1-0,15=
+0,85\)</span>-öt: a keresett határérték 1,04.<br />
 (Online kalkulátorral: 1,036)</p>
 </div>
 <p><img src="normalis-eloszlas_files/figure-html/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="nál-kisebb-terület-lehatárolása---től" class="section level3">
 <h3>50%-nál kisebb terület lehatárolása -∞-től</h3>
-<p>Ezúttal is a komplementer valószínűséghez keressük a határértéket, és a végén még az előjelet is negatívra változtatjuk.</p>
+<p>Ezúttal is a komplementer valószínűséghez keressük a határértéket, és
+a végén még az előjelet is negatívra változtatjuk.</p>
 <div class="exercise">
 <p><strong>FELADAT:</strong><br />
 -∞ és mennyi között van a terület 9%-a?</p>
 </div>
 <div class="solution">
 <p><strong>MEGOLDÁS:</strong><br />
-A táblázatban megkeressük az <span class="math inline">\(1-0,09= 0,91\)</span>-et: 1,34 és 1,35 között van, ezért a keresett határérték -1,35.<br />
+A táblázatban megkeressük az <span class="math inline">\(1-0,09=
+0,91\)</span>-et: 1,34 és 1,35 között van, ezért a keresett határérték
+-1,35.<br />
 (Online kalkulátorral: -1,341)</p>
 </div>
 <p><img src="normalis-eloszlas_files/figure-html/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="szimmetrikusan" class="section level3">
 <h3>Szimmetrikusan</h3>
-<p>Ez a leggyakoribb eset. A neheze, hogy a táblázatból nem közvetlenül a megadott valószínűséget kell kikeresni, hanem ehhez hozzá kell adni a kimaradó terület felét, hiszen a táblázatban -∞-től adott határértékig szerepelnek a valószínűségek.<br />
-Általánosan: <span class="math inline">\(1-\alpha\)</span> terület lefedéséhez a táblázatban az <span class="math inline">\(1-\frac{\alpha}{2}\)</span> valószínűséget kell megkeresni.</p>
+<p>Ez a leggyakoribb eset. A neheze, hogy a táblázatból nem közvetlenül
+a megadott valószínűséget kell kikeresni, hanem ehhez hozzá kell adni a
+kimaradó terület felét, hiszen a táblázatban -∞-től adott határértékig
+szerepelnek a valószínűségek.<br />
+Általánosan: <span class="math inline">\(1-\alpha\)</span> terület
+lefedéséhez a táblázatban az <span
+class="math inline">\(1-\frac{\alpha}{2}\)</span> valószínűséget kell
+megkeresni.</p>
 <div class="exercise">
 <p><strong>FELADAT:</strong><br />
 Milyen értékek között van a terület 90%-a?</p>
 </div>
 <div class="solution">
 <p><strong>MEGOLDÁS:</strong><br />
-Mint az alábbi ábrán is látszik, ha középen a terület 90%-át határoljuk le, akkor marad két egyenlő nagyságú terület, amelyek összesen 10%-ot tesznek ki, vagyis egyenként 5-5%-osak. Mivel a táblázatban -∞ és az adott határérték közötti területek vannak feltüntetve, az &quot;alsó&quot; szürke terület hozzáadódik a lefedni kívánt 90%-hoz, és a táblázatban ezért a 0,95-öt kell megkeresnünk. Ez pedig valahol 1,64 és 1,65 között van. Érdemes az 1,65-öt választani, hogy inkább nagyobb területet fedjünk le, mint kisebbet. A szimmetria miatt az alsó határérték -1,65.<br />
-(Online kalkulátorral <span class="math inline">\(\pm 1,645\)</span>)</p>
+Mint az alábbi ábrán is látszik, ha középen a terület 90%-át határoljuk
+le, akkor marad két egyenlő nagyságú terület, amelyek összesen 10%-ot
+tesznek ki, vagyis egyenként 5-5%-osak. Mivel a táblázatban -∞ és az
+adott határérték közötti területek vannak feltüntetve, az “alsó” szürke
+terület hozzáadódik a lefedni kívánt 90%-hoz, és a táblázatban ezért a
+0,95-öt kell megkeresnünk. Ez pedig valahol 1,64 és 1,65 között van.
+Érdemes az 1,65-öt választani, hogy inkább nagyobb területet fedjünk le,
+mint kisebbet. A szimmetria miatt az alsó határérték -1,65.<br />
+(Online kalkulátorral <span class="math inline">\(\pm
+1,645\)</span>)</p>
 </div>
 <p><img src="normalis-eloszlas_files/figure-html/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="aszimmetrikusan" class="section level3">
 <h3>Aszimmetrikusan</h3>
-<p>Ezt nem nézzük meg konkrétan. A fenti szabályok alapján, ha felírják a különböző részterületeket, meg tudják találni a határértékeket, de összességében nem túl valószínű, hogy ilyen problémával találkozzanak.</p>
+<p>Ezt nem nézzük meg konkrétan. A fenti szabályok alapján, ha felírják
+a különböző részterületeket, meg tudják találni a határértékeket, de
+összességében nem túl valószínű, hogy ilyen problémával
+találkozzanak.</p>
 </div>
 </div>
 <div id="konvertálás" class="section level2">
 <h2>Konvertálás</h2>
-<p>Mivel normális eloszlásból végtelen sok létezik, ezért arra nincs lehetőség, hogy mindegyikhez táblázatot gyártsanak. De ez nem is szükséges, mert egyszerű a normális eloszlások és a standard normális eloszlás közötti konvertálás.</p>
-<p>Bármely normális eloszlású változó bármely értéke (<span class="math inline">\(x\)</span>) az alábbi képlettel átszámítható a standard normális eloszlás megfelelő értékére (általában <span class="math inline">\(z\)</span>-vel jelölik). Ezt hívják <strong>standardizálásnak</strong>: <span class="math display">\[z = \frac{x-\mu}{\sigma}\]</span></p>
-<p>A konvertálás révén például kiszámítható, hogy egy tetszőleges <span class="math inline">\(N(\mu;\sigma)\)</span> eloszlású változó esetében mennyi a valószínűsége, hogy értéke <span class="math inline">\(x_1\)</span> és <span class="math inline">\(x_2\)</span> közé esik:</p>
+<p>Mivel normális eloszlásból végtelen sok létezik, ezért arra nincs
+lehetőség, hogy mindegyikhez táblázatot gyártsanak. De ez nem is
+szükséges, mert egyszerű a normális eloszlások és a standard normális
+eloszlás közötti konvertálás.</p>
+<p>Bármely normális eloszlású változó bármely értéke (<span
+class="math inline">\(x\)</span>) az alábbi képlettel átszámítható a
+standard normális eloszlás megfelelő értékére (általában <span
+class="math inline">\(z\)</span>-vel jelölik). Ezt hívják
+<strong>standardizálásnak</strong>: <span class="math display">\[z =
+\frac{x-\mu}{\sigma}\]</span></p>
+<p>A konvertálás révén például kiszámítható, hogy egy tetszőleges <span
+class="math inline">\(N(\mu;\sigma)\)</span> eloszlású változó esetében
+mennyi a valószínűsége, hogy értéke <span
+class="math inline">\(x_1\)</span> és <span
+class="math inline">\(x_2\)</span> közé esik:</p>
 <ol style="list-style-type: decimal">
-<li>az <span class="math inline">\(x_1\)</span> és <span class="math inline">\(x_2\)</span> értéket standardizáljuk</li>
-<li>a standard normális eloszlás táblázata segítségével, a fenti szabályokat követve kiszámítjuk annak valószínűségét, hogy a standard normális eloszlású változó ezek közé esik.</li>
-<li>ennyi lesz az <span class="math inline">\(x_1\)</span> és <span class="math inline">\(x_2\)</span> közötti intervallumon is a sűrűségfüggvény alatti terület, vagyis annak valószínűsége, hogy a változó értéke ezek közé esik.</li>
+<li>az <span class="math inline">\(x_1\)</span> és <span
+class="math inline">\(x_2\)</span> értéket standardizáljuk</li>
+<li>a standard normális eloszlás táblázata segítségével, a fenti
+szabályokat követve kiszámítjuk annak valószínűségét, hogy a standard
+normális eloszlású változó ezek közé esik.</li>
+<li>ennyi lesz az <span class="math inline">\(x_1\)</span> és <span
+class="math inline">\(x_2\)</span> közötti intervallumon is a
+sűrűségfüggvény alatti terület, vagyis annak valószínűsége, hogy a
+változó értéke ezek közé esik.</li>
 </ol>
 <div class="exercise">
 <p><strong>FELADAT:</strong><br />
-A felnőttkori testmagasság a vizsgált populációban 170cm várható értékű és 10cm szórású normális eloszlást követ. Mennyi a valószínűsége, hogy valaki felnőttkori testmagassága 160 és 195 cm közé esik?</p>
+A felnőttkori testmagasság a vizsgált populációban 170cm várható értékű
+és 10cm szórású normális eloszlást követ. Mennyi a valószínűsége, hogy
+valaki felnőttkori testmagassága 160 és 195 cm közé esik?</p>
 </div>
 <div class="solution">
 <p><strong>MEGOLDÁS:</strong></p>
 <ol style="list-style-type: decimal">
-<li>Először standardizáljuk a két értéket: <span class="math display">\[z_1 = \frac{160 - 170}{10}=-1; \quad z_2 = \frac{195 - 170}{10}=2,5\]</span><br />
+<li>Először standardizáljuk a két értéket: <span
+class="math display">\[z_1 = \frac{160 - 170}{10}=-1; \quad z_2 =
+\frac{195 - 170}{10}=2,5\]</span><br />
 </li>
-<li>Ezt követően a fent tárgyalt módon kiszámítjuk, a standard normális eloszlású változó milyen valószínűséggel vesz fel -1 és 2,5 közötti értéket: <span class="math display">\[P(-1 &lt; \xi &lt; 2,5)=F(2,5)-F(-1)=F(2,5)-(1-F(1))= \\
+<li>Ezt követően a fent tárgyalt módon kiszámítjuk, a standard normális
+eloszlású változó milyen valószínűséggel vesz fel -1 és 2,5 közötti
+értéket: <span class="math display">\[P(-1 &lt; \xi &lt;
+2,5)=F(2,5)-F(-1)=F(2,5)-(1-F(1))= \\
 = 0,9938- (1-0,8413)=0,9938-0,1587=0,8351\]</span><br />
 </li>
-<li>Ennyi (83,51%) annak a valószínűsége, hogy valaki magassága felnőtt korában 160 és 195 cm között van.</li>
+<li>Ennyi (83,51%) annak a valószínűsége, hogy valaki magassága felnőtt
+korában 160 és 195 cm között van.</li>
 </ol>
 </div>
-<p><img src="normalis-eloszlas_files/figure-html/unnamed-chunk-17-1.png" width="960" style="display: block; margin: auto;" /> Visszafelé pedig bármilyen, a standard normális eloszláson lehatárolt területhez (pl. 90%, 95%, stb.) meg tudjuk találni a <span class="math inline">\(N(\mu;\sigma)\)</span> eloszlás megfelelő határértékeit, és így ugyanekkora területet le tudunk fedni. Ezen alapul az intervallumbecslés.</p>
-<p>A fenti képletből kifejezve <span class="math inline">\(x\)</span>-et megkapjuk a visszaalakítás képletét: <span class="math display">\[x = \mu + z*\sigma\]</span></p>
+<p><img src="normalis-eloszlas_files/figure-html/unnamed-chunk-17-1.png" width="960" style="display: block; margin: auto;" />
+Visszafelé pedig bármilyen, a standard normális eloszláson lehatárolt
+területhez (pl. 90%, 95%, stb.) meg tudjuk találni a <span
+class="math inline">\(N(\mu;\sigma)\)</span> eloszlás megfelelő
+határértékeit, és így ugyanekkora területet le tudunk fedni. Ezen alapul
+az intervallumbecslés.</p>
+<p>A fenti képletből kifejezve <span class="math inline">\(x\)</span>-et
+megkapjuk a visszaalakítás képletét: <span class="math display">\[x =
+\mu + z*\sigma\]</span></p>
 <div class="exercise">
 <p><strong>FELADAT:</strong><br />
-Korábban néztük, hogy a standard normális eloszlású változó értéke 95%-os valószínűséggel esik -1,96 és 1,96 közé. Milyen értékek közé esik a testmagasság 95%-os valószínűséggel, ha az <span class="math inline">\(N(170;10)\)</span> eloszlású?</p>
+Korábban néztük, hogy a standard normális eloszlású változó értéke
+95%-os valószínűséggel esik -1,96 és 1,96 közé. Milyen értékek közé esik
+a testmagasság 95%-os valószínűséggel, ha az <span
+class="math inline">\(N(170;10)\)</span> eloszlású?</p>
 </div>
 <div class="solution">
 <p><strong>MEGOLDÁS:</strong></p>
 <ol style="list-style-type: decimal">
-<li>Azt már tudjuk, hogy a standard normális eloszlású változó értéke [-1,96;+1,96] intervallumba 95%-os valószínűséggel esik. Azt, hogy ezeknek mely magasságértékek felelnek meg, a 2. képlettel tudjuk kiszámítani: <span class="math display">\[x_1 = 170 +(-1,96*10)=150,4; \quad x_2 = 170+1,96*10=189,6\]</span><br />
-Ugyanígy bármilyen területet kijelölhetünk a standard normális eloszláson, és a képlettel megkereshetjük, milyen határértékek felelnek meg e terület határainak. Ezt tesszük akkor is, ha konfidenciaintervallumot számolunk, de a várható érték helyére (amit nem ismerünk) a mintából becsült átlagot helyettesítjük.</li>
+<li>Azt már tudjuk, hogy a standard normális eloszlású változó értéke
+[-1,96;+1,96] intervallumba 95%-os valószínűséggel esik. Azt, hogy
+ezeknek mely magasságértékek felelnek meg, a 2. képlettel tudjuk
+kiszámítani: <span class="math display">\[x_1 = 170 +(-1,96*10)=150,4;
+\quad x_2 = 170+1,96*10=189,6\]</span><br />
+Ugyanígy bármilyen területet kijelölhetünk a standard normális
+eloszláson, és a képlettel megkereshetjük, milyen határértékek felelnek
+meg e terület határainak. Ezt tesszük akkor is, ha
+konfidenciaintervallumot számolunk, de a várható érték helyére (amit nem
+ismerünk) a mintából becsült átlagot helyettesítjük.</li>
 </ol>
 </div>
 <p><img src="normalis-eloszlas_files/figure-html/unnamed-chunk-18-1.png" width="960" style="display: block; margin: auto;" /></p>
@@ -746,11 +914,20 @@ Ugyanígy bármilyen területet kijelölhetünk a standard normális eloszláson
 <div id="linkek-normális-eloszlás-kalkulátorok" class="section level2">
 <h2>Linkek: normális eloszlás kalkulátorok</h2>
 <ul>
-<li><a href="https://homepage.divms.uiowa.edu/~mbognar/applets/normal.html">1. kalkulátor</a></li>
-<li><a href="https://stattrek.com/online-calculator/normal.aspx">2. kalkulátor</a></li>
-<li><a href="https://onlinestatbook.com/2/calculators/normal_dist.html">3. kalkulátor (területhez)</a></li>
-<li><a href="https://onlinestatbook.com/2/calculators/inverse_normal_dist.html">4. kalkulátor (határértékekhez)</a></li>
-<li><a href="https://www.mathsisfun.com/data/standard-normal-distribution-table.html">5. kalkulátor (point&amp;click)</a></li>
+<li><a
+href="https://homepage.divms.uiowa.edu/~mbognar/applets/normal.html">1.
+kalkulátor</a></li>
+<li><a href="https://stattrek.com/online-calculator/normal.aspx">2.
+kalkulátor</a></li>
+<li><a
+href="https://onlinestatbook.com/2/calculators/normal_dist.html">3.
+kalkulátor (területhez)</a></li>
+<li><a
+href="https://onlinestatbook.com/2/calculators/inverse_normal_dist.html">4.
+kalkulátor (határértékekhez)</a></li>
+<li><a
+href="https://www.mathsisfun.com/data/standard-normal-distribution-table.html">5.
+kalkulátor (point&amp;click)</a></li>
 </ul>
 </div>
 
@@ -792,6 +969,9 @@ $(document).ready(function () {
 
 <script>
 $(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
 
     // move toc-ignore selectors from section div to header
     $('div.section.toc-ignore')

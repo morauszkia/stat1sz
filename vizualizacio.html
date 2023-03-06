@@ -13,7 +13,8 @@
 
 <title>Adatvizualizáció</title>
 
-<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="site_libs/header-attrs-2.18/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
@@ -52,6 +53,7 @@
 
 
 
+
 <style type = "text/css">
 .main-container {
   max-width: 940px;
@@ -72,6 +74,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -129,11 +134,15 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark it active
-  menuAnchor.tab('show');
-
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
 
   // Navbar adjustments
   var navHeight = $(".navbar").first().height() + 15;
@@ -162,8 +171,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -171,16 +180,9 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -303,7 +305,7 @@ div.tocify {
 <div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -316,7 +318,7 @@ div.tocify {
   <a href="index.html">Főoldal</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Kombinatorika és valószínűségszámítás
      
     <span class="caret"></span>
@@ -331,7 +333,7 @@ div.tocify {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Matematikai statisztika
      
     <span class="caret"></span>
@@ -352,7 +354,7 @@ div.tocify {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Órák slide-jai
      
     <span class="caret"></span>
@@ -394,7 +396,7 @@ div.tocify {
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="mailto:morauszki.andras@gmail.com">
-    <span class="fas fa-envelope"></span>
+    <span class="fa fa-envelope"></span>
      
   </a>
 </li>
@@ -438,87 +440,159 @@ div.tocify {
   }
 </style>
 <ul>
-<li>Sokszor hasznos az adataink képi megjelenítése (ábrák, grafikonok formájában)</li>
-<li>Az elemzés során: rávilágíthatnak összefüggésekre, amelyeket statisztikai próbákkal megvizsgálhatunk</li>
-<li>Prezentációk során, tanulmányokban: könnyebben áttekinthető a közönség számára, mint egy táblázat</li>
+<li>Sokszor hasznos az adataink képi megjelenítése (ábrák, grafikonok
+formájában)</li>
+<li>Az elemzés során: rávilágíthatnak összefüggésekre, amelyeket
+statisztikai próbákkal megvizsgálhatunk</li>
+<li>Prezentációk során, tanulmányokban: könnyebben áttekinthető a
+közönség számára, mint egy táblázat</li>
 </ul>
-<p>Ez az összefoglaló természetesen nem tud teljes képet adni a vizualizációban rejlő lehetőségek teljes palettájáról, csak arra vállalkozik, hogy a legfontosabb, leggyakrabban használt ábrákból mutasson néhány példát. A konkrét megvalósítás, a választott formák, színek, elrendezés függ a használt programtól is, attól is, hová szánjuk a diagrammokat (ettől függően elképzelhető, hogy fekete-fehér ábrákra lesz szükség), és hogy az adatok maguk milyenek (tehát például hány csoport van, mennyire van összefüggés, különbség a csoportok között, stb.)</p>
+<p>Ez az összefoglaló természetesen nem tud teljes képet adni a
+vizualizációban rejlő lehetőségek teljes palettájáról, csak arra
+vállalkozik, hogy a legfontosabb, leggyakrabban használt ábrákból
+mutasson néhány példát. A konkrét megvalósítás, a választott formák,
+színek, elrendezés függ a használt programtól is, attól is, hová szánjuk
+a diagrammokat (ettől függően elképzelhető, hogy fekete-fehér ábrákra
+lesz szükség), és hogy az adatok maguk milyenek (tehát például hány
+csoport van, mennyire van összefüggés, különbség a csoportok között,
+stb.)</p>
 <div id="egy-változó-bemutatása" class="section level1">
 <h1>Egy változó bemutatása</h1>
 <div id="diszkrét-változók-esetében" class="section level2">
 <h2>Diszkrét változók esetében</h2>
-<p>Ha nominális, ordinális, vagy olyan skála mérési szintű változót szeretnénk ábrázolni, amelynek viszonylag kevés lehetséges értéke van, akkor választhatjuk a kördiagramot vagy az oszlopdiagramot.</p>
+<p>Ha nominális, ordinális, vagy olyan skála mérési szintű változót
+szeretnénk ábrázolni, amelynek viszonylag kevés lehetséges értéke van,
+akkor választhatjuk a kördiagramot vagy az oszlopdiagramot.</p>
 <div id="kördiagram" class="section level3">
 <h3>Kördiagram</h3>
-<p>Ha kevés kategóriánk van, akkor jól használható ábrák a kördiagramok (esetleg a középen &quot;lyukas&quot; fánkdiagramok).</p>
+<p>Ha kevés kategóriánk van, akkor jól használható ábrák a kördiagramok
+(esetleg a középen “lyukas” fánkdiagramok).</p>
 <p><img src="vizualizacio_files/figure-html/pie2-1.png" width="960" /></p>
 </div>
 <div id="oszlopdiagram" class="section level3">
 <h3>Oszlopdiagram</h3>
-<p>Ha a kategóriák száma nagyobb, a kördiagram nehezen áttekinthető, ezért az oszlopdiagram hasznosabb. Oszlopdiagramnál arra vigyázzanak, hogy, ha az y tengelyen olyan adatot jelölnek, amelynek van abszolút 0 pontja, akkor a tengely 0-tól kezdódjön!</p>
+<p>Ha a kategóriák száma nagyobb, a kördiagram nehezen áttekinthető,
+ezért az oszlopdiagram hasznosabb. Oszlopdiagramnál arra vigyázzanak,
+hogy, ha az y tengelyen olyan adatot jelölnek, amelynek van abszolút 0
+pontja, akkor a tengely 0-tól kezdódjön!</p>
 <p><img src="vizualizacio_files/figure-html/bar-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 </div>
 <div id="folytonos" class="section level2">
 <h2>Folytonos</h2>
-<p>Ha a kategóriák száma túl nagy, a fenti ábrák áttekinthetetlenné válnak. Ez történik jellemzően azoknak az intervallum- vagy arányskála mérési szintű változóknak az esetében, amelyek sokféle értéket vesznek fel a mintában (pl. testmagasság, jövedelem)</p>
+<p>Ha a kategóriák száma túl nagy, a fenti ábrák áttekinthetetlenné
+válnak. Ez történik jellemzően azoknak az intervallum- vagy arányskála
+mérési szintű változóknak az esetében, amelyek sokféle értéket vesznek
+fel a mintában (pl. testmagasság, jövedelem)</p>
 <div id="hisztogram-és-sűrűségfüggvény" class="section level3">
 <h3>Hisztogram és sűrűségfüggvény</h3>
-<p>A hisztogram első ránézésre oszlopdiagramnak tűnhet, de a különbség, hogy míg utóbbi esetében minden értékhez tartozik oszlop, a hisztogramokon intervallumokat használunk. Az y tengelyen jelölhetők a gyakoriságok vagy a százalékos arányok. A hisztogram alternatívája lehet a sűrűségfüggvény, amely jobban érzékelteti az eloszlás alakját.</p>
-<p>Az alábbi ábrán egy hisztogramon (bal) és egy sűrűségfüggvények (jobb) láthatják a testmagasságok eloszlását egy 500 elemű mintában:</p>
+<p>A hisztogram első ránézésre oszlopdiagramnak tűnhet, de a különbség,
+hogy míg utóbbi esetében minden értékhez tartozik oszlop, a
+hisztogramokon intervallumokat használunk. Az y tengelyen jelölhetők a
+gyakoriságok vagy a százalékos arányok. A hisztogram alternatívája lehet
+a sűrűségfüggvény, amely jobban érzékelteti az eloszlás alakját.</p>
+<p>Az alábbi ábrán egy hisztogramon (bal) és egy sűrűségfüggvények
+(jobb) láthatják a testmagasságok eloszlását egy 500 elemű mintában:</p>
 <p><img src="vizualizacio_files/figure-html/density-1.png" width="960" /></p>
 </div>
 <div id="dobozábra-és-hegedűábra" class="section level3">
 <h3>Dobozábra és hegedűábra</h3>
-<p>Szintén kedvelt diagram a dobozábra, amely a változó mediánját, alsó és felső kvartilisét és terjedelmét (beállításoktól függően a kiugró értékeket is - az ábrán a különálló pontok) mutatja. A hegedűábra a sűrűségfüggvény és a dobozábra furcsa hibridje, amely majd a több kategória összehasonlításában lesz igazán praktikus. A fenti magasság-eloszlás egy dobozábrán és egy hegedűábrán:</p>
+<p>Szintén kedvelt diagram a dobozábra, amely a változó mediánját, alsó
+és felső kvartilisét és terjedelmét (beállításoktól függően a kiugró
+értékeket is - az ábrán a különálló pontok) mutatja. A hegedűábra a
+sűrűségfüggvény és a dobozábra furcsa hibridje, amely majd a több
+kategória összehasonlításában lesz igazán praktikus. A fenti
+magasság-eloszlás egy dobozábrán és egy hegedűábrán:</p>
 <p><img src="vizualizacio_files/figure-html/boxplot-1.png" width="960" /></p>
 </div>
 </div>
 </div>
 <div id="két-változó-összefüggése" class="section level1">
 <h1>Két változó összefüggése</h1>
-<p>Ugyan egyelőre még nem foglalkoztunk azokkal a statisztikai módszerekkel, amelyek két változó összefüggését vizsgálják, érdemes már most megismerkedni azokkal a diagrammokkal, amelyekkel az ilyen összefüggések jól bemutathatók.</p>
+<p>Ugyan egyelőre még nem foglalkoztunk azokkal a statisztikai
+módszerekkel, amelyek két változó összefüggését vizsgálják, érdemes már
+most megismerkedni azokkal a diagrammokkal, amelyekkel az ilyen
+összefüggések jól bemutathatók.</p>
 <div id="két-diszkrét-változó-összefüggése" class="section level2">
 <h2>Két diszkrét változó összefüggése</h2>
 <div id="halmozott-oszlopdiagram" class="section level3">
 <h3>Halmozott oszlopdiagram</h3>
-<p>A legkézenfekvőbb módja az összefüggés bemutatása a halmozott oszlopdiagram, amely százalékos arányban adja meg az egyik (ha van: a független) változó kategóriáin belül a másik (függő) változó megoszlását.</p>
+<p>A legkézenfekvőbb módja az összefüggés bemutatása a halmozott
+oszlopdiagram, amely százalékos arányban adja meg az egyik (ha van: a
+független) változó kategóriáin belül a másik (függő) változó
+megoszlását.</p>
 <p><img src="vizualizacio_files/figure-html/stacked-1.png" width="768" /></p>
 </div>
 </div>
-<div id="egy-diszkrét-és-egy-skála-mérési-szintű-változó-összefüggése" class="section level2">
+<div id="egy-diszkrét-és-egy-skála-mérési-szintű-változó-összefüggése"
+class="section level2">
 <h2>Egy diszkrét és egy skála mérési szintű változó összefüggése</h2>
 <div id="dobozábrák-és-hegedűábrák" class="section level3">
 <h3>Dobozábrák és hegedűábrák</h3>
-<p>A dobozábrák nem csak egy csoport vagy változó bemutatására alkalmasak, hanem használhatjuk egy változó értékeinek összevetésére több csoportban, vagy akár még arra is van lehetőség, hogy kétféle bontásban (pl. ország és nem) mutassuk be az értékeket.</p>
+<p>A dobozábrák nem csak egy csoport vagy változó bemutatására
+alkalmasak, hanem használhatjuk egy változó értékeinek összevetésére
+több csoportban, vagy akár még arra is van lehetőség, hogy kétféle
+bontásban (pl. ország és nem) mutassuk be az értékeket.</p>
 <p>A tengelyek felcserélhetők, ennek nincs jelentősége.</p>
 <p><img src="vizualizacio_files/figure-html/box_compare-1.png" width="960" /></p>
 </div>
 <div id="hisztogramok-vagy-sűrűségfüggvények" class="section level3">
 <h3>Hisztogramok vagy sűrűségfüggvények</h3>
-<p>A hisztorgramok és sűrűségfüggvények is használhatók két vagy több (de általában nem túl sok, mert áttekinthetetlenekké válnak) csoport összehasonlítására. Az alábbi ábrák ugyanazokat az adatokat mutatják be más-más formában. Az egyik lehetőség (1. ábra), hogy a csoportok egymásra rakódnak, vagyis nem külön-külön látjuk a két csoport hisztogramját, hanem egy, a teljes mintára vonatkozó hisztogram van felosztva. Itt például látszik, hogy a magas személyek között a férfiak vannak többségben (az eloszlás jobb oldala nagyrészt kék). A másik lehetőség (2. és 3. ábra), hogy a két vagy több csoportra külön-külön készítjük a hisztogramot, amelyek átfedhetik egymást (2. ábra) vagy külön is megjeleníthetők, azonos x tengellyel (3. ábra) az összevetés érdekében. Hisztogramok helyett ebben az esetben is használhatunk empirikus sűrűségfüggvényeket.</p>
+<p>A hisztorgramok és sűrűségfüggvények is használhatók két vagy több
+(de általában nem túl sok, mert áttekinthetetlenekké válnak) csoport
+összehasonlítására. Az alábbi ábrák ugyanazokat az adatokat mutatják be
+más-más formában. Az egyik lehetőség (1. ábra), hogy a csoportok
+egymásra rakódnak, vagyis nem külön-külön látjuk a két csoport
+hisztogramját, hanem egy, a teljes mintára vonatkozó hisztogram van
+felosztva. Itt például látszik, hogy a magas személyek között a férfiak
+vannak többségben (az eloszlás jobb oldala nagyrészt kék). A másik
+lehetőség (2. és 3. ábra), hogy a két vagy több csoportra külön-külön
+készítjük a hisztogramot, amelyek átfedhetik egymást (2. ábra) vagy
+külön is megjeleníthetők, azonos x tengellyel (3. ábra) az összevetés
+érdekében. Hisztogramok helyett ebben az esetben is használhatunk
+empirikus sűrűségfüggvényeket.</p>
+<pre><code>## Warning: The `&lt;scale&gt;` argument of `guides()` cannot be `FALSE`. Use &quot;none&quot;
+## instead as of ggplot2 3.3.4.</code></pre>
 <p><img src="vizualizacio_files/figure-html/hist_compare-1.png" width="960" /></p>
 </div>
 </div>
-<div id="két-skála-mérési-szintű-változó-összefüggése" class="section level2">
+<div id="két-skála-mérési-szintű-változó-összefüggése"
+class="section level2">
 <h2>Két skála mérési szintű változó összefüggése</h2>
 <div id="felhődiagram" class="section level3">
 <h3>Felhődiagram</h3>
-<p>Két skála mérési szintű változó kapcsolatát felhődiagrammal (másképpen: szórásdiagram) szokás ábrázolni (angolul: scatter plot).</p>
+<p>Két skála mérési szintű változó kapcsolatát felhődiagrammal
+(másképpen: szórásdiagram) szokás ábrázolni (angolul: scatter plot).</p>
 <p><img src="vizualizacio_files/figure-html/scatter-1.png" width="672" /></p>
-<p>Ez a diagram alkalmas egy további kvalitatív szempont ábrázolására (pl. csoportok szerinti bontás vagy színezés). A két változó közötti kapcsolatot ábrázolhatjuk például a lineáris regressziós becslés egyenesével (Statisztika 2. kurzuson tanuljuk majd)</p>
+<p>Ez a diagram alkalmas egy további kvalitatív szempont ábrázolására
+(pl. csoportok szerinti bontás vagy színezés). A két változó közötti
+kapcsolatot ábrázolhatjuk például a lineáris regressziós becslés
+egyenesével (Statisztika 2. kurzuson tanuljuk majd)</p>
 <p><img src="vizualizacio_files/figure-html/unnamed-chunk-1-1.png" width="960" /></p>
 </div>
 </div>
 </div>
-<div id="több-azonos-formán-mért-változó-megoszlásának-összehasonlítása" class="section level1">
+<div id="több-azonos-formán-mért-változó-megoszlásának-összehasonlítása"
+class="section level1">
 <h1>Több azonos formán mért változó megoszlásának összehasonlítása</h1>
-<p>Nem mutatok be ismét minden lehetőséget, de az egy diszkrét és egy másik változó összefüggését bemutató ábrák egy másik esetben - az azonos formán mért változók megoszlásának összevetése - is jól használhatók. Ebben az esetben a diszkrét változó helyét az ábrán az veszi át, hogy melyik változóról van szó, míg a másik tengely ugyanúgy működik, tehát a diszkrét változó százalékos megoszlását vagy a folytonos változó értékeit mutatja.</p>
+<p>Nem mutatok be ismét minden lehetőséget, de az egy diszkrét és egy
+másik változó összefüggését bemutató ábrák egy másik esetben - az azonos
+formán mért változók megoszlásának összevetése - is jól használhatók.
+Ebben az esetben a diszkrét változó helyét az ábrán az veszi át, hogy
+melyik változóról van szó, míg a másik tengely ugyanúgy működik, tehát a
+diszkrét változó százalékos megoszlását vagy a folytonos változó
+értékeit mutatja.</p>
 <p><img src="vizualizacio_files/figure-html/unnamed-chunk-2-1.png" width="960" /></p>
 </div>
 <div id="idősorok-vonal--vagy-területdiagram" class="section level1">
 <h1>Idősorok: Vonal- vagy területdiagram</h1>
-<p>A vonaldiagramot változók időbeli változásának ábrázolására szokás használni. Akárcsak az oszlopdiagramnál, arra kell figyelni, hogy ha az ábrázolt változónak van 0 pontja, akkor az y tengely a 0-tól induljon! A területdiagram ugyanerre használható, a különbség annyi, hogy a vonal alatti terület is színezve van. Utóbbi akkor hasznos, ha a teljes összeg több részből tevődik össze, amelyeket egymásra rakódva mutatunk be (ld. utolsó ábra)</p>
+<p>A vonaldiagramot változók időbeli változásának ábrázolására szokás
+használni. Akárcsak az oszlopdiagramnál, arra kell figyelni, hogy ha az
+ábrázolt változónak van 0 pontja, akkor az y tengely a 0-tól induljon! A
+területdiagram ugyanerre használható, a különbség annyi, hogy a vonal
+alatti terület is színezve van. Utóbbi akkor hasznos, ha a teljes összeg
+több részből tevődik össze, amelyeket egymásra rakódva mutatunk be (ld.
+utolsó ábra)</p>
 <p><img src="vizualizacio_files/figure-html/unnamed-chunk-4-1.png" width="960" /></p>
 </div>
 
@@ -560,6 +634,9 @@ $(document).ready(function () {
 
 <script>
 $(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
 
     // move toc-ignore selectors from section div to header
     $('div.section.toc-ignore')

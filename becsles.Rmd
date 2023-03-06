@@ -1,0 +1,650 @@
+---
+title: "Becsléselmélet"
+output: 
+  html_document:
+    toc: true
+    toc_float: 
+        collapsed: false
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, fig.align = "center", fig.height = 3, message = FALSE)
+library(tidyverse)
+library(patchwork)
+library(cowplot)
+library(here)
+source(here("scripts/shadecurve.R"))
+source(here("scripts/plot_normal.R"))
+
+
+round2 = function(x, n) {
+  posneg = sign(x)
+  z = abs(x)*10^n
+  z = z + 0.5 + sqrt(.Machine$double.eps)
+  z = trunc(z)
+  z = z/10^n
+  z*posneg
+}
+```
+
+<style>
+  p {
+    line-height: 1.5;
+  }
+  h1 {
+    margin-top: 2em;
+    margin-bottom: 1em;
+  }
+  h2 {
+    margin-top: 2em;
+    margin-bottom: 1em;
+  }
+  h3 {
+    margin-top: 2em;
+    margin-bottom: 1em;
+  }
+  h4 {
+    margin-top: 2em;
+    margin-bottom: 1em;
+  }
+  div {
+  padding: 10px 0;
+  }
+  .centered {
+    text-align: center;
+  }
+  strong {
+    color: #a82727;
+  }
+  .exercise {
+    background-color: rgba(255, 88, 77, 0.1);
+    padding: 10px;
+  }
+  .solution {
+    background-color: rgba(0, 280, 140, 0.1);
+    padding: 10px;
+  }
+</style>
+
+
+```{r, echo = FALSE}
+mean.1 <- 100
+sd.1 <- 10
+x <- seq(mean.1 - 3*sd.1, mean.1 + 3*sd.1, by = 0.01)
+normaldata1 <- data.frame(
+  x = x,
+  y = dnorm(x, mean = mean.1, sd = sd.1)
+)
+
+n.100.10 <- ggplot(normaldata1, aes(x = x, y = y)) + geom_line()
+mean.1 <- 0
+sd.1 <- 1
+x <- seq(mean.1 - 3*sd.1, mean.1 + 3*sd.1, by = 0.01)
+normaldata <- data.frame(
+  x = x,
+  y = dnorm(x, mean = mean.1, sd = sd.1),
+  yc = pnorm(x, mean = mean.1, sd = sd.1)
+)
+cdf.0.1 <- ggplot(normaldata, aes(x = x, y = yc)) + geom_area(fill = "lightblue", alpha = 0.7) + geom_line(size = 1.3)
+cdf.0.1 <- cdf.0.1 + geom_vline(xintercept = 1.35, lty = "dashed") + 
+  geom_hline(yintercept = pnorm(1.35, 0, 1), lty = "dashed") +
+  scale_x_continuous(breaks = c(0, 1.35)) + 
+  scale_y_continuous(breaks = c(0, 0.5, pnorm(1.35, 0, 1), 1), 
+                     labels = paste(c(0, 0.5, round(pnorm(1.35, 0, 1), 4), 1)*100, "%")) +
+  theme_classic() + ylab("F(x)")
+
+n.0.1 <- ggplot(normaldata, aes(x = x, y = y)) + geom_line() 
+pdf.1 <- n.0.1 + shade_curve(normaldata, zstart = -3, zend = 1.35, fill = "darkgreen", alpha = 0.7) +
+  shade_curve(normaldata, zstart = 1.35, zend = 3, fill = "grey", alpha = 0.3) + 
+  theme_classic() + ylab("") + xlab("") +
+  scale_x_continuous(breaks = 1.35) +
+  annotate("text", x = 0, y = 0.1, label = "91,15%", col = "white")
+under1.5 <- n.0.1 + shade_curve(normaldata, zstart = -3, zend = 1.5, fill = "orange", alpha = 0.7) +
+  shade_curve(normaldata, zstart = 1.5, zend = 3, fill = "grey", alpha = 0.3) + 
+  theme_classic() + ylab("") + xlab("") +
+  scale_x_continuous(breaks = c(1.5))+
+  annotate("text", x = 0, y = 0.1, label = "93,32%", col = "black")
+over.minus1.5 <- n.0.1 + shade_curve(normaldata, zstart = -3, zend = -1.5, fill = "grey", alpha = 0.3) +
+  shade_curve(normaldata, zstart = -1.5, zend = 3, fill = "darkgreen", alpha = 0.7) + 
+  theme_classic() + ylab("") + xlab("") +
+  scale_x_continuous(breaks = c(-1.5))+
+  annotate("text", x = 0, y = 0.1, label = "93,32%", col = "white")
+pl1 <- n.100.10 + theme_classic() + ylab("") + xlab("") +
+  shade_curve(normaldata1, zstart = 70, zend = 90, fill = "orange", alpha = 0.7) +
+  shade_curve(normaldata1, zstart = 90, zend = 110, fill = "darkgreen", alpha = 0.7) +
+  shade_curve(normaldata1, zstart = 110, zend = 130, fill = "grey", alpha = 0.3) +
+  scale_x_continuous(breaks = c(10*8:12)) +
+  annotate("text", x = 84, y = 0.005, label = "15,87%", size = 3) +
+  annotate("text", x = 100, y = 0.01, label = "68,26%", col = "white") +
+  annotate("text", x = 116, y = 0.005, label = "15,87%", size = 3)
+pl2 <- n.0.1 + shade_curve(normaldata, zstart = -1, zend = 1, fill = "darkgreen", alpha = 0.7) +
+  shade_curve(normaldata, zstart = -3, zend = -1, fill = "orange", alpha = 0.7) +
+  shade_curve(normaldata, zstart = 1, zend = 3, fill = "grey", alpha = 0.3) +
+  theme_classic() + ylab("") + xlab("") +
+  scale_x_continuous(breaks = c(-2:2)) +
+  annotate("text", x = -1.6, y = 0.05, label = "15,87%", size = 3) +
+  annotate("text", x = 0, y = 0.1, label = "68,26%", col = "white") +
+  annotate("text", x = 1.6, y = 0.05, label = "15,87%", size = 3)
+pl3 <- n.100.10 + theme_classic() + ylab("") + xlab("") +
+  shade_curve(normaldata1, zstart = 70, zend = 80.4, fill = "grey", alpha = 0.3) +
+  shade_curve(normaldata1, zstart = 80.4, zend = 119.6, fill = "darkgreen", alpha = 0.7) +
+  shade_curve(normaldata1, zstart = 119.6, zend = 130, fill = "grey", alpha = 0.3) +
+  scale_x_continuous(breaks = c(80.4, 100, 119.6)) +
+  annotate("text", x = 100, y = 0.01, label = "95%", col = "white")
+pl4 <- n.0.1 + shade_curve(normaldata, zstart = -1.96, zend = 1.96, fill = "darkgreen", alpha = 0.7) +
+  shade_curve(normaldata, zstart = -3, zend = -1.96, fill = "grey", alpha = 0.3) +
+  shade_curve(normaldata, zstart = 1.96, zend = 3, fill = "grey", alpha = 0.3) +
+  theme_classic() + ylab("") + xlab("") +
+  scale_x_continuous(breaks = c(-1.96, 0, 1.96)) +
+  annotate("text", x = 0, y = 0.1, label = "95%", col = "white") 
+
+```
+
+## Az előző rész tartalmából
+
+A leíró statisztikáknál megnéztük, hogyan kell becsülni (többet között) a kvantitatív változó várható értékét (a számtani átlaggal) és a szórást (a korrigált tapasztalati szórással). Ezentúl a változó várható értékét (ez a populációra vonatkozik) a görög *mű* ($\mu$), a szórását pedig a kis *szigma* ($\sigma$) fogja jelölni. Ezek tehát a populációra vonatkozó értékek, amelyeket nem szoktunk ismerni. A becsléseket $\overline{X}$ (átlag) és s* (szórás) jelöli majd. Ezeket a mintából számítjuk.
+
+A normális eloszlást pedig két paraméterrel adjuk meg (ld. összefoglaló): a várható értékkel és szórással: N(&mu;, &sigma;) lesz a bevett jelölés. Ez az eloszlás azért fontos, mert sok változó, illetve statisztika (pl. átlag, különböző tesztek eredményei) normális eloszlású, vagy pedig sok statisztikai módszerhez ilyen eloszlásra van szükség.
+  
+Pl.: a testmagasságok egy populációban N(170, 7) eloszlásúak, vagyis 170 cm a várható magasság, és ahhoz képest 7 cm a várható eltérés (szórás).
+
+Az átlag és szórás becsléséhez vegyük hozzá, hogy egy-egy érték valószínűségét a **relatív gyakorisággal** becsülhetjük (p-vel jelöljük):  Például, ha egy 1000 fős mintában 470-en beszélnek angolul, akkor az angol-tudás valószínűségét a populációban $p = \frac{k}{N} = \frac{470}{1000} = 0,47 = 47\%$-ra becsülhetjük.  
+  
+
+## Pontbecslés és intervallumbecslés
+
+Mivel a becslés eredménye egy-egy szám volt mindhárom esetben, ezeket **pontbecslésnek** nevezzük. Ezekkel kapcsolatban fontos tudatában lennünk, hogy a mintaátlag, a tapasztalati szórás, a relatív gyakoriság is (és később ez igaz lesz minden más statisztikára is) változók, mivel mintáról mintára eltér az értékük. Biztosak lehetünk tehát, hogy a mintából kapott értékeink eltérnek a tényleges populációs értékektől. 
+
+A fenti állításokat egy szimuláció segítségével tudjuk alátámasztani.  
+Vegyünk három mintát egy &mu; = 170 várható értékű és &sigma; = 10 szórású normális eloszlású változóból. Ezt jelöljük úgy, hogy $\xi \sim N(170, 10)$, vagyis a kszível jelölt változó 170 várható értékű, 10 szórású normális eloszlást követ.
+
+```{r, echo = FALSE}
+sample1 <- rnorm(100, 170, 10)
+sample2 <- rnorm(500, 170, 10)
+sample3 <- rnorm(200, 170, 10)
+
+sizes <- c(100, 500, 200)
+means <- round2(c(mean(sample1), mean(sample2), mean(sample3)), 2)
+sdevs <- round2(c(sd(sample1), sd(sample2), sd(sample3)), 2)
+
+outtable <- cbind(sizes, means, sdevs)
+colnames(outtable) <- c("Elemszám", "Átlag", "Szórás")
+rownames(outtable) <- c("1. minta", "2. minta", "3. minta")
+knitr::kable(outtable)
+```
+
+Látható, hogy mintáról mintára kisebb-nagyobb mértékben eltér az átlag és a szórás, és a kapott értékek a tényleges értékektől is eltérnek. Ugyanez lenne a helyzet valamilyen tulajdonság relatív gyakoriságával, mint azt néztük is annak idején a hipergeometrikus eloszlásnál (pl. a selejt termékek száma mintáról mintára változott). Az egyik mintában pl. 30% a szőkék aránya, egy másik mintában 32%, egy harmadikban 27%. Tehát ez is változó.  
+  
+Ha pedig az átlag, szórás és relatív gyakoriság változók, akkor ezeknek is van **várható értéke** és **szórása**. Előbbi megegyezik a változó várható értékével (a mintaátlag esetében), szórásával (a tapasztalati szórás esetében) vagy pedig az adott esemény valószínűségével (a relatív gyakoriság esetén). Ezt nevezzük a becslés **torzítatlanságának**.
+
+A becslések szórását pedig az adott statisztika **standard hibájának** nevezzük. Ez is végső soron csak egy szórás, de a külön név talán segít megkülönböztetni az adott statisztika szórását a változónak magának a szórásától. Hamarosan megnézzük, mennyi a st. hiba az egyes esetekben.
+
+A pontbecslés, illetve a standard hiba (vagy az arra vonatkozó becslés) segítségével megadhatunk **intervallumbecslést** is. Egy olyan intervallumot, amelybe az ismeretlen, becsülni kívánt paraméter (pl. a várható érték, szórás, arány) megadott valószínűséggel beleesik. Ezt az intervallumot **konfidenciaintervallumnak**, a valószínűséget **konfidenciaszintnek** nevezzük, és $1 - \alpha$-val jelöljük, az intervallum határait pedig **konfidenciahatároknak**. A konfidenciaszintet mi választjuk: bevett értéke a társadalomtudományokban 95%, de ez csak irányadó, ennél kisebb vagy nagyobb értéket is választhatunk (pl. 90%-ot vagy 99%-ot).  
+  
+### Az átlag eloszlása
+
+Az átlag pontbecsléséről mondtuk, hogy torzítatlan, vagyis várható értéke egyenlő a populációs várható értékkel. Ezt úgy tudjuk elképzelni, hogy ha ismételten tudnánk mintákat venni, akkor az átlagok átlagos értéke a várható értéket közelítené meg. 
+
+Az átlag esetében pedig a standard hiba értéke: 
+$$SE=\frac{\sigma}{\sqrt{N}}$$
+A fenti képletben &sigma; a változó szórása, N pedig a mintaelemszám.
+
+Nézzünk erre is egy szimulációt:
+Tegyük fel, hogy a testmagasság egy populációban a fent is említett N(170, 10) eloszlást követi. Vegyünk ebből a populációból 100 elemű mintákat. A fentiek értelmében arra számítunk, hogy a mintaátlag normális eloszlású lesz, várható értéke 170 lesz, a standard hibája (szórása) pedig $SE=\frac{10}{\sqrt{100}}=1$.
+A gyakorlatban egy mintát tudnánk venni, és nem ismernénk sem a tényleges várható értéket, sem a szórást. De erre tartjuk a szimulációkat. Vegyünk 10 000 mintát, és nézzük a mintaátlag eloszlását! 
+(A kék szaggatott az elméleti eloszlás, a fekete szaggatott vonal pedig a mintaátlagok átlaga)
+
+```{r, echo = FALSE}
+means <- NULL
+sds <- NULL
+for (i in 1:10000) {
+  numbers <- rnorm(100, 170, 10)
+  means[i] <- mean(numbers)
+  sds[i] <- sd(numbers)
+  simdata <- data.frame(means = means,
+                        deviations = sds)
+}
+
+mplot <- ggplot(simdata, aes(means))
+mplot + geom_density(fill = "lightblue", alpha = 0.7) +
+  geom_vline(xintercept = mean(means), col = "black", lty = "dashed") +
+  geom_line(aes(x = means, y = dnorm(means, mean = 170, sd = 1)), linetype = "twodash", color = "blue") +
+  theme_classic() + ylab("") + xlab ("")
+```
+
+A legkisebb átlag, amit kaptunk `r round2(min(means), 2)` volt, a legnagyobb pedig `r round2(max(means), 2)`, de az ábrán látható, hogy az átlagok túlnyomó többsége 168 és 172 közé esik. Az átlagok átlaga pedig `r round2(mean(means), 2)`, a szórásuk pedig `r round2(sd(means), 2)`. Ez elég közel esik a várakozásainkhoz: 170-es átlaghoz és 1-es standard hibához.
+
+Korábban, a [normális eloszlásnál](https://morauszkia.github.io/stat1sz/normalis-eloszlas.html) néztük egyrészt, hogyan tudunk adott valószínűségeknek megfelelő területeket lehatárolni, illetve hogyan tudunk standard és nem standard normális eloszlásokat egymássá konvertálni. Így például láttuk, hogy a standard normális eloszlás értéke 95%-os valószínűséggel -1,96 és +1,96 közé esik. Ezeknek a határoknak a fenti N(170, 1) eloszlás esetében a 
+
+$$170 \pm 1.96*1=[168,04;171,96]$$
+
+határértékek felelnek meg. Vagyis a mintaátlag 95%-os valószínűséggel ezek közé fog esni. A fenti 10 000 mintából `r paste0(100*sum((simdata$means >= 168.04)&(simdata$means <= 171.96))/nrow(simdata), "%")`-ban esett a mintaátlag a megadott tartományba (Kb. 95% - kis eltérések mindig vannak a gyakorlatban)
+  
+Jó hír: a várakozásaink bejöttek, az átlag tényleg úgy viselkedik, ahogy kell neki. További jó hír, hogy a **centrális határeloszlás tétel** miatt az átlag akkor is normális eloszlású, ha a változó maga nem. Ezt [itt is](https://seeing-theory.brown.edu/probability-distributions/index.html#section3) ellenőrizhetik, ha kicsit eljátszanak a beállításokkal. (Ne felejtsék kipipálni a "Theoretical"-t)  
+  
+Az alábbi ábrán egy egyenletes és egy exponenciális változóból vett, 100 elemű mintákból számított, mintaátlagok eloszlásait láthatják:  
+
+```{r, echo = FALSE, fig.height = 3}
+m.unif <- NULL
+m.exp <- NULL
+
+for (i in 1:10000) {
+  sunif <- runif(100, 0, 100)
+  sexp <- rexp(100, 0.1)
+  m.unif[i] <- mean(sunif)
+  m.exp[i] <- mean(sexp)
+  plotdata <- data.frame(munif = m.unif,
+                        mexp = m.exp)
+}
+nplot1 <- ggplot(plotdata, aes(munif)) + geom_density(fill = "lightblue", alpha = 0.7) +
+  theme_classic() + ylab("") + xlab("") + ggtitle("Egyenletes eloszlás \n(A = 0, B = 100)")
+nplot2 <- ggplot(plotdata, aes(mexp)) + geom_density(fill = "lightgreen", alpha = 0.7) +
+  theme_classic() + ylab("") + xlab("") + ggtitle("Exponenciális eloszlás \n(lambda = 0.1)")
+plot_grid(nplot1, nplot2, vjust = 3)
+```
+  
+Figyelem: az ábrák a szimulált *átlagok* (esetenként 10 000 db 100 elemű mintából számított) sűrűségfüggyvényei, nem pedig a változóké, amelyek teljesen más alakú eloszlást (egyenletest és exponenciálist) követnek.
+
+### Intervallumbecslés várható értékre ismert populációs szórással
+
+A várható értékre vonatkozó intervallumbecslés a fentieken alapul. Viszont a gyakorlatban egyetlen mintával dolgozunk, és nem tudjuk, mennyi a tényleges várható érték (és azt sem, mennyi a tényleges szórás, de egyszerre egy problémával birkózzunk meg)
+
+Azt ugyan nem tudjuk, a kapott átlagunk magasabb, vagy alacsonyabb a tényleges várható értéknél, de azt tudjuk, hogy nagy valószínűséggel legfeljebb mennyire tér el tőle.
+
+Tegyük fel, hogy a mintából 169,13 átlagot kaptunk. Azt tudjuk, hogy a változó (!) szórása 10, a mintánk pedig 100 elemű. Vagyis a mintaátlagok 95%-os valószínűséggel legfeljebb 1.96 standard hibányira, vagyis $\pm1.96*\frac{10}{\sqrt{100}}=\pm1.96$-nyira térnek el a várható értéktől. Mivel pedig a különbség szimmetrikus, az egészet megfordíthatjuk, és azt mondhatjuk, hogy 95%-os valószínűséggel a várható érték legfeljebb $\pm1.96$-nyira tér el a mintaátlagtól. 
+
+Mindez képletszerűen: 
+
+$$ \overline{X} \pm 1,96* \frac{\sigma}{\sqrt{N}}$$
+
+Általánosan (hogy ne csak 95%-os intervallumot tudjunk számítani):
+
+$$ \overline{X} \pm z_{1-\frac{\alpha}{2}}* \frac{\sigma}{\sqrt{N}}$$
+Ebben $z_{1-\frac{\alpha}{2}}$ a st. normális eloszlásnak az adott 1 - &alpha; konfidenciaszinthez tartozó értéke.
+**FIGYELEM**: Mi 1 - &alpha; konfidenciaszintre törekszünk, de ehhez a táblázatban az $z_{1-\frac{\alpha}{2}}$ valószínűséget kell megkeresni, tehát pl. 95%-hoz 0,975-öt.
+
+Mindez szintén megmutatható egy szimuláció segítségével. Korábban megnéztük, hogy a minták kb. 95%-ában az átlag a populációbeli várható értéktől legfeljebb 1,96 standard hibányira volt. Nézzük meg a 10 000 szimulált minta közül az esetek hány százalékában van a várható érték (170) a mintaátlagtól legfeljebb 1,96 st. hibányira, vagyis a fenti szabályokat betartva megszerkesztett intervallumon belül:
+`r 100*sum((simdata$means-1.96 <= 170)&(simdata$means+1.96 >= 170))/nrow(simdata)`%  
+  
+Vessék ezt össze a néhány bekezdéssel feljebb kapott aránnyal - nem véletlen, hogy egyezik: ha az átlag beleesik a várható érték 1,96 st. hibányi környezetébe, akkor a várható érték is beleesik az átlag 1,96 st. hibányi környezetébe. A szimuláció tehát megerősíti, hogy ha az egyetlen mintánkból becsült átlag köré szerkesztjük meg az intervallumot, a várható érték az elérni kívánt megbízhatósággal (pl. 95%) bele fog esni.  
+  
+**Mi a különbség a 95%, 90% és 99%-os intervallumok között?**  
+Az alábbi ábra véletlenszerűen kiválasztott 200 mintára számított 95%-os konfidenciaintervallumokat mutat (a mintákat az átlag szerint sorbaraktuk):
+
+```{r, echo = FALSE, fig.height = 4}
+intdata <- simdata %>% sample_n(200, replace = FALSE) %>% 
+  mutate(row.no = min_rank(means), 
+         conf.95.low = means - 1.96, conf.95.hi = means + 1.96, cont.95 = (conf.95.low <= 170)&(conf.95.hi >= 170),
+         conf.90.low = means - 1.65, conf.90.hi = means + 1.65, cont.90 = (conf.90.low <= 170)&(conf.90.hi >= 170),
+         conf.99.low = means - 2.58, conf.99.hi = means + 2.58, cont.99 = (conf.99.low <= 170)&(conf.99.hi >= 170))
+conf.int.95 <- ggplot(intdata, aes(x = row.no, y = means, color = cont.95))
+conf.int.95 + geom_pointrange(aes(ymin = conf.95.low, ymax = conf.95.hi), alpha = 0.5) + 
+  geom_hline(yintercept = 170, linetype = "dashed") +
+  theme_classic() + xlab("") + ylab("") + theme(legend.position = "bottom") + ggtitle("95%-os konf.intervallumok (200 szimulált mintában)") +
+  scale_color_manual(values = c("#B4070F", "#189302"),
+                     name = "Tartalmazza a várható értéket",
+                     breaks = c("FALSE", "TRUE"),
+                     labels = c("Nem", "Igen")) +
+  geom_hline(yintercept = 171.96, linetype = "dotted") +
+  geom_hline(yintercept = 168.04, linetype = "dotted")
+```
+  
+Látható, hogy vannak esetek, amikor a konfidenciaintervallum nem tartalmazza a 100-as várható értéket. Ezért 95%-os és nem 100%-os. Ezzel sajnos számolnunk kell. A középső szaggatott vonal az egyébként ismeretlen várható érték, a felső és alsó pontozott vonalak pedig a várható érték köré felrajzolt konfidenciaintervallumok. Élesben ezeket sem tudjuk kiszámítani, de látszik, hogy épp azoknak a mintáknak az esetében "lóg rá" a konfidenciaintervallumot mutató sáv a várható értékre, amelyek átlaga a szaggatott vonalak között van.  
+
+Ha nagyobb (99%) megbízhatóságot szeretnénk, növelni kell az intervallum szélességét:  
+```{r, echo = FALSE, fig.height = 4}
+conf.int.99 <- ggplot(intdata, aes(x = row.no, y = means, color = cont.99))
+conf.int.99 + geom_pointrange(aes(ymin = conf.99.low, ymax = conf.99.hi), alpha = 0.5) + 
+  geom_hline(yintercept = 170, linetype = "dashed") +
+  theme_classic() + xlab("") + ylab("") + theme(legend.position = "bottom") + ggtitle("99%-os konf.intervallumok (200 szimulált mintában)") +
+  scale_color_manual(values = c("#B4070F", "#189302"),
+                     name = "Tartalmazza a várható értéket",
+                     breaks = c("FALSE", "TRUE"),
+                     labels = c("Nem", "Igen"))
+```
+
+De választhatunk kisebb (90%) konfidenciaszintet is:  
+```{r, echo = FALSE, fig.height = 4}
+conf.int.90 <- ggplot(intdata, aes(x = row.no, y = means, color = cont.90))
+conf.int.90 + geom_pointrange(aes(ymin = conf.90.low, ymax = conf.90.hi)) + 
+  geom_hline(yintercept = 170, linetype = "dashed") +
+  theme_classic() + xlab("") + ylab("") + theme(legend.position = "bottom") + ggtitle("90%-os konf.intervallumok (200 szimulált mintában)") +
+  scale_color_manual(values = c("#B4070F", "#189302"),
+                     name = "Tartalmazza a várható értéket",
+                     breaks = c("FALSE", "TRUE"),
+                     labels = c("Nem", "Igen"))
+```
+
+Az átlagok mindhárom esetben ugyanazok. Látható, hogy minél nagyobb a konfidenciaszint, annál kevesebb esetben nem tartalmazza az intervallum a becsült paramétert. Cserébe viszont a becslési intervallumok hosszabbak.
+A fenti képletben az intervallum hosszát a $\pm z_{1-\frac{\alpha}{2}}* \frac{\sigma}{\sqrt{N}}$ rész adja meg: az intervallum hossza $2*  z_{1-\frac{\alpha}{2}}* \frac{\sigma}{\sqrt{N}}$
+Látható, hogy az intervallum hossza három tényezőtől függ:  
+
+* Minél nagyobb a **változó szórása**, annál nagyobb lesz a szükséges intervallum
+* Minél nagyobb **konfidenciaszintre** törekszünk, annál nagyobb intervallumot kell használnunk
+* Minél nagyobb a **mintaelemszám**, annál kisebb intervallumra van szükségünk - de: a mintanagyság négyzetgyök alatt van, vagyis pl. az intervallum megfelezéséhez az elemszám négyszeresére van szükség.
+
+<div class="exercise">
+```{r, echo = FALSE}
+selection <- simdata %>% sample_n(1)
+smean <- round2(selection$means, 2)
+ssd <- round2(selection$deviations, 2)
+```
+
+Egy 100 elemű mintában a mintaátlag `r smean`. A populációban a szórás értéke 10. Adjon intervallumbecslést a várható értékre $1-\alpha=0.95$ konfidenciaszint mellett!
+</div>
+
+<div class="solution">
+Az alábbi képletet használjuk:  
+$$\overline{X} \pm z_{1-\frac{\alpha}{2}}* \frac{\sigma}{\sqrt{N}}$$
+Az átlag, szórás és mintanagyság ismert, így ezeket csak behelyettesítjük. A $z_{1-\frac{\alpha}{2}}$ értéket a standard normális eloszlás táblázatából kapjuk: Ha $1-\alpha = 0,95$ akkor a táblázatos valószínűség: $1-\frac{\alpha}{2} = 0,975$. Ennek a táblázatban az 1,96-os érték felel meg.  
+
+Behelyettesítve:  
+$$ \overline{X} \pm z_{1-\frac{\alpha}{2}}* \frac{\sigma}{\sqrt{N}}=`r smean` \pm1,96* \frac{10}{\sqrt{100}}$$ 
+
+A két határérték: `r smean-1.96` és `r smean+1.96`.
+
+Válasz:  
+A populációban a változó várható értéke 95%-os megbízhatósággal a `r smean-1.96` és `r smean+1.96` közötti intervallumba esik.
+</div>
+
+### Intervallumbecslés várható értékre mintából becsült szórással
+
+Az előző részben megnéztük, hogyan tudunk intervallumbecslést adni a várható értékre, felhasználva azt, amit a normális elszlású változókról tudunk. Ebben azonban egy olyan adatot használtunk (a $\sigma$ populációs szórást), amelyet jellemzően nem ismerünk, hanem a mintából próbálunk becsülni. Emiatt ez is egy változó, és mint ilyen, tudatában kell lennünk, hogy mintáról mintára változik, ingadozik, és ezt a bizonytalanságot be kell kalkulálni az intervallumbecslésbe.
+
+A megoldás az lesz, hogy a standard normális eloszlás helyett az arra sok tekintetben hasonlító **Student-féle t-eloszlást** használjuk. Ennek egy paramétere van: az ún. **szabadságfok** (df). Akárcsak a st. normális eloszlás, ez is szimmetrikus, várható értéke 0, ráadásul minél nagyobb szabadságfokú, annál inkább megközelíti a st. normális eloszlást. Ezt úgy mondjuk, a kettő *aszimptotikusan ekvivalens* (ha df = &infin; lenne, akkor egybeesne a st. normálissal).
+ 
+Különböző szabadságfokú t-eloszlások és a st. normális eloszlás sűrűségfüggvényei:
+
+```{r, echo = FALSE, fig.height = 4}
+x <- seq(-4, 4, by = 0.01)
+y.1 <- dt(x, df = 1)
+y.2 <- dt(x, df = 2)
+y.5 <- dt(x, df = 5)
+stn <- dnorm(x, mean = 0, sd = 1)
+
+tplotdata <- data.frame(x = x,
+                        df1 = y.1,
+                        df2 = y.2,
+                        df5 = y.5,
+                        norm = stn) %>%
+  pivot_longer(-x, names_to = "df", values_to = "y")
+
+tplot <- ggplot(tplotdata, aes(x = x, y = y, color = df))
+tplot + geom_line(size = 1) +
+  theme_classic() + xlab("") + ylab("") +
+  scale_y_continuous(breaks = NULL) +
+  scale_color_manual(values = c("red", "green", "blue", "black"),
+                     name = "Szabadságfok",
+                     breaks = c("df1", "df2", "df5", "norm"),
+                     labels = c("df = 1", "df = 2", "df = 5", "st. normális")) +
+  theme(legend.position = "bottom")
+```
+
+Látható, hogy minél kisebb a szabadságfok, annál nagyobb terület van messzebb a középső tengelytől: a szélek nagyobbak, a középső rész kisebb. Ez azzal jár, hogy kisebb szabadságfok esetén (tehát kisebb mintáknál) még nagyobb intervallumra van szükség ahhoz, hogy megadott konfidenciaszintet elérjünk.  
+
+<div class="centered">
+<p style="font-size: 24px">[Student t-eloszlás táblázat](https://www.dropbox.com/s/3i8yz80y9i4x4g3/eloszl%C3%A1s_t.pdf?dl=0)</p>
+<p style="font-size: 24px">[Online kalkulátor](https://homepage.divms.uiowa.edu/~mbognar/applets/t.html)</p>
+</div>
+
+A t-eloszlás használata annyit változtat az intervallumbecslésen, hogy a korábbi képletben $z_{1-\frac{\alpha}{2}}$-t lecseréljük $t_{df; 1-\frac{\alpha}{2}}$-re, vagyis a df szabadságfoknak és $1-\frac{\alpha}{2}$ valószínűségnek megfelelő táblázatos értékre, a $\sigma$ helyett pedig a becsült $s\ast$ szórásértéket használjuk. Ebben az esetben is az **$1-\frac{\alpha}{2}$** valószínűséget használjuk, hogy az $1-\alpha$ konfidenciaszintet elérjük. A valószínűséget ugyanúgy kell kiszámítani a választott konfidenciaszintből, mint korábban. Tehát pl. 95%-os konfidenciaintervallumhoz a táblázatban a 0,975-ös oszlopot nézzük. A sort a szabadságfok adja meg.  
+
+A képlet tehát ez lesz:
+
+$$\overline{X} \pm t_{df;1-\frac{\alpha}{2}}* \frac{s^{\ast}}{\sqrt{N}}$$
+$$df = N-1$$
+  
+<div class="exercise">
+Egy 100 elemű mintában a mintaátlag `r smean`, a szórás pedig `r ssd`. Adjon intervallumbecslést a várható értékre $1-\alpha=0.95$ konfidenciaszint mellett!
+</div>
+
+<div class="solution">
+Mivel itt most a szórás is a mintából becsült, ezért az alábbi képletet használjuk:  
+$$\overline{X} \pm t_{df;1-\frac{\alpha}{2}}* \frac{s^{\ast}}{\sqrt{N}}$$
+Az átlag, szórás és mintanagyság ismert, így ezeket csak behelyettesítjük. A $t_{df;1-\frac{\alpha}{2}}$ értéket a t-eloszlás táblázatából kapjuk: Ha $1-\alpha = 0,95$ akkor a táblázatos valószínűség: $1-\frac{\alpha}{2} = 0,975$. A szabadságfok $N-1 = 99$. Mivel azonban ez nem szerepel a táblázatban, választani kell a 60-as és 120-as sor között (nem kell választani, ha kalkulátort használnak, mert az kezelni tudja a 99-es sz.fokot). A 60-ast választjuk, mert ezzel kicsit nagyobb intervallumot kapunk, következésképp kicsit nagyobb konfidenciaszintet érünk el. Inkább nagyobb, mint kisebb konfidenciaszintre törekszünk, a 120-as sz.fok pedig 95%-nál egy kicsit kisebb konf.szintet eredményezne. A 60-as df-nek a táblázatban a 2,00 érték felel meg.  
+
+Behelyettesítve:  
+$$\overline{X} \pm t_{df;1-\frac{\alpha}{2}}* \frac{s^{\ast}}{\sqrt{N}}=`r smean` \pm 2* \frac{`r ssd`}{\sqrt{100}}=`r smean`\pm2* `r ssd/10`=`r smean` \pm `r 2*ssd/10`$$  
+
+A két határérték: `r smean-2*ssd/10` és `r smean+2*ssd/10`.
+
+Válasz:  
+A populációban a változó várható értéke 95%-os megbízhatósággal a [`r smean-2*ssd/10`;`r smean+2*ssd/10`] intervallumba esik.
+</div>
+ 
+### Intervallumbecslés valószínűségre (arányra)
+
+Az átlaghoz (és szóráshoz) hasonlóan a mintából becsült arányok (relatív gyakoriságok) is változók. A [nevezetes eloszlásoknál](https://morauszkia.github.io/stat1sz/eloszlasok.html) vettük, hogy a visszatevés nélküli mintavétel típusú folyamatok **hipergeometrikus** eloszlású változókat eredményeznek. Ennek paraméterei a populáció mérete (N), a vizsgált típusú elemek száma a populációban (K) és a mintanagyság (n). Várhatóan $E(\xi)=n*\frac{K}{N}$ vizsgált típusú elem kerül a mintába, a szórás pedig  
+
+$$D(\xi)=\sqrt{n*\frac{K}{N}*(1-\frac{K}{N})*\frac{N-n}{N-1}}$$
+A gyakorlatban viszont nem kell a fenti, bonyolult szórásképletet használni, mivel legtöbbször az *n* mintanagyság csak töredéke a populáció méretének, ezért $\frac{N-n}{N-1}$ ez szinte 1-gyel egyenlő. Pl. 10 milliós populációból vett 1000 fős minta esetében a tört értéke 4 tizedesre kerekítve `r round2((10000000-1000)/9999999, 4)`.
+
+A gyakorlatban a **binomiális** eloszlással közelítik az értéket, amely a visszatevéses mintavételnek megfelelő eloszlás. Ha nagy a populáció és kicsi a minta, még ha visszatevéses is a mintavétel, nagyon kicsi a valószínűsége, hogy bárki is többször szerepeljen a mintában. Legyen $p=\frac{K}{N}$ és hagyjuk el az utolsó tagot, így a binomiális eloszlás szórásképletét kapjuk: 
+
+$$D(\xi)=\sqrt{n*p*(1-p)}$$
+
+A binomiális eloszlást pedig jól tudjuk **normális** eloszlással közelíteni, mégpedig $N(n * p;\sqrt{n* p*(1-p)})$ eloszlással.
+
+
+Az alábbi ábrán láthatják, hogy a normális eloszlás görbéje valóban jól követi a változó hisztogramját:
+
+```{r, echo = FALSE}
+K <- 300000
+N <- 1000000
+n.exp <- 1000
+n.sam <- 100
+hyper <- data.frame(sim = rhyper(n.exp, m = K, n = N-K, n.sam))
+
+texpected <- n.sam*K/N
+tdev.hyper <- sqrt(n.sam*K/N*(1-K/N)*(N-n.sam)/(N-1))
+tdev.binom <- sqrt(n.sam*K/N*(1-K/N))
+x <- seq(texpected - 3*tdev.hyper, texpected + 3*tdev.hyper, by = 1)
+normaldata2 <- data.frame(
+  x = x,
+  y = dnorm(x, texpected, tdev.hyper)
+)
+FDbin <- ifelse((range(hyper$sim)[2]-hyper$sim[1])>25, 
+                    2*IQR(hyper$sim)/(n.exp^(1/3)), 1)
+
+hyper.plot <- ggplot(hyper, aes(sim))
+
+hyper.plot + geom_histogram(aes(y = (..count..)/sum(..count..)), 
+                            col = "black", fill = "lightblue", binwidth = FDbin) +
+  labs(main = "Szimulált (1000 szimuláció) ismétlés nélküli mintavétel (N = 1M, K = 300e, n = 100)", 
+       x = "Speciális elemek száma", y = "") + 
+  geom_line(data = normaldata2, aes(x = x, y = y), color = "blue", size = 1.2, linetype = "dashed") +
+  theme_classic() + scale_y_continuous(breaks = NULL)
+```
+
+  
+A mintavétel egy olyan szimulált 1 milliós populációból történt, amelyben van 300 ezer bizonyos típusú elem. A szemléltetés kedvéért 1000 db 100-elemű mintát vettünk. Arra számítunk tehát, hogy a mintában is 30% lesz a speciális elemek aránya, tehát várhatóan 30 elem.
+
+A szórás, ha a hipergeometrikus eloszlás képletével számolunk: `r round(tdev.hyper, 2)`  
+Ha a binomiális eloszlás képletével számolunk: `r round(tdev.binom, 2)`  
+
+Most már csak annyit kell változtatunk, hogy a darabszámokból arányokat kapjunk. Mi ugyanis nem azt akarjuk megbecsülni, hogy N elemre hány db előfordulás jut, hanem, hogy mennyi az a p valószínűség, amellyel egy elem adott típusú lesz. Az arányt úgy kapjuk, hogy a darabszámot elosztjuk a mintanagysággal: ez a már említett relatív gyakoriság $p = \frac{k}{N}$  
+A várható érték éppen a populációban érvényes valószínűség. A szórás úgy változik, hogy $\sqrt{n*  p* (1-p)}$ szórást elosztjuk a mintanagysággal:  
+
+$$\frac{\sqrt{n*  p* (1-p)}}{n}=\sqrt{\frac{n*  p* (1-p)}{n^2}}=\sqrt{\frac{p* (1-p)}{n}}$$
+Ez lesz az arány becslésének **standard hibája**.
+
+Az intervallumbecslés képlete ugyanúgy épül fel, mint korábban: a ponbecslés &plusmn;valahányszor a standard hiba. Az arány esetében így kapjuk az alábbi képletet, ahol N a mintaelemszám, p a relatív gyakoriság, $z_{1-\frac{\alpha}{2}}$ pedig a st. normális eloszlás konfidenciaszintnek megfelelő értéke:
+
+$$p \pm z_{1-\frac{\alpha}{2}}* \sqrt{\frac{p* (1-p)}{N}}$$
+
+A képletben a $\pm z_{1-\frac{\alpha}{2}}* \sqrt{\frac{p* (1-p)}{N}}$ részből következően az intervallum hossza $2* z_{1-\frac{\alpha}{2}}* \sqrt{\frac{p* (1-p)}{N}}$. Látható, hogy a becslési intervallum hossza három tényezőtől függ:   
+
+* Akárcsak a várható értéknél, függ a **konfidenciaszinttől** és a **mintanagyságtól**
+* Szintén függ magától a becsült aránytól.
+
+Nézzük meg, hogyan függ az aránytól: $p* (1-p)$ egy másodfokú függvény:
+
+$$ p(1-p)=-p^2+p$$
+
+A másodfokú függvények $y=ax^2+bx+c$ képlettel írhatók fel. Függvényük egy parabola. Ha a > 0, akkor konvex parabola, ha a < 0, akkor konkáv.  
+  
+Itt most a = -1 (ez a négyzetes tag szorzótényezője: -1p^2^), ezért konkáv.  
+A parabola a 0 < p < 1 értékekre, tehát a [0;1] intervallumon van értelmezve, hiszen valószínűségről van szó, ami nem lehet sem negatív, sem 1-nél nagyobb.  
+A függvény a 0 értéket a p = 0 és p = 1 pontokban veszi fel: -0^2^+0 = 0 és -1^2^+1 = 0.  
+**Maximumát "félúton", tehát p = 0,5 értéknél veszi fel**: -0,5^2^+0,5 = 0,25. Vagyis minél közelebb van a becsült valószínűség 0,5-höz, annál nagyobb intervallummal tudjuk csak becsülni.  
+
+Íme a függvény ábrája:  
+
+```{r, echo = FALSE, fig.height = 3}
+p.vals <- seq(0, 1, by = 0.01)
+y.vals <- p.vals-p.vals^2
+pardata <- data.frame(p = p.vals, y = y.vals)
+par.plot <- ggplot(pardata, aes(x = p, y = y)) + geom_line(size = 1.2) +
+  theme_classic() + ylab("f(p)") +
+  geom_segment(x = 0.5, y = 0, xend = 0.5, yend = 0.25, lty = "dashed") + 
+  geom_segment(x = 0, y = 0.25, xend = 0.5, yend = 0.25, lty = "dashed")
+par.plot
+```
+  
+<div class="exercise">
+Tegyük fel, hogy egy 200 elemű mintában "A" párt szimpatizánsainak aránya 25%. Adjanak intervallumbecslést 95%-os konfidenciaszint mellett "A" párt szimpatizánsainak populációbeli arányára!
+</div>
+
+<div class="solution">
+Megkeressük a konfidenciaszinthez tartozó $z_{1-\frac{\alpha}{2}}$ értéket (módját ld. fent): ez 1,96. Behelyettesítünk:
+
+$$p \pm z_{1-\frac{\alpha}{2}}* \sqrt{\frac{p* (1-p)}{N}}=0,25\pm1,96* \sqrt{\frac{0,25* (1-0,25)}{200}}=0,25\pm0,0588$$
+
+A populációban "A" párt szimpatizánsainak aránya 95%-os megbízhatósággal a [19,12%; 30,88%] intervallumba esik.
+</div>
+  
+### Intervallumbecslés szórásra  
+  
+Ez teljesen másképp működik, és nem is képezi részét az alap tananyagnak, úgyhogy inkább *hardcore* hallgatóknak ajánlom. Maga a módszer egyébként nem vészesen nehéz. Az alábbi képletbe helyettesítünk:
+
+$$\left[\frac{(N-1)*  s^{*2}}{\chi_{N-1;1-\frac{\alpha}{2}}^2}; \frac{(N-1)*  s^{*2}}{\chi_{N-1;\frac{\alpha}{2}}^2} \right]$$
+Az $s^{\ast2}$ a becsült szórás négyzete, N az elemszám, $\chi_{N-1;1-\frac{\alpha}{2}}^2$ és $\chi_{N-1;\frac{\alpha}{2}}^2$ pedig egy új eloszlás, a $\chi^2$-eloszlás (e: khí-négyzet) N-1 szabadságfoknak és $1-\frac{\alpha}{2}$, illetve $\frac{\alpha}{2}$ valószínűségeknek megfelelő értékei. A két érték a két végpont lesz, de szórásnégyzetekként, úgyhogy, ha a szórást szeretnénk kiszámítani, mindkettőnek a pozitív négyzetgyökét kell venni.
+
+<div class="exercise">
+A 30 elemű mintából becsült szórás 15. Adjanak 95%-os intervallumbecslést a szórásra!  
+</div>
+
+<div class="solution">
+Ha $1-\alpha = 0,95$, akkor $1-\frac{\alpha}{2}=0,975$ és $\frac{\alpha}{2}=0,025$. A $\chi^2$-eloszlás [táblázatában](https://www.dropbox.com/s/csu0nrv1vnye5xo/chi2.pdf?dl=0) kikeressük a megfelelő értékeket: N-1 = 29. sor és 0,025-ös és 0,975-ös oszlop: 16,0 és 45,7  
+Behelyettesítünk:
+$$\left[\frac{29*  15^2}{45,7}; \frac{29*  15^2}{16,0} \right]=\left[142,78; 407,81 \right]$$  
+Gyököt vonunk mindkét végpontból: 
+$$\left[11,95; 20,19\right]$$
+
+A változó szórása a populációban 95%-os megbízhatósággal ebbe az intervallumba esik.
+</div>
+
+
+## ÖSSZEFOGLALÁS  
+
+* A pontbecslés mellett van lehetőség intervallumbecslést adni.
+* Ennek lényege, hogy a pontbecslés köré megadunk egy intervallumot (**konfidenciaintervallum**), amelybe a becsülni kívánt populációs paraméter (pl. várható érték, valami valószínűsége, szórás) általunk megadott megbízhatósággal (**konfidenciaszint**, általában 1 - &alpha; = 95%) beleesik.
+* Ehhez legtöbbször ismerni kell az adott becslés **standard hibáját**.
+  + Az átlag standard hibája (becsült szórással): $\frac{s^*}{\sqrt{N}}$
+  + Az arány standard hibája: $\sqrt{\frac{p* (1-p)}{N}}$
+  + A szórás becslése nem így működik.
+* A pontbecslésből kivonjuk és hozzáadjuk a standard hiba valahányszorosát.
+* Hogy hányszorosát, azt a konfidenciaszint (és szabadságfok) függvényében tudjuk megtalálni:
+  + A standard normális eloszlás táblázatából (arány becslése és átlag becslése ismert elméleti szórás esetén)
+  + A Student-féle t-eloszlás táblázatából (átlag becslése becsült szórás esetén)
+* Arra vigyázzanak, hogy a táblázatokban nem $1-\alpha$, hanem $1-\frac{\alpha}{2}$ valószínűséget kell keresni (pl. 0,95 esetén 0,975-öt)
+
+### Példagyűjtemény
+  
+**Intervallumbecslés átlagra**  
+  
+**Szükségünk lesz**: egy átlagra, szórásra, mintaelemszámra, illetve ki kell választani, hogy milyen konfidenciaszintet szeretnénk.  
+
+* Az **átlag** vagy meg van adva, vagy a minta elemeiből kiszámítható.
+* A **szórás** lehet elméleti (populációra vonatkozó), ez esetben meg van adva.  
+  + Vagy lehet becsült is, amit - ha nincs megadva - ki lehet számítani a minta elemeiből.  
+* Az **elemszám** ismert.  
+* A **konfidenciaszint** (1-&alpha;) általában 95%, ritkábban 90% vagy 99%, de bármilyen valószínűség választható (ha nem szabadon választható, akkor én megadom).  
+  
+1. A konfidenciaszinthez kiszámítjuk a táblázatban szereplő valószínűséget ($1-\frac{\alpha}{2}$), majd ehhez kikeressük a megfelelő határértéket
+  + Ha az elméleti szórás ismert, akkor a standard normális eloszlás (z-eloszlás) táblázatából az $1-\frac{\alpha}{2}$ valószínűségnek megfelelő értéket, vagy pedig a t-eloszlás &infin; sorából, az $1-\frac{\alpha}{2}$ oszlopból.
+  + Ha a becsült szórást ismerjük, akkor a Student-féle t-eloszlás táblázatából az $1-\frac{\alpha}{2}$ oszlopból és a df = N-1 sorból, vagy ha ilyen nincs, akkor az első kisebb sorból (pl. 73 helyett a 60-as sor). Ha df>200, akkor azt is elfogadom, ha a 120-as sort nézik, de azt is, ha a végtelent (Jobban örülök a 120-nak).
+2. Behelyettesítünk, és az átlagból egyszer kivonjuk, másodszor pedig hozzáadjuk a szorzatot.
+  
+**Átlagra adott intervallumbecslés elméleti szórással**:  
+
+**Példa**: Legyen egy N = 200 elemű mintában a magasság átlaga $\overline{X}=169,3$, a populációban pedig a magasság szórása &sigma;=7. Válasszunk ezúttal 90%-os konfidenciaszintet!  
+
+1. Mivel ismert a populációbeli (elméleti) szórás, ezért a standard normális eloszlásból keressük a határértéket.
+2. Az $1-\alpha = 0,9$ konfidenciaszinthez a táblázatban $1-\frac{\alpha}{2}=0,95$ valószínűséget kell keresni.
+3. A st. normális eloszlás táblázatában 1,65-nél szerepel először ennél nagyob érték, úgyhogy ez lesz a határértékünk.
+4. Behelyettesítünk a képletbe:
+$$\overline{X} \pm z_{1-\frac{\alpha}{2}}* \frac{\sigma}{\sqrt{N}}=169,3\pm1,65* \frac{7}{\sqrt{200}}=169,3\pm0,82$$  
+5. A konfidenciaintervallum határai: [168,48;170,12] - A populációban a felnőttkori várható testmagasság 90%-os megbízhatósággal 168,48 és 170,12 cm közé esik.  
+  
+**Átlagra adott intervallumbecslés becsült szórással**:  
+
+**Példa**: Legyen egy N = 150 elemű mintában a tavaly elolvasott könyvek átlaga 13,5, mintából becsült szórása pedig 4,2. Legyen a választott konfidenciaszint 99%!  
+
+1. Mivel becsült szórással dolgozunk, a t-eloszlásból keressük ki a határértéket.
+2. Az $1-\alpha = 0,99$ konfidenciaszinthez a táblázatban $1-\frac{\alpha}{2}=0,995$ valószínűséget kell keresni.
+3. A szabadságfok df = N - 1 = 150 - 1 = 149. Mivel ilyen nincs a táblázatban, a 120-as sort nézzük: 2,62 a határérték.
+4. Behelyettesítünk a képletbe:
+$$\overline{X} \pm t_{df;1-\frac{\alpha}{2}}* \frac{s^{\ast}}{\sqrt{N}}=13,5\pm2,62* \frac{4,2}{\sqrt{150}}=13,5\pm0,90$$  
+5. A konfidenciahatárok: [12,6;14,4] - A populációban az elolvasott könyvek várható értéke 99%-os megbízhatósággal 12,6 és 14,4 közé esik.  
+  
+**Intervallumbecslés arányra**  
+  
+**Szükségünk van**: becsült arányra, mintaelemszámra és választanunk kell konfidenciaszintet.  
+
+* A becsült **arány** vagy meg van adva, vagy kiszámítható, ha tudjuk az adott dolog gyakoriságát és a mintaelemszámot.
+* A **mintaelemszám** ismert. 
+* A **konfidenciaszintet** mi választjuk, ha nincs megadva.
+  
+1. A táblázatos értéket a st. normális eloszlás táblázatából vesszük, mégpedig az $1-\frac{\alpha}{2}$ valószínűségnek megfelelőt.
+2. Behelyettesítünk a képletbe, és a szorzatot egyszer levonva, egyszer pedig hozzáadva az arány becsléséhez, megkapjuk a konfidenciaintervallumot.  
+  
+**Példa**: Tegyük fel, hogy 300 elemű mintában 90 szőke van. Adjünk intervallumbecslést a szőkék arányára a populációban, 95%-os szinten!  
+
+1. Az $1-\alpha = 0,95$ konfidenciaszinthez a táblázatban $1-\frac{\alpha}{2}=0,975$ valószínűséget kell keresni, amit az 1,96-os értéknél találunk.
+2. A mintában a szőkék relatív gyakorisága $p = \frac{k}{N}=\frac{90}{300}=0,3$
+2. Behelyettesítünk a képletbe:
+$$p \pm z_{1-\frac{\alpha}{2}}* \sqrt{\frac{p* (1-p)}{N}}=0,3\pm1,96* \sqrt{\frac{0,3* (1-0,3)}{300}}=0,3\pm0,052$$  
+3. A konfidenciahatárok:[0,248;0,352]
+  
+**Konfidenciaintervallum hossza**  
+  
+Az intervallum hosszát mindig a &plusmn;-os rész adja: az intervallum hossza ennek kétszerese:
+$$2*  z_{1-\frac{\alpha}{2}}* \frac{\sigma}{\sqrt{N}}$$
+$$2*  t_{df;1-\frac{\alpha}{2}}* \frac{s^{\ast}}{\sqrt{N}}$$
+$$2*  z_{1-\frac{\alpha}{2}}* \sqrt{\frac{p* (1-p)}{N}}$$  
+Ha ismerjük a paramétereket, akkor behelyettesítve megkapható, mekkora az intervallum hossza.  
+Arány becslésénél sokszor a maximális hiba érdekel minket: ehhez p = 0,5-öt kell behelyettesíteni. (Ha nem világos, miért, a választ megtalálják a vonatkozó résznél)  
+  
+Ha arra vagyunk kíváncsiak, milyen elemszám fölött lesz az intervallum legfeljebb adott hosszúságú (jelöljük ezt mondjuk *d*-vel), akkor a képletekből ki kell fejezni N-t:
+$$N\ge \left(2*  z_{1-\frac{\alpha}{2}}* \frac{\sigma}{d}\right)^2$$
+$$N\ge \left(2*  t_{df;1-\frac{\alpha}{2}}* \frac{s^{\ast}}{d}\right)^2$$  
+Ezt a legutóbbit ritkán nézzük a gyakorlatban, mivel ezt a számítást bonyolítja, hogy maga a t-érték is függ N-től.  
+  
+Az arány becslésénél jellemzően a maximális hibát akarjuk, hogy az adott érték alatt legyen. A maximális hibát 0,5-ös becsült aránynál kapjuk (ld. fönt).  
+Ha az intervallum hosszával dolgozunk, akkor az alábbi képletet kapjuk:
+$$N\ge4*  z_{1-\frac{\alpha}{2}}^2* \frac{0,5* (1-0,5)}{d^2}$$  
+Ha &plusmn; értékekkel dolgozunk (pl. a becslés maximális hibája ne legyen nagyobb &plusmn;2%-nál), akkor a 4-gyel (2^2^) való szorzás kiesik:
+$$N\ge z_{1-\frac{\alpha}{2}}^2* \frac{0,5* (1-0,5)}{d^2}$$
+
+**Példa**: Tegyük fel, hogy a magasság szórása a populációban 7 cm. Mekkora mintát kell ahhoz vennünk, hogy a magasság várható értékét legfeljebb 2 cm hosszú intervallummal becsüljük 95%-os megbízhatósággal?  
+$$N\ge \left(2*  z_{1-\frac{\alpha}{2}}* \frac{\sigma}{d}\right)^2$$
+$$N\ge \left(2*  1,96* \frac{7}{2}\right)^2$$
+$$N\ge 188,2384$$  
+Vagyis legalább 189 elemű mintára van ehhez szükség.  
+  
+**Példa**: Mekkora minta kell ahhoz, hogy az aránybecslés maximális hibája 90%-os megbízhatóság mellett &plusmn;3% legyen?  
+a) megoldás: 
+$$N\ge z_{1-\frac{\alpha}{2}}^2* \frac{0,5* (1-0,5)}{d^2}$$
+$$N\ge 1,65^2* \frac{0,5* (1-0,5)}{0,03^2}$$
+$$N\ge 756,25$$  
+b) megoldás (&plusmn;3% az d = 6%-os intervallumhosszt jelent)
+$$N\ge4*  z_{1-\frac{\alpha}{2}}^2* \frac{0,5* (1-0,5)}{d^2}$$
+$$N\ge4* 1,65^2* \frac{0,5* (1-0,5)}{0,06^2}$$ 
+$$N\ge 756,25$$  
+Vagyis mindkét esetben azt kapjuk, hogy legalább 757 elemű mintára van ehhez szükség.  
+  
+**Példa**: Mekkora az arány becslésének maximális hibája 99%-os konfidenciaszint mellett egy 500 elemű mintából?
+$$d=2*  z_{1-\frac{\alpha}{2}}* \sqrt{\frac{0,5* (1-0,5)}{N}}$$  
+$$d=2*  2,58* \sqrt{\frac{0,5* (1-0,5)}{500}}$$  
+$$d=0,115=11,5\%=\pm5,75\%$$  
+500 elemű mintából 99%-os konf.szinten legfeljebb &plusmn;5,75%-os hibahatár mellett tudunk becsülni.

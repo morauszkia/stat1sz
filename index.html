@@ -13,7 +13,8 @@
 
 <title>Statisztika 1. szeminárium</title>
 
-<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="site_libs/header-attrs-2.18/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
@@ -49,6 +50,7 @@
 
 
 
+
 <style type = "text/css">
 .main-container {
   max-width: 940px;
@@ -69,6 +71,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -126,11 +131,15 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark it active
-  menuAnchor.tab('show');
-
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
 
   // Navbar adjustments
   var navHeight = $(".navbar").first().height() + 15;
@@ -159,8 +168,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -168,16 +177,9 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -221,7 +223,7 @@ $(document).ready(function () {
 <div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -234,7 +236,7 @@ $(document).ready(function () {
   <a href="index.html">Főoldal</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Kombinatorika és valószínűségszámítás
      
     <span class="caret"></span>
@@ -249,7 +251,7 @@ $(document).ready(function () {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Matematikai statisztika
      
     <span class="caret"></span>
@@ -270,7 +272,7 @@ $(document).ready(function () {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Órák slide-jai
      
     <span class="caret"></span>
@@ -312,7 +314,7 @@ $(document).ready(function () {
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="mailto:morauszki.andras@gmail.com">
-    <span class="fas fa-envelope"></span>
+    <span class="fa fa-envelope"></span>
      
   </a>
 </li>
@@ -331,45 +333,73 @@ $(document).ready(function () {
 
 
 <div id="tavaszi-félév" class="section level2">
-<h2>2020/2021. tavaszi félév</h2>
+<h2>2022/2023. tavaszi félév</h2>
 </div>
 <div id="ppke-btk" class="section level2">
 <h2>PPKE-BTK</h2>
-<!-- *** -->
-<!-- <br> <br> -->
-<!-- ## Kérdőív: -->
-<!-- <br> -->
-<!-- Ha még nem tette meg, kérem segítse a munkámat ennek a kérdőívnek a kitöltésével: <br><br>   -->
-<!-- <center> -->
-<!-- <h2> -->
-<!-- [KÉRDŐÍV]() -->
-<!-- </h2> -->
-<!-- </center> -->
 <hr />
 <style>
   p {
-    text-align: justify;
     line-height: 1.5;
   }
+  strong {
+    color: #a82727;
+  }
 </style>
-<p><br><br></p>
 </div>
 <div id="tantárgy-célja" class="section level2">
-<h2>Tantárgy célja:</h2>
-<p><br> A szeminárium a Statisztika 1. előadáshoz kapcsolódik. Célja az előadáson tanultak gyakorlása és elmélyítése, a legfontosabb statisztikák és hipotézisvizsgálati módszerek megismerése. Az első negyedévben a valószínűségszámítással, a második negyedévben pedig a statisztika alapjaival (lejró statisztikák, becsléselmélet, hipotézisvizsgálat alapjai) foglalkozunk. <br><br></p>
+<h2>Tantárgy célja</h2>
+<p>A szeminárium a Statisztika 1. előadáshoz kapcsolódik. Célja az
+előadáson tanultak gyakorlása és elmélyítése, a legfontosabb
+statisztikák és hipotézisvizsgálati módszerek megismerése. Az első
+negyedévben a valószínűségszámítással, a második negyedévben pedig a
+statisztika alapjaival (lejró statisztikák, becsléselmélet,
+hipotézisvizsgálat alapjai) foglalkozunk.</p>
+<p><strong>TRIGGER WARNING</strong></p>
+<p>A szemináriumon sokat fogunk számolni, ezért érdemes
+<strong>számológépet</strong> beszerezni vagy találni egy jó számológép
+alkalmazást a telefonjukra.</p>
 </div>
-<div id="legfontosabb-információk" class="section level2">
-<h2>Legfontosabb információk:</h2>
-<p><br> A hallgatók a félév végén gyakorlati jegyet kapnak. Ez a félév során, az előre egyeztetett időpontban megírt két zárthelyi dolgozat <strong>összesített ponteredményétől</strong> függ. A félév teljesítésének feltétele, hogy a hallgató mindkét ZH-jának eredménye legalább elégséges.<br />
-A nem megírt ZH elégtelennek minősül. Indokolt esetben (pl. betegség esetén) lehetőség van a ZH pótlására. A távolmaradást a hallgató a ZH időpontja előtt köteles jelezni.<br />
-A sikertelen ZH javítására a félév végén, előre egyeztetett időpontban és módon van lehetőség.<br />
-A hallgatók az órán tanultak elmélyítésére házi gyakorló feladatokat kapnak. <br><br> <strong>A ZH-k időpontjai a 2020/21. tavaszi félévben:</strong> <br> <strong>I. ZH:</strong> 2021.03.08.<br />
-<strong>II. ZH:</strong> 2021.05.10.<br />
-<br> A ZH-n használhatják az órai jegyzeteiket, illetve a kapott segédanyagokat (eloszlás-táblázatok, képletgyűjtemények, összefoglalók, stb.) <br><br></p>
+<div id="a-félév-felépítése" class="section level2">
+<h2>A félév felépítése</h2>
+<ol style="list-style-type: decimal">
+<li>negyedév: Valószínűségszámítás: műveletek, feltételes
+valószínűségek, valószínűségi változók<br />
+</li>
+<li>negyedév: Statisztika alapok: leíró statisztika, becsléselmélet,
+hipotézisvizsgálat (várható értékre vonatkozó próbák)</li>
+</ol>
 </div>
 <div id="segédanyagok" class="section level2">
-<h2>Segédanyagok:</h2>
-<p><br> A félév során a segédanyagokat, házi feladatsorokat, illetve azok megoldásait e-mailben kapják meg a hallgatók, illetve minden elérhető lesz a Teams csoportban is. A segédanyagokat igyekszem fokozatosan ide is feltölteni.</p>
+<h2>Segédanyagok</h2>
+<p>A félév során a segédanyagokat, házi feladatsorokat, illetve azok
+megoldásait e-mailben kapják meg a hallgatók, illetve minden elérhető
+lesz a Teams csoportban is. A segédanyagokat igyekszem fokozatosan ide
+is feltölteni.</p>
+<p>A hallgatók az órán tanultak elmélyítésére házi gyakorló feladatokat
+kapnak. Ezek megoldása nem kötelező a félév teljesítéséhez, de jó
+visszajelzés Önöknek is, hogy sikerült-e elsajátítani a tanultakat, és
+nekem is.</p>
+</div>
+<div id="a-félév-teljesítése" class="section level2">
+<h2>A félév teljesítése</h2>
+<p>A hallgatók a félév végén gyakorlati jegyet kapnak. Ez a félév során,
+az előre egyeztetett időpontban megírt <strong>két zárthelyi dolgozat
+összesített ponteredményétől</strong> függ.</p>
+<p>A félév teljesítésének feltétele, hogy a hallgató
+<strong>mindkét</strong> ZH-jának eredménye <strong>legalább
+elégséges</strong>. A nem megírt ZH elégtelennek minősül. Indokolt
+esetben (pl. betegség esetén) lehetőség van a ZH pótlására. A
+távolmaradást a hallgató a ZH időpontja előtt köteles jelezni.</p>
+<p>A sikertelen ZH javítására a félév végén, előre egyeztetett
+időpontban és módon van lehetőség.</p>
+<p><strong>A ZH-k várható időpontjai a 2022/23. tavaszi
+félévben:</strong></p>
+<p><strong>I. ZH:</strong> 2023.04.19.<br />
+<strong>II. ZH:</strong> 2023.05.24.</p>
+<p>A ZH-n használhatják az órai jegyzeteiket, illetve a kapott
+segédanyagokat (eloszlás-táblázatok, képletgyűjtemények, összefoglalók,
+házi feladatok megoldásai, stb.)</p>
 </div>
 
 

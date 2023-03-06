@@ -13,7 +13,8 @@
 
 <title>Nemparaméteres próbák</title>
 
-<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="site_libs/header-attrs-2.18/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
@@ -54,6 +55,7 @@
 
 
 
+
 <style type = "text/css">
 .main-container {
   max-width: 940px;
@@ -74,6 +76,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -131,11 +136,15 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark it active
-  menuAnchor.tab('show');
-
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
 
   // Navbar adjustments
   var navHeight = $(".navbar").first().height() + 15;
@@ -164,8 +173,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -173,16 +182,9 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -305,7 +307,7 @@ div.tocify {
 <div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -318,7 +320,7 @@ div.tocify {
   <a href="index.html">Főoldal</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Kombinatorika és valószínűségszámítás
      
     <span class="caret"></span>
@@ -333,7 +335,7 @@ div.tocify {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Matematikai statisztika
      
     <span class="caret"></span>
@@ -354,7 +356,7 @@ div.tocify {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Órák slide-jai
      
     <span class="caret"></span>
@@ -396,7 +398,7 @@ div.tocify {
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="mailto:morauszki.andras@gmail.com">
-    <span class="fas fa-envelope"></span>
+    <span class="fa fa-envelope"></span>
      
   </a>
 </li>
@@ -423,23 +425,42 @@ div.tocify {
     color: #a82727;
   }
 </style>
-<div id="a-független-mintás-és-páros-próbák-nem-paraméteres-alternatívái" class="section level2">
+<div
+id="a-független-mintás-és-páros-próbák-nem-paraméteres-alternatívái"
+class="section level2">
 <h2>A független mintás és páros próbák nem paraméteres alternatívái</h2>
 <ul>
-<li>Az utolsó tananyag, amelyről ez az összefoglaló szól olyan nemparaméteres próbák, amelyekkel kiváltható a kétmintás t, illetve Welch-próba, valamint a páros t-próba, ha <strong>nem teljesül a változók normális eloszlására vonatkozó feltétel</strong>.</li>
-<li>Ilyen esetekben rangosoroláson alapuló ún. nemparaméteres próbákat használunk.</li>
-<li>Két ilyen próbát fogunk megnézni:</li>
-<li>A <strong>Mann-Whitney próbát</strong> a kétmintás t-/Welch-próba kiváltására</li>
-<li>A <strong>Wilcoxon-féle előjeles rangpróbát</strong> a páros t-próba kiváltására</li>
-<li>Mindkettőnek az alapja a <strong>rangtranszformáció</strong>, vagyis a mintaelemek rangsorolása. <br> <br></li>
+<li>Az utolsó tananyag, amelyről ez az összefoglaló szól olyan
+nemparaméteres próbák, amelyekkel kiváltható a kétmintás t, illetve
+Welch-próba, valamint a páros t-próba, ha <strong>nem teljesül a
+változók normális eloszlására vonatkozó feltétel</strong>.</li>
+<li>Ilyen esetekben rangosoroláson alapuló ún. nemparaméteres próbákat
+használunk.</li>
+<li>Két ilyen próbát fogunk megnézni:
+<ul>
+<li>A <strong>Mann-Whitney próbát</strong> a kétmintás t-/Welch-próba
+kiváltására</li>
+<li>A <strong>Wilcoxon-féle előjeles rangpróbát</strong> a páros t-próba
+kiváltására</li>
+</ul></li>
+<li>Mindkettőnek az alapja a <strong>rangtranszformáció</strong>, vagyis
+a mintaelemek rangsorolása. <br> <br></li>
 </ul>
 <div id="mann-whitney-u-próba" class="section level3">
 <h3>Mann-Whitney U-próba</h3>
 <ul>
-<li>Olyankor használjuk a kétmintás t-próba vagy Welch-próba kiváltására, ha nem teljesül, hogy a változók normális eloszlást követnek az egyes populációkban.</li>
-<li>Ezt a minták alapján különböző tesztekkel (pl. Shapiro-Wilks, Kolmogorov-Smirnor) tudjuk ellenőrizni. Ezek nullhipotézise szerint a változók eloszlása normális. Ha a próba szignifikáns eredményt hoz (a szig. szint alacsony), elvetjük ezt a nullhipotézist, és nem feltételezhetjük, hogy az eloszlás a populációban normális.</li>
+<li>Olyankor használjuk a kétmintás t-próba vagy Welch-próba
+kiváltására, ha nem teljesül, hogy a változók normális eloszlást
+követnek az egyes populációkban.</li>
+<li>Ezt a minták alapján különböző tesztekkel (pl. Shapiro-Wilks,
+Kolmogorov-Smirnor) tudjuk ellenőrizni. Ezek nullhipotézise szerint a
+változók eloszlása normális. Ha a próba szignifikáns eredményt hoz (a
+szig. szint alacsony), elvetjük ezt a nullhipotézist, és nem
+feltételezhetjük, hogy az eloszlás a populációban normális.</li>
 <li>Ilyenkor használjuk a Mann-Whitney U-próbát.</li>
-<li>Utóbbi <strong>nullhipotézise</strong> szerint a változó <strong>mediánja</strong> a két mintában egyenlő, az ellenhipotézis szerint pedig nem egyenlő.</li>
+<li>Utóbbi <strong>nullhipotézise</strong> szerint a változó
+<strong>mediánja</strong> a két mintában egyenlő, az ellenhipotézis
+szerint pedig nem egyenlő.</li>
 </ul>
 <p>Előnyök:</p>
 <ul>
@@ -448,36 +469,71 @@ div.tocify {
 </ul>
 <p>Hátrány:</p>
 <ul>
-<li>Információt veszítünk, mivel intervallum- vagy arányskáláról ordinális skálára térünk át. Ezáltal a próba ereje csökken.</li>
+<li>Információt veszítünk, mivel intervallum- vagy arányskáláról
+ordinális skálára térünk át. Ezáltal a próba ereje csökken.</li>
 </ul>
 <div id="a-kulcslépés-rangsorolás" class="section level4">
 <h4>A kulcslépés: Rangsorolás</h4>
 <ul>
-<li>Ez az első és legfontosabb lépés. Ehhez a két minta elemeit összevonjuk, nagyság szerint növekvő sorrendbe rendezzük, és együtt rangsoroljuk.</li>
-<li>Ha több elem esetében is ugyanaz az érték: <strong>kapcsolt rangokat</strong> adunk, vagyis az egyes elemek a sorszámaik átlagát kapják: pl. ha a 6. és 7. helyen holtverseny van, akkor <span class="math inline">\(\frac{6+7}{2}=6,5\)</span>-t, a következő a 8-ast, ha a 9-11. helyeken ismét holtverseny van, akkor <span class="math inline">\(\frac{9+10+11}{3}=10\)</span>-et, a következő elem a 12-t, és így tovább.</li>
-<li>A két csoportra külön-külön összeadjuk a rangokat. A további számítás ezeken a rangszámösszegeken alapul.</li>
-<li>Mindegyik módszer a <strong>kisebbik elemszámú csoport rangszámösszegével</strong> dolgozik tovább.</li>
-<li>Kis elemszám esetén külön <a href="resources/eloszlas_Mann_Whitney.pdf">U-eloszlástábla</a> használható, ezzel veti össze a kisebbik elemszámú csoport rangszámösszegét (a <em>two-tailed</em> táblázatot érdemes nézni, ez felel meg a kétoldali próbának).</li>
-<li>Nagyobb elemszámok esetén pedig kiszámítható egy <strong>megközelítőleg standard normális eloszlást</strong> követő statisztikai próba. Nézzük ez utóbbit. Ennek több változata létezik az interneten, egyesek bonyolultabbaknak tűnnek, mások egyszerűbbnek, de ugyanazon a számításon alapulnak, csak más-más stádiumú képletet közölnek, de ugyanazt az eredményt hozzák.</li>
-<li>Legyen a <strong>kisebbik elemszámú</strong> csoport az 1-es: elemszáma N<sub>1</sub> és rangszámösszeg a csoportban R<sub>1</sub>.</li>
-<li>A <strong>nagyobbik elemszámú</strong> csoport elemszáma N<sub>2</sub>, rangszámösszege R<sub>2</sub>.</li>
+<li>Ez az első és legfontosabb lépés. Ehhez a két minta elemeit
+összevonjuk, nagyság szerint növekvő sorrendbe rendezzük, és együtt
+rangsoroljuk.</li>
+<li>Ha több elem esetében is ugyanaz az érték: <strong>kapcsolt
+rangokat</strong> adunk, vagyis az egyes elemek a sorszámaik átlagát
+kapják: pl. ha a 6. és 7. helyen holtverseny van, akkor <span
+class="math inline">\(\frac{6+7}{2}=6,5\)</span>-t, a következő a 8-ast,
+ha a 9-11. helyeken ismét holtverseny van, akkor <span
+class="math inline">\(\frac{9+10+11}{3}=10\)</span>-et, a következő elem
+a 12-t, és így tovább.</li>
+<li>A két csoportra külön-külön összeadjuk a rangokat. A további
+számítás ezeken a rangszámösszegeken alapul.</li>
+<li>Mindegyik módszer a <strong>kisebbik elemszámú csoport
+rangszámösszegével</strong> dolgozik tovább.</li>
+<li>Kis elemszám esetén külön <a
+href="resources/eloszlas_Mann_Whitney.pdf">U-eloszlástábla</a>
+használható, ezzel veti össze a kisebbik elemszámú csoport
+rangszámösszegét (a <em>two-tailed</em> táblázatot érdemes nézni, ez
+felel meg a kétoldali próbának).</li>
+<li>Nagyobb elemszámok esetén pedig kiszámítható egy
+<strong>megközelítőleg standard normális eloszlást</strong> követő
+statisztikai próba. Nézzük ez utóbbit. Ennek több változata létezik az
+interneten, egyesek bonyolultabbaknak tűnnek, mások egyszerűbbnek, de
+ugyanazon a számításon alapulnak, csak más-más stádiumú képletet
+közölnek, de ugyanazt az eredményt hozzák.</li>
+<li>Legyen a <strong>kisebbik elemszámú</strong> csoport az 1-es:
+elemszáma N<sub>1</sub> és rangszámösszeg a csoportban
+R<sub>1</sub>.</li>
+<li>A <strong>nagyobbik elemszámú</strong> csoport elemszáma
+N<sub>2</sub>, rangszámösszege R<sub>2</sub>.</li>
 <li>Az első lépés egy U-statisztika kiszámítása:</li>
 </ul>
-<p><span class="math display">\[U=N_1N_2+\frac{N_1(N_1+1)}{2}-R_1\]</span></p>
+<p><span
+class="math display">\[U=N_1N_2+\frac{N_1(N_1+1)}{2}-R_1\]</span></p>
 <ul>
 <li>Ennek ismert a várható értéke és szórása:</li>
 </ul>
-<p><span class="math display">\[\mu_u=\frac{N_1N_2}{2}\]</span> <span class="math display">\[\sigma_u=\sqrt{\frac{N_1 N_2 (N_1 + N_2 + 1)}{12}}\]</span></p>
+<p><span class="math display">\[\mu_u=\frac{N_1N_2}{2}\]</span> <span
+class="math display">\[\sigma_u=\sqrt{\frac{N_1 N_2 (N_1 + N_2 +
+1)}{12}}\]</span></p>
 <ul>
-<li>Vagyis (a normális eloszlás tulajdonságaiból adódóan), mivel U viszonylag nagyobb elemszámok esetén, normális eloszlású változó, ha igaz a nullhipotézis, akkor az alábbi képlettel egy standard normális eloszlású változót kapunk:</li>
+<li>Vagyis (a normális eloszlás tulajdonságaiból adódóan), mivel U
+viszonylag nagyobb elemszámok esetén, normális eloszlású változó, ha
+igaz a nullhipotézis, akkor az alábbi képlettel egy standard normális
+eloszlású változót kapunk:</li>
 </ul>
-<p><span class="math display">\[z = \frac{U-\mu_u}{\sigma_u}\]</span></p>
+<p><span class="math display">\[z =
+\frac{U-\mu_u}{\sigma_u}\]</span></p>
 <ul>
-<li>Behelyettesítve és kicsit átrendezve az alábbi, szerintem - még ha elsőre nem is tűnik úgy - egyszerűbben használható képletet kapjuk (mivel egy lépésben mindent be tudunk helyettesíteni):</li>
+<li>Behelyettesítve és kicsit átrendezve az alábbi, szerintem - még ha
+elsőre nem is tűnik úgy - egyszerűbben használható képletet kapjuk
+(mivel egy lépésben mindent be tudunk helyettesíteni):</li>
 </ul>
-<p><span class="math display">\[z=\frac{\frac{N_1(N_1+N_2+1)}{2}-R_1}{\sqrt{\frac{N_1 N_2 (N_1 + N_2 + 1)}{12}}}\]</span></p>
+<p><span
+class="math display">\[z=\frac{\frac{N_1(N_1+N_2+1)}{2}-R_1}{\sqrt{\frac{N_1
+N_2 (N_1 + N_2 + 1)}{12}}}\]</span></p>
 <p><strong>PÉLDA</strong> Nézzünk egy konkrét példát:<br />
-Két iskola diákjainak egy-egy mintája lefutotta a Cooper-tesztet, és az alábbi táblázat mutatja, hány km-t futottak 12 perc alatt.</p>
+Két iskola diákjainak egy-egy mintája lefutotta a Cooper-tesztet, és az
+alábbi táblázat mutatja, hány km-t futottak 12 perc alatt.</p>
 <table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -495,23 +551,15 @@ Lefutott táv (km)
 A iskola
 </td>
 <td style="text-align:right;">
+2.7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+A iskola
+</td>
+<td style="text-align:right;">
 2.3
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-A iskola
-</td>
-<td style="text-align:right;">
-1.9
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-A iskola
-</td>
-<td style="text-align:right;">
-2.4
 </td>
 </tr>
 <tr>
@@ -535,44 +583,12 @@ A iskola
 A iskola
 </td>
 <td style="text-align:right;">
-2.2
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-A iskola
-</td>
-<td style="text-align:right;">
-1.9
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-A iskola
-</td>
-<td style="text-align:right;">
-2.9
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-A iskola
-</td>
-<td style="text-align:right;">
-2.7
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-A iskola
-</td>
-<td style="text-align:right;">
 2.0
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-B iskola
+A iskola
 </td>
 <td style="text-align:right;">
 1.9
@@ -580,26 +596,34 @@ B iskola
 </tr>
 <tr>
 <td style="text-align:left;">
-B iskola
-</td>
-<td style="text-align:right;">
-2.7
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-B iskola
-</td>
-<td style="text-align:right;">
-2.6
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-B iskola
+A iskola
 </td>
 <td style="text-align:right;">
 2.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+A iskola
+</td>
+<td style="text-align:right;">
+2.4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+A iskola
+</td>
+<td style="text-align:right;">
+1.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+A iskola
+</td>
+<td style="text-align:right;">
+2.2
 </td>
 </tr>
 <tr>
@@ -608,6 +632,46 @@ B iskola
 </td>
 <td style="text-align:right;">
 2.4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+B iskola
+</td>
+<td style="text-align:right;">
+2.2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+B iskola
+</td>
+<td style="text-align:right;">
+2.4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+B iskola
+</td>
+<td style="text-align:right;">
+1.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+B iskola
+</td>
+<td style="text-align:right;">
+2.7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+B iskola
+</td>
+<td style="text-align:right;">
+2.7
 </td>
 </tr>
 <tr>
@@ -631,7 +695,31 @@ B iskola
 B iskola
 </td>
 <td style="text-align:right;">
+3.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+B iskola
+</td>
+<td style="text-align:right;">
 2.3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+B iskola
+</td>
+<td style="text-align:right;">
+2.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+B iskola
+</td>
+<td style="text-align:right;">
+2.6
 </td>
 </tr>
 <tr>
@@ -642,42 +730,14 @@ B iskola
 2.5
 </td>
 </tr>
-<tr>
-<td style="text-align:left;">
-B iskola
-</td>
-<td style="text-align:right;">
-2.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-B iskola
-</td>
-<td style="text-align:right;">
-2.2
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-B iskola
-</td>
-<td style="text-align:right;">
-2.7
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-B iskola
-</td>
-<td style="text-align:right;">
-3.0
-</td>
-</tr>
 </tbody>
 </table>
 <ol style="list-style-type: decimal">
-<li>Az első lépés, hogy iskolától függetlenül növekvő sorrendbe rakjuk a diákokat a lefutott táv szerint, és a fenti szabályt követve rangsoroljuk őket. (Az egyik oszlop, a sorszám csak segítség - hogy látható legyen, melyik számokat átlagoljuk a holtversenyek esetén - pl. a 2-4. helyen lévők 3-ast, a 6-7. helyen lévők 6,5-et kapnak, stb.)</li>
+<li>Az első lépés, hogy iskolától függetlenül növekvő sorrendbe rakjuk a
+diákokat a lefutott táv szerint, és a fenti szabályt követve
+rangsoroljuk őket. (Az egyik oszlop, a sorszám csak segítség - hogy
+látható legyen, melyik számokat átlagoljuk a holtversenyek esetén - pl.
+a 2-4. helyen lévők 3-ast, a 6-7. helyen lévők 6,5-et kapnak, stb.)</li>
 </ol>
 <table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
@@ -1022,7 +1082,10 @@ B iskola
 </tbody>
 </table>
 <ol start="2" style="list-style-type: decimal">
-<li>Csoportonként összeadjuk a rangszámokat, és megnézzük, melyik csoportnak kisebb az elemszáma. Ennek a csoportnak (a példában az A iskola: N<sub>1</sub> = 10) a rangszámösszegével (R<sub>1</sub> = 86,5) számolunk tovább.</li>
+<li>Csoportonként összeadjuk a rangszámokat, és megnézzük, melyik
+csoportnak kisebb az elemszáma. Ennek a csoportnak (a példában az A
+iskola: N<sub>1</sub> = 10) a rangszámösszegével (R<sub>1</sub> = 86,5)
+számolunk tovább.</li>
 </ol>
 <table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
@@ -1063,19 +1126,33 @@ B iskola
 </tr>
 </tbody>
 </table>
-<p>Ellenőrzésképpen: a rangszámok összege 276, ugyanannyi, mint az 1-től 23-ig (ennyi az összes elem) tartó számok összege: <span class="math inline">\(\frac{23\times24}{2}=276\)</span>.</p>
+<p>Ellenőrzésképpen: a rangszámok összege 276, ugyanannyi, mint az 1-től
+23-ig (ennyi az összes elem) tartó számok összege: <span
+class="math inline">\(\frac{23\times24}{2}=276\)</span>.</p>
 <ol start="3" style="list-style-type: decimal">
-<li>Ezt a rangszámösszeget (R<sub>1</sub>-et) helyettesítjük a képletekbe, hogy megkapjuk a próba értékét (<em>z</em>).</li>
+<li>Ezt a rangszámösszeget (R<sub>1</sub>-et) helyettesítjük a
+képletekbe, hogy megkapjuk a próba értékét (<em>z</em>).</li>
 </ol>
-<p><span class="math display">\[U=N_{1} N_{2} + \frac{N_{1} (N_{1}+1)}{2}-R_{1}=10\times13+\frac{10\times(10+1)}{2}-86,5=98,5\]</span><br />
-<span class="math display">\[\mu_u=\frac{N_1N_2}{2}=\frac{10\times13}{2}=65\]</span> <span class="math display">\[\sigma_u=\sqrt{\frac{N_1 N_2 (N_1 + N_2 + 1)}{12}}=\sqrt{\frac{10\times13\times(10+13+1)}{12}}=16,12\]</span><br />
-<span class="math display">\[z = \frac{U-\mu_u}{\sigma_u}=\frac{98,5-65}{16,12}=2,08\]</span></p>
-<p>Vagy közvetlenül az &quot;egylépéses&quot; képletbe:</p>
-<p><span class="math display">\[z=\frac{\frac{N_1(N_1+N_2+1)}{2}-R_1}{\sqrt{\frac{N_1 N_2 (N_1 + N_2 + 1)}{12}}}
+<p><span class="math display">\[U=N_{1} N_{2} + \frac{N_{1}
+(N_{1}+1)}{2}-R_{1}=10\times13+\frac{10\times(10+1)}{2}-86,5=98,5\]</span><br />
+<span
+class="math display">\[\mu_u=\frac{N_1N_2}{2}=\frac{10\times13}{2}=65\]</span>
+<span class="math display">\[\sigma_u=\sqrt{\frac{N_1 N_2 (N_1 + N_2 +
+1)}{12}}=\sqrt{\frac{10\times13\times(10+13+1)}{12}}=16,12\]</span><br />
+<span class="math display">\[z =
+\frac{U-\mu_u}{\sigma_u}=\frac{98,5-65}{16,12}=2,08\]</span></p>
+<p>Vagy közvetlenül az “egylépéses” képletbe:</p>
+<p><span
+class="math display">\[z=\frac{\frac{N_1(N_1+N_2+1)}{2}-R_1}{\sqrt{\frac{N_1
+N_2 (N_1 + N_2 + 1)}{12}}}
 =\frac{\frac{10\times(10+13+1)}{2}-86,5}{\sqrt{\frac{10\times13\times(10+13+1)}{12}}}=\frac{33,5}{16,12}=2,08\]</span></p>
 <ol start="4" style="list-style-type: decimal">
-<li>A próba értékét a standard normális eloszlás megfelelő határértétével vetjük össze: ha 5%-os szignifikanciaszintre törekszünk, akkor ±1,96-tal; ha 1%-osra, akkor ±2,58-cal.</li>
-<li>Döntés: 5%-os szignifikanciaszint mellett elvetjük a nullhipotézist, vagyis a 12 perc alatt lefutott táv medián értéke a két populációban (a két iskolában) eltér.</li>
+<li>A próba értékét a standard normális eloszlás megfelelő
+határértétével vetjük össze: ha 5%-os szignifikanciaszintre törekszünk,
+akkor ±1,96-tal; ha 1%-osra, akkor ±2,58-cal.</li>
+<li>Döntés: 5%-os szignifikanciaszint mellett elvetjük a nullhipotézist,
+vagyis a 12 perc alatt lefutott táv medián értéke a két populációban (a
+két iskolában) eltér.</li>
 </ol>
 <p>    <em>Kiegészítés</em>: a pontos szig. szint: p = 0.038</p>
 </div>
@@ -1083,32 +1160,72 @@ B iskola
 <div id="wilcoxon-féle-előjeles-rangpróba" class="section level3">
 <h3>Wilcoxon-féle előjeles rangpróba</h3>
 <ul>
-<li>A páros t-próba kiváltására használható, ha <strong>nem teljesül</strong>, hogy <strong>a különbségek normális eloszlást követnek</strong>.</li>
-<li>Hogy szép, és egyszerű legyen az élet, ennek is több változata lelhető fel az interneten. Van olyan módszer, amely kis elemszámok esetén alkalmazható, és egy külön <a href="resources/eloszlas_Wilcoxon.pdf">W-eloszlástáblát</a> használ, és vannak olyanok, amelyek a tesztstatisztikát standardizálják. Mi most is ez utóbbiakat nézzük meg.</li>
-<li>Alapja viszont mindenképpen a különbségek rangsorolása, abszolút értékük szerint: a rangsorolás erejéig elfelejtjük a különbségek előjeleit, és a fenti szabály szerint rangsoroljuk őket (a holtversenyben lévő helyeket átlagolva), azzal a kiegészítéssel, hogy azokat az eseteket, amelyekben 0 a különbség, kihagyhatjuk, és ennyivel csökkentjük az elemszámot (jelölje <em>N<sub>r</sub></em> a csökkentett elemszámot)</li>
+<li>A páros t-próba kiváltására használható, ha <strong>nem
+teljesül</strong>, hogy <strong>a különbségek normális eloszlást
+követnek</strong>.</li>
+<li>Hogy szép, és egyszerű legyen az élet, ennek is több változata
+lelhető fel az interneten. Van olyan módszer, amely kis elemszámok
+esetén alkalmazható, és egy külön <a
+href="resources/eloszlas_Wilcoxon.pdf">W-eloszlástáblát</a> használ, és
+vannak olyanok, amelyek a tesztstatisztikát standardizálják. Mi most is
+ez utóbbiakat nézzük meg.</li>
+<li>Alapja viszont mindenképpen a különbségek rangsorolása, abszolút
+értékük szerint: a rangsorolás erejéig elfelejtjük a különbségek
+előjeleit, és a fenti szabály szerint rangsoroljuk őket (a
+holtversenyben lévő helyeket átlagolva), azzal a kiegészítéssel, hogy
+azokat az eseteket, amelyekben 0 a különbség, kihagyhatjuk, és ennyivel
+csökkentjük az elemszámot (jelölje <em>N<sub>r</sub></em> a csökkentett
+elemszámot)</li>
 </ul>
 <p><strong>1. módszer</strong></p>
 <ul>
-<li>Az egyik módszer elgondolása azon alapul, hogy ha nem történt változás (a változás medián értéke 0), akkor az előjelüket visszakapó rangszámok összegének a várható értéke 0. (Legyen az előjeles rangszámok összege <em>W</em>)</li>
-<li>Ezt a rangszámot a következő képletbe helyettesíti, amely igaz nullhipotézis esetén egy standard normális változót eredményez:</li>
+<li>Az egyik módszer elgondolása azon alapul, hogy ha nem történt
+változás (a változás medián értéke 0), akkor az előjelüket visszakapó
+rangszámok összegének a várható értéke 0. (Legyen az előjeles rangszámok
+összege <em>W</em>)</li>
+<li>Ezt a rangszámot a következő képletbe helyettesíti, amely igaz
+nullhipotézis esetén egy standard normális változót eredményez:</li>
 </ul>
-<p><span class="math display">\[z=\frac{W}{\sqrt{\frac{N_r(N_r+1)(2N_r+1)}{6}}}\]</span></p>
+<p><span
+class="math display">\[z=\frac{W}{\sqrt{\frac{N_r(N_r+1)(2N_r+1)}{6}}}\]</span></p>
 <p><strong>2. módszer</strong></p>
 <ul>
-<li>A másik módszer azon alapul, hogy ha nem történt változás, akkor a pozitív rangok és a negatív rangok (abszolút értékének) összege várhatóan azonos. Látszik, hogy ez ugyanaz a feltételezés, csak más számokat vesz alapul. (Legyen a pozitív rangszámok összege T<sup>+</sup>)</li>
-<li>Kiegészítés: Van olyan változat is, amelyben a két érték (a pozitív és a negatív rangszámok összege) közül a nagyobbal számolnak tovább, de ennek nincs jelentősége, mert csak az eredmény előjele változik.</li>
-<li>A pozitív rangszámok összegét (vagy a nagyobb összeget) az alábbi képletbe helyettesítjük (megértem, ha az első változat szimpatikusabb):</li>
+<li>A másik módszer azon alapul, hogy ha nem történt változás, akkor a
+pozitív rangok és a negatív rangok (abszolút értékének) összege
+várhatóan azonos. Látszik, hogy ez ugyanaz a feltételezés, csak más
+számokat vesz alapul. (Legyen a pozitív rangszámok összege
+T<sup>+</sup>)</li>
+<li>Kiegészítés: Van olyan változat is, amelyben a két érték (a pozitív
+és a negatív rangszámok összege) közül a nagyobbal számolnak tovább, de
+ennek nincs jelentősége, mert csak az eredmény előjele változik.</li>
+<li>A pozitív rangszámok összegét (vagy a nagyobb összeget) az alábbi
+képletbe helyettesítjük (megértem, ha az első változat
+szimpatikusabb):</li>
 </ul>
-<p><span class="math display">\[z = \frac{T^+-\frac{N_r(N_r+1)}{4}}{\sqrt{\frac{N_r(N_r+1)(2N_r+1)}{24}}}\]</span></p>
+<p><span class="math display">\[z =
+\frac{T^+-\frac{N_r(N_r+1)}{4}}{\sqrt{\frac{N_r(N_r+1)(2N_r+1)}{24}}}\]</span></p>
 <ul>
-<li>Sőt, ha vannak holtversenyek, akkor egyesek javasolják minden holtverseny esetében egy korrekciós tényező kivonását a gyök alatti törtből, amelynek képlete (<em>t</em> azt jelöli, hány elem van holtversenyben, holtversenyenként - ld. példa): <span class="math inline">\(\frac{t^3-t}{48}\)</span><br />
+<li>Sőt, ha vannak holtversenyek, akkor egyesek javasolják minden
+holtverseny esetében egy korrekciós tényező kivonását a gyök alatti
+törtből, amelynek képlete (<em>t</em> azt jelöli, hány elem van
+holtversenyben, holtversenyenként - ld. példa): <span
+class="math inline">\(\frac{t^3-t}{48}\)</span><br />
 </li>
-<li>Ha mindezeket végrehajtottuk, a kapott z érték standard normális eloszlású, ha igaz a nullhipotézis, mely szerint a változás medián értéke 0.</li>
+<li>Ha mindezeket végrehajtottuk, a kapott z érték standard normális
+eloszlású, ha igaz a nullhipotézis, mely szerint a változás medián
+értéke 0.</li>
 </ul>
 <hr />
 <p><strong>PÉLDA</strong></p>
 <p>Nézzük a konkrét példát:<br />
-20 gyermek esetében nézzük egy új írás-olvasás oktatási módszertan hatékonyságát. A kutatók az új módszertan bevezetése előtt és után is kitöltettek a gyermekekkel egy-egy tesztet, amely 0 és 10 közötti skálán mérte az írás-olvasás készségeket. Mivel az eloszlás nem normális, ezért a páros t-próba nem használható. Mivel a két mérés nem független egymástól, hanem ugyanazok a gyerekek töltötték ki a tesztet kétszer, ezért nem is független mintás Mann-Whitney-próbát használunk, hanem Wilcoxon-féle előjeles rangpróbát.</p>
+20 gyermek esetében nézzük egy új írás-olvasás oktatási módszertan
+hatékonyságát. A kutatók az új módszertan bevezetése előtt és után is
+kitöltettek a gyermekekkel egy-egy tesztet, amely 0 és 10 közötti skálán
+mérte az írás-olvasás készségeket. Mivel az eloszlás nem normális, ezért
+a páros t-próba nem használható. Mivel a két mérés nem független
+egymástól, hanem ugyanazok a gyerekek töltötték ki a tesztet kétszer,
+ezért nem is független mintás Mann-Whitney-próbát használunk, hanem
+Wilcoxon-féle előjeles rangpróbát.</p>
 <ol style="list-style-type: decimal">
 <li>Rögtön a változást feltüntetve mutatom az adatokat:</li>
 </ol>
@@ -1413,7 +1530,11 @@ Különbség
 </tbody>
 </table>
 <ol start="2" style="list-style-type: decimal">
-<li>Sorbarakjuk a különbség abszolút értéke szerint (ld. + és -3 egymás mellé került), és a tanult módon rangsoroljuk, azzal a kiegészítéssel, hogy a 0 különbség(ek)et figyelmen kívül hagyjuk (ld. első sor). Az elemszám mostantól N<sub>r</sub>=19. A végén &quot;visszaadjuk&quot; az előjelet (ld. 4,5-ek):<br />
+<li>Sorbarakjuk a különbség abszolút értéke szerint (ld. + és -3 egymás
+mellé került), és a tanult módon rangsoroljuk, azzal a kiegészítéssel,
+hogy a 0 különbség(ek)et figyelmen kívül hagyjuk (ld. első sor). Az
+elemszám mostantól N<sub>r</sub>=19. A végén “visszaadjuk” az előjelet
+(ld. 4,5-ek):<br />
 
 <table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
@@ -1841,15 +1962,25 @@ Előjeles rangszám
 </table></li>
 </ol>
 <p>3a. Összeadjuk a rangszámokat: W = 172<br />
-4a. Behelyettesítünk: <span class="math display">\[z = \frac{W}{\sqrt{\frac{N_r(N_r+1)(2N_r+1)}{6}}}=\frac{172}{\sqrt{\frac{19(19+1)(2\times19+1)}{6}}}
+4a. Behelyettesítünk: <span class="math display">\[z =
+\frac{W}{\sqrt{\frac{N_r(N_r+1)(2N_r+1)}{6}}}=\frac{172}{\sqrt{\frac{19(19+1)(2\times19+1)}{6}}}
 = 3.46\]</span></p>
 <p>VAGY:</p>
-<p>3b. Összeadjuk csak a pozitív rangszámokat (vagy, mint fent írtam, bármelyiket, legfeljebb az előjel lesz más): <span class="math inline">\(T^+=181\)</span></p>
-<p>4b. Behelyettesítünk: <span class="math display">\[z = \frac{T^+-\frac{N_r(N_r+1)}{4}}{\sqrt{\frac{N_r(N_r+1)(2N_r+1)}{24}}}=\frac{181-\frac{19(19+1)}{4}}{\sqrt{\frac{19(19+1)(2\times19+1)}{24}}}=3.46\]</span></p>
-<p>Ez még kiegészíthető a holtversenyek miatti korrekcióval: + Van egy 4-es holtverseny (3-6. hely), három 2-es holtverseny (7-8., 9-10. és 18-19. hely) és két hármas holtverseny (11-13. és 14-16. hely) + A korrigált képlet ezért kiegészül:</p>
-<p><span class="math display">\[z = \frac{T^+-\frac{N_r(N_r+1)}{4}}{\sqrt{\frac{N_r(N_r+1)(2N_r+1)}{24}-\frac{4^3-4}{48}-3\times\frac{2^3-2}{48}-2\times\frac{3^3-3}{48}}}=...=3,47\]</span></p>
+<p>3b. Összeadjuk csak a pozitív rangszámokat (vagy, mint fent írtam,
+bármelyiket, legfeljebb az előjel lesz más): <span
+class="math inline">\(T^+=181\)</span></p>
+<p>4b. Behelyettesítünk: <span class="math display">\[z =
+\frac{T^+-\frac{N_r(N_r+1)}{4}}{\sqrt{\frac{N_r(N_r+1)(2N_r+1)}{24}}}=\frac{181-\frac{19(19+1)}{4}}{\sqrt{\frac{19(19+1)(2\times19+1)}{24}}}=3.46\]</span></p>
+<p>Ez még kiegészíthető a holtversenyek miatti korrekcióval: + Van egy
+4-es holtverseny (3-6. hely), három 2-es holtverseny (7-8., 9-10. és
+18-19. hely) és két hármas holtverseny (11-13. és 14-16. hely) + A
+korrigált képlet ezért kiegészül:</p>
+<p><span class="math display">\[z =
+\frac{T^+-\frac{N_r(N_r+1)}{4}}{\sqrt{\frac{N_r(N_r+1)(2N_r+1)}{24}-\frac{4^3-4}{48}-3\times\frac{2^3-2}{48}-2\times\frac{3^3-3}{48}}}=...=3,47\]</span></p>
 <ol start="5" style="list-style-type: decimal">
-<li>Összevetjük a kapott tesztértéket a standard normális eloszlás határértékeivel: 5% esetén ±1,96; 1% esetén ±2,58, stb. Ez alapján az eredmény 1%-os szignifikanciaszint esetén is szignifikáns</li>
+<li>Összevetjük a kapott tesztértéket a standard normális eloszlás
+határértékeivel: 5% esetén ±1,96; 1% esetén ±2,58, stb. Ez alapján az
+eredmény 1%-os szignifikanciaszint esetén is szignifikáns</li>
 </ol>
 <p>    Kiegészítés: a pontos szig. szint 0.001</p>
 </div>
@@ -1857,14 +1988,28 @@ Előjeles rangszám
 <div id="összefoglalás" class="section level2">
 <h2>Összefoglalás</h2>
 <ul>
-<li>Vannak esetek, amikor a változó nem normális eloszlást követ, ezért a szokásos próbák helyett nem paraméteres próbákat használunk, amelyek <strong>nem feltételezik a normális eloszlást</strong>.</li>
-<li>A t-próba (és Welch-próba) alternatívája a <strong>Mann-Whitney-féle U-próba</strong>.</li>
-<li>A páros t-próba nem paraméteres alternatívája a <strong>Wilcoxon-féle előjeles rangpróba</strong>.</li>
-<li>Ezek alapja a <strong>rangszámtranszformáció</strong>. A mai anyagból ez az, amit mindenképp érdemesnek tartok a megjegyzésre.</li>
-<li>A rangszámtranszformáció lényege, hogy a változók értékeit növekvő sorrendbe rendezzük és rangsoroljuk. Ennek eredményeképpen ugyan elvész információ (az értékek közötti különbségek), de legalább az értékek sorrendjével tovább tudunk számolni.</li>
-<li>Ezáltal a skála mérési szintű változókból ordinális változók lesznek, és ennek megfelelően, a hipotézisek sem az átlagokra vonatkoznak, hanem a mediánokra.</li>
-<li>A próbák sokszor többféleképpen is kiszámíthatók, de mint látható volt, az eredmény ugyanaz.</li>
-<li>Kis elemszám esetén külön eloszlás-táblázatok állnak rendelkezésünkre, de viszonylag nagyobb minták esetében már van lehetőség olyan statisztika kiszámítására, amely igaz nullhipotézis esetén közel standard normális eloszlású.</li>
+<li>Vannak esetek, amikor a változó nem normális eloszlást követ, ezért
+a szokásos próbák helyett nem paraméteres próbákat használunk, amelyek
+<strong>nem feltételezik a normális eloszlást</strong>.</li>
+<li>A t-próba (és Welch-próba) alternatívája a <strong>Mann-Whitney-féle
+U-próba</strong>.</li>
+<li>A páros t-próba nem paraméteres alternatívája a
+<strong>Wilcoxon-féle előjeles rangpróba</strong>.</li>
+<li>Ezek alapja a <strong>rangszámtranszformáció</strong>. A mai
+anyagból ez az, amit mindenképp érdemesnek tartok a megjegyzésre.</li>
+<li>A rangszámtranszformáció lényege, hogy a változók értékeit növekvő
+sorrendbe rendezzük és rangsoroljuk. Ennek eredményeképpen ugyan elvész
+információ (az értékek közötti különbségek), de legalább az értékek
+sorrendjével tovább tudunk számolni.</li>
+<li>Ezáltal a skála mérési szintű változókból ordinális változók
+lesznek, és ennek megfelelően, a hipotézisek sem az átlagokra
+vonatkoznak, hanem a mediánokra.</li>
+<li>A próbák sokszor többféleképpen is kiszámíthatók, de mint látható
+volt, az eredmény ugyanaz.</li>
+<li>Kis elemszám esetén külön eloszlás-táblázatok állnak
+rendelkezésünkre, de viszonylag nagyobb minták esetében már van
+lehetőség olyan statisztika kiszámítására, amely igaz nullhipotézis
+esetén közel standard normális eloszlású.</li>
 </ul>
 </div>
 
@@ -1906,6 +2051,9 @@ $(document).ready(function () {
 
 <script>
 $(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
 
     // move toc-ignore selectors from section div to header
     $('div.section.toc-ignore')

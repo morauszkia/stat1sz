@@ -9,7 +9,6 @@ output:
 
 <style>
   p {
-    text-align: justify;
     line-height: 1.5;
   }
   strong {
@@ -165,7 +164,7 @@ Az alapesetekhez képest lehetnek olyan kikötések, amelyek bonyolultabbá tesz
 <div class="addition centered">
 
 [A feladatokat itt találják](00_kombinatorika.pdf)  
-[A megoldásokat pedig itt](00_kombinatorika_megoldas.pdf)  
+<!-- [A megoldásokat pedig itt](00_kombinatorika_megoldas.pdf)  -->
 [Itt pedig egy másik (nem saját) összefoglalót](https://www.mateking.hu/valoszinusegszamitas/kombinatorika/nagy-kombinatorikai-osszefoglalo)  
 
 </div>

@@ -36,7 +36,6 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 library(RColorBrewer)
-library(wesanderson)
 library(patchwork)
 library(readxl)
 library(janitor)
