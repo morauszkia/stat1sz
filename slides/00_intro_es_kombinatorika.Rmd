@@ -1,0 +1,204 @@
+---
+title: "Valószínűségszámítás alapok"
+subtitle: "Statisztika 1. szeminárium"
+author: "Morauszki András"
+university: "PPKE-BTK"
+output: 
+  ioslides_presentation:
+    logo: ppke.jpg
+    widescreen: true
+    css: mystyle.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library(dplyr)
+library(readr)
+library(tm)
+library(wordcloud)
+library(wesanderson)
+library(ggplot2)
+library(scales)
+library(stringr)
+
+windowsFonts(Times=windowsFont("TT Times New Roman"))
+
+dataset <- read_csv("intro_quest.csv")
+names(dataset) <- c("date", "course", "associate", "math_comp", "exam_level", "stat_ea", "quant", "survey", "spss", 
+                    "satis_result", "email_address", "exercise", "devices", "message")
+dataset <- dataset %>%
+  mutate(course = as.character(course) %>% str_remove(":00$"))
+
+word.corpus <- Corpus(VectorSource(dataset$associate))
+word.corpus <- word.corpus %>% tm_map(removePunctuation) %>% tm_map(tolower)
+word.counts <- as.matrix(TermDocumentMatrix(word.corpus))
+word.freq <- sort(rowSums(word.counts), decreasing = TRUE)*5
+
+```
+
+## A matematikai statisztika Önök szerint
+
+```{r warning=FALSE}
+set.seed(40)
+wordcloud(words = names(word.freq), freq = word.freq, scale = c(3, 0.5), max.words = 100, random.order = FALSE, 
+          color = wes_palette("Zissou1"), rot.per = 0.5)
+```
+
+## Mennyire értékelik a matektudásukat?
+
+```{r}
+p1 <- ggplot(data = dataset, aes(x = math_comp, group = course, fill = course))
+p1 + geom_density(adjust = 1.5, alpha = 0.5) +
+  xlab("Matektudás") +
+  ylab("") +
+  theme_classic() +
+  scale_fill_discrete(name = "Kurzus")
+
+
+# p2 <- ggplot(data = filter(dataset, Course == "8:30"), aes(x = Evaluate))
+# p2 + geom_density(fill = "lightblue", color = "lightblue")
+# 
+# p2 <- ggplot(data = filter(dataset, Course == "10:15"), aes(x = Evaluate))
+# p2 + geom_density(fill = "lightblue", color = "lightblue")
+# 
+# p2 <- ggplot(data = filter(dataset, Course == "12:30"), aes(x = Evaluate))
+# p2 + geom_density(fill = "lightblue", color = "lightblue")
+```
+
+## Remélt eredmény
+
+```{r}
+sb <- table(dataset$course, dataset$satis_result) %>% as.data.frame()
+names(sb)[1:2] <- c("course", "result")
+sb$course <- factor(sb$course, levels = c("12:30", "14:30", "16:15"))
+sb$result <- factor(sb$result, levels = c("Csak 5-össel lennék elégedett", "Legalább 4-es", "Legalább 3-as", "Mindegy, csak görbüljön!"))
+
+p3 <- ggplot(data = sb, aes(fill = result, y = Freq, x = course))
+p3 + geom_bar(color = "black", position = "fill", stat = "identity") + 
+  theme_minimal(base_family = "Times", base_size = 20) +
+  labs(x = element_blank(), y = element_blank(), fill = "Eredmény") +
+  scale_y_continuous(labels = percent)
+```
+
+## A félévről
+
+**Trigger warning:** Sokat fogunk számolni &rArr; számológépre szükség lesz
+
+Félév felépítése:  
+
+1. negyedév: Valószínűségszámítás - **ZH: 03.23.**
+2. negyedév: Matematikai statisztika alapjai - **ZH: 05.18.**  
+Leíró + becsléselmélet + hipotézisvizsgálat
+
+Végeredmény: pontösszeg alapján  
+Házi feladatok  
+Órai jelenlét és hiányzás
+
+## Valószínűségszámítás
+
+- **Kísérlet**: amit végzünk, megfigyelünk, stb.  
+- **Esemény**: a kísérlet kimenetele, ami ténylegesen megtörténhet  
+- **Valószínűség**: az eseményhez rendeljük, ha ismételten elvégeznénk a kísérletet, várhatóan az esetek hány százalékában következik be az esemény  
+- **Biztos és lehetetlen esemény**  
+- **Elemi és összetett esemény**  
+- **Klasszikus valószínűségi mező**  
+
+## Klasszikus valószínűségi mező
+
+Ha az összes elemi esemény valószínűsége egyenlő, akkor bármilyen összetett esemény valószínűsége:  
+
+$$P(A)=\frac{\textit{kedvező elemi események száma}}{\textit{összes elemi esemény száma}}$$
+
+## Klasszikus valószínűségi mező
+
+1. 32 lapos magyarkártya-pakliból húzunk. Mennyi a valószínűsége annak, hogy a húzott kártya piros?
+2. Szabályos dobókockával dobunk. Mennyi annak a valószínűsége, hogy a dobott szám nagyobb, vagy egyenlő 5-tel?
+3. Feldobunk két pénzérmét. Mennyi a valószínűsége, hogy mindkét dobás fej?
+4. Öten mehetnek kenuzni. Mennyi a valószínűsége, hogy ha kilenc barátunkkal sorsolással döntjük el, ki mehet, a szerencsések között leszünk mi is?
+5. Véletlenszámgenerátorral négyjegyű PIN-kódot generálunk. Mennyi a valószínűsége, hogy a kapott számban nem ismétlődnek a számjegyek?
+
+## Kombinatorika
+
+Alapfelállás: vannak elemeink, és azokkal szeretnénk valamit:  
+
+Mit is?
+
+## Kombinatorika
+
+Alapfelállás: vannak elemeink, és azokkal szeretnénk valamit:  
+
+1. Sorbarakni mindet
+2. Sorbarakni néhányat
+3. Kiválasztani néhányat
+
+## Kombinatorika
+
+Alapfelállás: vannak elemeink, és azokkal szeretnénk valamit:  
+
+1. Sorbarakni mindet &rArr; **Permutáció**
+2. Sorbarakni néhányat &rArr; **Variáció**
+3. Kiválasztani néhányat &rArr; **Kombináció**
+  
+
+Mindháromnak van ismétlés nélküli és ismétléses változata
+
+## Permutáció
+
+Adott *n* darab elem, és azt vizsgáljuk, ezeket hányféleképpen tudjuk sorbaállítani.
+
+Mondjanak példát  
+
+- ismétlés nélküli és
+- ismétléses permutációra!
+
+## Permutáció
+
+Képletek:
+
+$$P_n = n!$$
+$$n! = n*(n-1)*...*2*1$$
+$$P_{n}^{(k_1, k_2, ...k_r)}=\frac{n!}{k_1!*k_2!*...*k_r!}$$
+
+Fontos információ: $0!=1$
+
+## Variáció
+
+Adott *n* darab elem, és azt vizsgáljuk, ezekből hányféleképpen tudunk sorbaállítani *k* darabot.
+
+Mondjanak példát  
+
+- ismétlés nélküli és
+- ismétléses variációra!
+
+## Variáció
+
+Képletek:  
+
+$$V_n^k=\frac{n!}{(n-k)!}$$
+$$V_n^{i,k}=n^k$$
+
+## Kombináció
+
+Adott *n* darab elem, és azt vizsgáljuk, hányféleképpen tudunk ezekből kiválasztani *k* darabot. A sorrend nem számít.
+
+Mondjanak példát  
+
+- ismétlés nélküli és
+- ismétléses kombinációra
+
+## Kombináció
+
+Képletek:
+
+$$C_n^k=\binom{n}{k}=\frac{n!}{k!*(n-k)!}$$
+$$C_n^{i, k}=\binom{n+k-1}{k}$$  
+
+Megjegyzés: Az $\binom{n}{k}$-t úgy mondjuk: "n alatt a k"
+
+## Vissza a valószínűségekhez
+
+Általában az összes esetet viszonylag könnyebb kiszámolni, a kedvező esetek kiszámításában pedig előfordulnak csavarok.   
+  
+  
+Nézzünk néhány további feladatot!

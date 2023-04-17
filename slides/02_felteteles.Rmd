@@ -1,0 +1,1160 @@
+---
+title: "Feltételes valószínűségek"
+subtitle: "Statisztika 1. szeminárium"
+author: "Morauszki András"
+university: "PPKE-BTK"
+output: 
+  ioslides_presentation:
+    logo: ppke.jpg
+    widescreen: true
+    css: mystyle.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+# Események függetlensége
+
+## Független és nem független események
+
+Függetlenség: az egyik esemény valószínűsége a másik esemény bekövetkeztétől függetlenül ugyanannyi
+
+Két esemény összefüggése: pl. angol és francia nyelv ismerete
+
+Speciális esetek: komplemeter, egymást kölcsönösen kizáró események, szükséges és elégséges feltételek
+
+<div class="centered">
+[Vizualizáció](https://seeing-theory.brown.edu/compound-probability/index.html#section3)
+</div>
+
+## Független és nem független események
+
+Függetlenség: az egyik esemény valószínűsége a másik esemény bekövetkeztétől függetlenül ugyanannyi
+
+Pl. két egymás utáni érmedobás.  
+
+- Mennyi a valószínűsége, hogy az első dobás fej?
+- Ha az első dobás fej volt, mennyi a valószínűsége, hogy a második dobás is fej?
+- Ha az eldő dobás írás volt, mennyi a valószínűsége, hogy a második dobás fej?
+- Mennyi a valószínűsége, hogy mindkét dobás fej?
+
+## Független és nem független események {.vcenter}
+
+Ellenőrzés: teljesül-e, hogy
+$$P(A*B) = P(A)*P(B)$$
+
+## Független és nem független események
+
+Függetlenek-e az alábbi események?  
+
+1. &nbsp;&nbsp;&nbsp;&nbsp;$P(A)=0,5$&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$P(B)=0,3$&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$P(A*B)=0,2$
+2. &nbsp;&nbsp;&nbsp;&nbsp;$P(A)=0,5$&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$P(B)=0,4$&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$P(A*B)=0,2$
+3. &nbsp;&nbsp;&nbsp;&nbsp;$P(A)=0,7$&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$P(B)=0,5$&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$P(A*B)=0,35$
+4. &nbsp;&nbsp;&nbsp;&nbsp;$P(A)=0,8$&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$P(B)=0,4$&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$P(A*B)=0,25$
+
+## Független és nem független események
+
+Függetlenek-e az alábbi események?  
+
+1. &nbsp;&nbsp;&nbsp;<span style="color:red;">$P(A)=0,5$&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$P(B)=0,3$&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$P(A*B)=0,2$</span>
+2. &nbsp;&nbsp;&nbsp;<span style="color:green;">$P(A)=0,5$&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$P(B)=0,4$&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$P(A*B)=0,2$</span>
+3. &nbsp;&nbsp;&nbsp;<span style="color:green;">$P(A)=0,7$&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$P(B)=0,5$&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$P(A*B)=0,35$</span>
+4. &nbsp;&nbsp;&nbsp;<span style="color:red;">$P(A)=0,8$&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$P(B)=0,4$&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$P(A*B)=0,25$</span>
+
+## Mennyi $P(A*B)$, ha a két esemény független?
+
+<br>  
+
+1. &nbsp;&nbsp;&nbsp;&nbsp;$P(A)=0,8$&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$P(B)=0,4$
+2. &nbsp;&nbsp;&nbsp;&nbsp;$P(A)=0,8$&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$P(B)=0,5$
+3. &nbsp;&nbsp;&nbsp;&nbsp;$P(A)=0,3$&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$P(B)=0,2$
+4. &nbsp;&nbsp;&nbsp;&nbsp;$P(A)=0,5$&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$P(B)=0,5$
+
+## Mennyi $P(A*B)$, ha a két esemény független?
+
+<br>  
+
+1. &nbsp;&nbsp;&nbsp;&nbsp;$P(A)=0,8$&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$P(B)=0,4$&nbsp;&nbsp;&nbsp;&nbsp; &rArr; $P(A*B)=0,32$
+2. &nbsp;&nbsp;&nbsp;&nbsp;$P(A)=0,8$&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$P(B)=0,5$&nbsp;&nbsp;&nbsp;&nbsp; &rArr; $P(A*B)=0,4$
+3. &nbsp;&nbsp;&nbsp;&nbsp;$P(A)=0,3$&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$P(B)=0,2$&nbsp;&nbsp;&nbsp;&nbsp; &rArr; $P(A*B)=0,06$
+4. &nbsp;&nbsp;&nbsp;&nbsp;$P(A)=0,5$&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$P(B)=0,5$&nbsp;&nbsp;&nbsp;&nbsp; &rArr; $P(A*B)=0,25$
+
+# Feltételes valószínűségek
+
+## Feltételes valószínűségek jelölése és kiszámítása
+
+A feltételes valószínűségeket a következőképpen jelöljük:
+$$P(A|B)$$
+kiolvasva "A valószínűsége, feltéve, hogy B bekövetkezett"  
+Pl. A sikeres vizsga (S) valószínűsége, feltéve, hogy a hallgató felkészült (K)
+$$P(S|K)$$
+Fontos:  
+
+- A jelölésben függőleges vonal van, nem pedig "\\"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$P(S|K) \ne P(S \setminus K)$
+- Továbbá $P(S|K) \ne P(K|S)$, ezért fontos tudni, melyik mit jelöl
+- Végül $P(S|K) \ne P(S*K)$: más a 100%
+
+## Angol és francia nyelvismeret
+
+Hogyan jelölné annak valószínűségét, hogy valaki   
+
+1. beszél angolul, feltéve, hogy beszél franciául
+2. beszél franciául, ha tudjuk, hogy beszél angolul
+3. beszél angolul, ha franciául nem
+4. beszél franciául, ha angolul nem
+5. nem beszél angolul, ha franciául beszél
+6. aki angolul beszél, franciául nem
+7. nem beszél angolul, aki franciául sem beszél
+8. nem beszél franciául, feltéve, hogy angolul sem
+
+## Angol és francia nyelvismeret
+
+Hogyan jelölné annak valószínűségét, hogy valaki   
+
+1. $P(A|F)$
+2. beszél franciául, ha tudjuk, hogy beszél angolul
+3. beszél angolul, ha franciául nem
+4. beszél franciául, ha angolul nem
+5. nem beszél angolul, ha franciául beszél
+6. aki angolul beszél, franciául nem
+7. nem beszél angolul, aki franciául sem beszél
+8. nem beszél franciául, feltéve, hogy angolul sem
+
+## Angol és francia nyelvismeret
+
+Hogyan jelölné annak valószínűségét, hogy valaki   
+
+1. $P(A|F)$
+2. $P(F|A)$
+3. beszél angolul, ha franciául nem
+4. beszél franciául, ha angolul nem
+5. nem beszél angolul, ha franciául beszél
+6. aki angolul beszél, franciául nem
+7. nem beszél angolul, aki franciául sem beszél
+8. nem beszél franciául, feltéve, hogy angolul sem
+
+## Angol és francia nyelvismeret
+
+Hogyan jelölné annak valószínűségét, hogy valaki   
+
+1. $P(A|F)$
+2. $P(F|A)$
+3. $P(A|\overline{F})$
+4. beszél franciául, ha angolul nem
+5. nem beszél angolul, ha franciául beszél
+6. aki angolul beszél, franciául nem
+7. nem beszél angolul, aki franciául sem beszél
+8. nem beszél franciául, feltéve, hogy angolul sem
+
+## Angol és francia nyelvismeret
+
+Hogyan jelölné annak valószínűségét, hogy valaki   
+
+1. $P(A|F)$
+2. $P(F|A)$
+3. $P(A|\overline{F})$
+4. $P(F|\overline{A})$
+5. nem beszél angolul, ha franciául beszél
+6. aki angolul beszél, franciául nem
+7. nem beszél angolul, aki franciául sem beszél
+8. nem beszél franciául, feltéve, hogy angolul sem
+
+## Angol és francia nyelvismeret
+
+Hogyan jelölné annak valószínűségét, hogy valaki   
+
+1. $P(A|F)$
+2. $P(F|A)$
+3. $P(A|\overline{F})$
+4. $P(F|\overline{A})$
+5. $P(\overline{A}|F)$
+6. aki angolul beszél, franciául nem
+7. nem beszél angolul, aki franciául sem beszél
+8. nem beszél franciául, feltéve, hogy angolul sem
+
+## Angol és francia nyelvismeret
+
+Hogyan jelölné annak valószínűségét, hogy valaki   
+
+1. $P(A|F)$
+2. $P(F|A)$
+3. $P(A|\overline{F})$
+4. $P(F|\overline{A})$
+5. $P(\overline{A}|F)$
+6. $P(\overline{F}|A)$
+7. nem beszél angolul, aki franciául sem beszél
+8. nem beszél franciául, feltéve, hogy angolul sem
+
+## Angol és francia nyelvismeret
+
+Hogyan jelölné annak valószínűségét, hogy valaki   
+
+1. $P(A|F)$
+2. $P(F|A)$
+3. $P(A|\overline{F})$
+4. $P(F|\overline{A})$
+5. $P(\overline{A}|F)$
+6. $P(\overline{F}|A)$
+7. $P(\overline{A}|\overline{F})$
+8. nem beszél franciául, feltéve, hogy angolul sem
+
+## Angol és francia nyelvismeret
+
+Hogyan jelölné annak valószínűségét, hogy valaki   
+
+1. $P(A|F)$
+2. $P(F|A)$
+3. $P(A|\overline{F})$
+4. $P(F|\overline{A})$
+5. $P(\overline{A}|F)$
+6. $P(\overline{F}|A)$
+7. $P(\overline{A}|\overline{F})$
+8. $P(\overline{F}|\overline{A})$
+
+## Másik irányba is jó tudni
+
+Mit is jelöltek az alábbiak?  
+
+1. $P(F|A)$
+2. $P(A|\overline{F})$
+3. $P(\overline{A}|F)$
+4. $P(\overline{F}|\overline{A})$
+
+## Másik irányba is jó tudni
+
+Mit is jelöltek az alábbiak?  
+
+1. $P(F|A)$ &rArr; beszél franciául, ha angolul beszél
+2. $P(A|\overline{F})$ 
+3. $P(\overline{A}|F)$ 
+4. $P(\overline{F}|\overline{A})$ 
+
+## Másik irányba is jó tudni
+
+Mit is jelöltek az alábbiak?  
+
+1. $P(F|A)$ &rArr; beszél franciául, ha angolul beszél
+2. $P(A|\overline{F})$ &rArr; beszél angolul, ha franciául nem
+3. $P(\overline{A}|F)$ 
+4. $P(\overline{F}|\overline{A})$ 
+
+## Másik irányba is jó tudni
+
+Mit is jelöltek az alábbiak?  
+
+1. $P(F|A)$ &rArr; beszél franciául, ha angolul beszél
+2. $P(A|\overline{F})$ &rArr; beszél angolul, ha franciául nem
+3. $P(\overline{A}|F)$ &rArr; valaki, aki beszél franciául, angolul nem beszél
+4. $P(\overline{F}|\overline{A})$ 
+
+## Másik irányba is jó tudni
+
+Mit is jelöltek az alábbiak?  
+
+1. $P(F|A)$ &rArr; beszél franciául, ha angolul beszél
+2. $P(A|\overline{F})$ &rArr; beszél angolul, ha franciául nem
+3. $P(\overline{A}|F)$ &rArr; valaki, aki beszél franciául, angolul nem beszél
+4. $P(\overline{F}|\overline{A})$ &rArr; nem beszél franciául, ha angolul sem
+
+## Kiszámítása
+
+A feltételes valószínűség képlete: <br><br>
+
+$$P(A|B)=\frac{P(A*B)}{P(B)}$$
+
+## Számítsuk ki az alábbiakat! {.smaller}
+
+<div style="width:60%; float:left">
+$P(A)=0,8$ &nbsp;&nbsp; $P(F)=0,5$ &nbsp;&nbsp; $P(A*F)=0,3$  
+
+1. $P(A|F)$
+2. $P(F|A)$
+5. $P(\overline{A}|F)$
+6. $P(\overline{F}|A)$
+3. $P(A|\overline{F})$
+4. $P(F|\overline{A})$
+7. $P(\overline{A}|\overline{F})$
+8. $P(\overline{F}|\overline{A})$
+</div>
+
+<div style="width:40%; float:right; margin-top:100px">
+$$P(A|B)=\frac{P(A*B)}{P(B)}$$
+</div>
+
+## Számítsuk ki az alábbiakat! {.smaller}
+
+<div style="width:60%; float:left">
+$P(A)=0,8$ &nbsp;&nbsp; $P(F)=0,5$ &nbsp;&nbsp; $P(A*F)=0,3$  
+
+1. $P(A|F)$
+2. $P(F|A)$
+5. <span style="color:LightGray;">$P(\overline{A}|F)$</span>
+6. <span style="color:LightGray;">$P(\overline{F}|A)$</span>
+3. <span style="color:LightGray;">$P(A|\overline{F})$</span>
+4. <span style="color:LightGray;">$P(F|\overline{A})$</span>
+7. <span style="color:LightGray;">$P(\overline{A}|\overline{F})$</span>
+8. <span style="color:LightGray;">$P(\overline{F}|\overline{A})$</span>
+</div>
+
+<div style="width:35%; float:right; margin-top:100px; border: 2px dashed green">
+$$P(A|B)=\frac{P(A*B)}{P(B)}$$
+</div>
+
+## Számítsuk ki az alábbiakat! {.smaller}
+
+<div style="width:60%; float:left">
+$P(A)=0,8$ &nbsp;&nbsp; $P(F)=0,5$ &nbsp;&nbsp; $P(A*F)=0,3$  
+
+1. $P(A|F)$
+2. <span style="color:LightGray;">$P(F|A)$</span>
+5. <span style="color:LightGray;">$P(\overline{A}|F)$</span>
+6. <span style="color:LightGray;">$P(\overline{F}|A)$</span>
+3. <span style="color:LightGray;">$P(A|\overline{F})$</span>
+4. <span style="color:LightGray;">$P(F|\overline{A})$</span>
+7. <span style="color:LightGray;">$P(\overline{A}|\overline{F})$</span>
+8. <span style="color:LightGray;">$P(\overline{F}|\overline{A})$</span>
+</div>
+
+<div style="width:35%; float:right; margin-top:100px; border: 2px dashed green">
+$$P(A|F)=\frac{P(A*F)}{P(F)}$$
+</div>
+
+
+## Számítsuk ki az alábbiakat! {.smaller}
+
+<div style="width:60%; float:left">
+$P(A)=0,8$ &nbsp;&nbsp; $P(F)=0,5$ &nbsp;&nbsp; $P(A*F)=0,3$  
+
+1. $P(A|F)$
+2. <span style="color:LightGray;">$P(F|A)$</span>
+5. <span style="color:LightGray;">$P(\overline{A}|F)$</span>
+6. <span style="color:LightGray;">$P(\overline{F}|A)$</span>
+3. <span style="color:LightGray;">$P(A|\overline{F})$</span>
+4. <span style="color:LightGray;">$P(F|\overline{A})$</span>
+7. <span style="color:LightGray;">$P(\overline{A}|\overline{F})$</span>
+8. <span style="color:LightGray;">$P(\overline{F}|\overline{A})$</span>
+</div>
+
+<div style="width:35%; float:right; margin-top:100px; border: 2px dashed green">
+$$P(A|F)=\frac{0,3}{0,5}$$
+</div>
+
+
+## Számítsuk ki az alábbiakat! {.smaller}
+
+<div style="width:60%; float:left">
+$P(A)=0,8$ &nbsp;&nbsp; $P(F)=0,5$ &nbsp;&nbsp; $P(A*F)=0,3$  
+
+1. <span style="color:green;">$P(A|F)=0,6$</span>
+2. <span style="color:LightGray;">$P(F|A)$</span>
+5. <span style="color:LightGray;">$P(\overline{A}|F)$</span>
+6. <span style="color:LightGray;">$P(\overline{F}|A)$</span>
+3. <span style="color:LightGray;">$P(A|\overline{F})$</span>
+4. <span style="color:LightGray;">$P(F|\overline{A})$</span>
+7. <span style="color:LightGray;">$P(\overline{A}|\overline{F})$</span>
+8. <span style="color:LightGray;">$P(\overline{F}|\overline{A})$</span>
+</div>
+
+<div style="width:35%; float:right; margin-top:100px; color:LightGray;">
+$$P(A|B)=\frac{P(A*B)}{P(B)}$$
+</div>
+
+## Számítsuk ki az alábbiakat! {.smaller}
+
+<div style="width:60%; float:left">
+$P(A)=0,8$ &nbsp;&nbsp; $P(F)=0,5$ &nbsp;&nbsp; $P(A*F)=0,3$  
+
+1. <span style="color:LightGray;">$P(A|F)=0,6$</span>
+2. $P(F|A)$
+5. <span style="color:LightGray;">$P(\overline{A}|F)$</span>
+6. <span style="color:LightGray;">$P(\overline{F}|A)$</span>
+3. <span style="color:LightGray;">$P(A|\overline{F})$</span>
+4. <span style="color:LightGray;">$P(F|\overline{A})$</span>
+7. <span style="color:LightGray;">$P(\overline{A}|\overline{F})$</span>
+8. <span style="color:LightGray;">$P(\overline{F}|\overline{A})$</span>
+</div>
+
+<div style="width:35%; float:right; margin-top:100px; border: 2px dashed green">
+$$P(F|A)=\frac{P(F*A)}{P(A)}$$
+</div>
+
+
+## Számítsuk ki az alábbiakat! {.smaller}
+
+<div style="width:60%; float:left">
+$P(A)=0,8$ &nbsp;&nbsp; $P(F)=0,5$ &nbsp;&nbsp; $P(A*F)=0,3$  
+
+1. <span style="color:LightGray;">$P(A|F)=0,6$</span>
+2. $P(F|A)$
+5. <span style="color:LightGray;">$P(\overline{A}|F)$</span>
+6. <span style="color:LightGray;">$P(\overline{F}|A)$</span>
+3. <span style="color:LightGray;">$P(A|\overline{F})$</span>
+4. <span style="color:LightGray;">$P(F|\overline{A})$</span>
+7. <span style="color:LightGray;">$P(\overline{A}|\overline{F})$</span>
+8. <span style="color:LightGray;">$P(\overline{F}|\overline{A})$</span>
+</div>
+
+<div style="width:35%; float:right; margin-top:100px; border: 2px dashed green">
+$$P(F|A)=\frac{P(A*F)}{P(A)}$$
+</div>
+
+## Számítsuk ki az alábbiakat! {.smaller}
+
+<div style="width:60%; float:left">
+$P(A)=0,8$ &nbsp;&nbsp; $P(F)=0,5$ &nbsp;&nbsp; $P(A*F)=0,3$  
+
+1. <span style="color:LightGray;">$P(A|F)=0,6$</span>
+2. $P(F|A)$
+5. <span style="color:LightGray;">$P(\overline{A}|F)$</span>
+6. <span style="color:LightGray;">$P(\overline{F}|A)$</span>
+3. <span style="color:LightGray;">$P(A|\overline{F})$</span>
+4. <span style="color:LightGray;">$P(F|\overline{A})$</span>
+7. <span style="color:LightGray;">$P(\overline{A}|\overline{F})$</span>
+8. <span style="color:LightGray;">$P(\overline{F}|\overline{A})$</span>
+</div>
+
+<div style="width:35%; float:right; margin-top:100px; border: 2px dashed green">
+$$P(F|A)=\frac{0,3}{0,8}$$
+</div>
+
+## Számítsuk ki az alábbiakat! {.smaller}
+
+<div style="width:60%; float:left">
+$P(A)=0,8$ &nbsp;&nbsp; $P(F)=0,5$ &nbsp;&nbsp; $P(A*F)=0,3$  
+
+1. <span style="color:LightGray;">$P(A|F)=0,6$</span>
+2. <span style="color:green;">$P(F|A)=0,375$</span>
+5. <span style="color:LightGray;">$P(\overline{A}|F)$</span>
+6. <span style="color:LightGray;">$P(\overline{F}|A)$</span>
+3. <span style="color:LightGray;">$P(A|\overline{F})$</span>
+4. <span style="color:LightGray;">$P(F|\overline{A})$</span>
+7. <span style="color:LightGray;">$P(\overline{A}|\overline{F})$</span>
+8. <span style="color:LightGray;">$P(\overline{F}|\overline{A})$</span>
+</div>
+
+<div style="width:35%; float:right; margin-top:100px; color:LightGray;">
+$$P(A|B)=\frac{P(A*B)}{P(B)}$$
+</div>
+
+## Számítsuk ki az alábbiakat! {.smaller}
+
+<div style="width:60%; float:left">
+$P(A)=0,8$ &nbsp;&nbsp; $P(F)=0,5$ &nbsp;&nbsp; $P(A*F)=0,3$  
+
+1. <span style="color:LightGray;">$P(A|F)=0,6$</span>
+2. <span style="color:LightGray;">$P(F|A)=0,375$</span>
+5. $P(\overline{A}|F)$
+6. <span style="color:LightGray;">$P(\overline{F}|A)$</span>
+3. <span style="color:LightGray;">$P(A|\overline{F})$</span>
+4. <span style="color:LightGray;">$P(F|\overline{A})$</span>
+7. <span style="color:LightGray;">$P(\overline{A}|\overline{F})$</span>
+8. <span style="color:LightGray;">$P(\overline{F}|\overline{A})$</span>
+</div>
+
+<div style="width:35%; float:right; margin-top:100px; border: 2px dashed green">
+$$P(\overline{A}|F)=\frac{P(\overline{A}*F)}{P(F)}$$
+</div>
+
+
+## Számítsuk ki az alábbiakat! {.smaller}
+
+<div style="width:60%; float:left">
+$P(A)=0,8$ &nbsp;&nbsp; $P(F)=0,5$ &nbsp;&nbsp; $P(A*F)=0,3$  
+
+1. <span style="color:LightGray;">$P(A|F)=0,6$</span>
+2. <span style="color:LightGray;">$P(F|A)=0,375$</span>
+5. $P(\overline{A}|F)$
+6. <span style="color:LightGray;">$P(\overline{F}|A)$</span>
+3. <span style="color:LightGray;">$P(A|\overline{F})$</span>
+4. <span style="color:LightGray;">$P(F|\overline{A})$</span>
+7. <span style="color:LightGray;">$P(\overline{A}|\overline{F})$</span>
+8. <span style="color:LightGray;">$P(\overline{F}|\overline{A})$</span>
+</div>
+
+<div style="width:35%; float:right; margin-top:100px; border: 2px dashed green">
+$$P(\overline{A}|F)=\frac{P(F*\overline{A})}{P(F)}$$
+</div>
+
+## Számítsuk ki az alábbiakat! {.smaller}
+
+<div style="width:60%; float:left">
+$P(A)=0,8$ &nbsp;&nbsp; $P(F)=0,5$ &nbsp;&nbsp; $P(A*F)=0,3$  
+
+1. <span style="color:LightGray;">$P(A|F)=0,6$</span>
+2. <span style="color:LightGray;">$P(F|A)=0,375$</span>
+5. $P(\overline{A}|F)$
+6. <span style="color:LightGray;">$P(\overline{F}|A)$</span>
+3. <span style="color:LightGray;">$P(A|\overline{F})$</span>
+4. <span style="color:LightGray;">$P(F|\overline{A})$</span>
+7. <span style="color:LightGray;">$P(\overline{A}|\overline{F})$</span>
+8. <span style="color:LightGray;">$P(\overline{F}|\overline{A})$</span>
+</div>
+
+<div style="width:35%; float:right; margin-top:100px; border: 2px dashed green">
+$$P(\overline{A}|F)=\frac{P(F \setminus A)}{P(F)}$$
+</div>
+
+## Számítsuk ki az alábbiakat! {.smaller}
+
+<div style="width:60%; float:left">
+$P(A)=0,8$ &nbsp;&nbsp; $P(F)=0,5$ &nbsp;&nbsp; $P(A*F)=0,3$  
+
+1. <span style="color:LightGray;">$P(A|F)=0,6$</span>
+2. <span style="color:LightGray;">$P(F|A)=0,375$</span>
+5. $P(\overline{A}|F)$
+6. <span style="color:LightGray;">$P(\overline{F}|A)$</span>
+3. <span style="color:LightGray;">$P(A|\overline{F})$</span>
+4. <span style="color:LightGray;">$P(F|\overline{A})$</span>
+7. <span style="color:LightGray;">$P(\overline{A}|\overline{F})$</span>
+8. <span style="color:LightGray;">$P(\overline{F}|\overline{A})$</span>
+</div>
+
+<div style="width:35%; float:right; margin-top:100px; border: 2px dashed green">
+$$P(\overline{A}|F)=\frac{0,5-0,3}{0,5}$$
+</div>
+
+## Számítsuk ki az alábbiakat! {.smaller}
+
+<div style="width:60%; float:left">
+$P(A)=0,8$ &nbsp;&nbsp; $P(F)=0,5$ &nbsp;&nbsp; $P(A*F)=0,3$  
+
+1. <span style="color:red;">$P(A|F)=0,6$</span>
+2. <span style="color:LightGray;;">$P(F|A)=0,375$</span>
+5. <span style="color:green;">$P(\overline{A}|F)=0,4$</span>
+6. <span style="color:LightGray;">$P(\overline{F}|A)$</span>
+3. <span style="color:LightGray;">$P(A|\overline{F})$</span>
+4. <span style="color:LightGray;">$P(F|\overline{A})$</span>
+7. <span style="color:LightGray;">$P(\overline{A}|\overline{F})$</span>
+8. <span style="color:LightGray;">$P(\overline{F}|\overline{A})$</span>
+</div>
+
+<div style="width:35%; float:right; margin-top:100px; border: 2px dashed red">
+$$P(\overline{A}|F)=1-P(A|F)$$
+</div>
+
+## Számítsuk ki az alábbiakat! {.smaller}
+
+<div style="width:60%; float:left">
+$P(A)=0,8$ &nbsp;&nbsp; $P(F)=0,5$ &nbsp;&nbsp; $P(A*F)=0,3$  
+
+1. <span style="color:LightGray;">$P(A|F)=0,6$</span>
+2. <span style="color:LightGray;">$P(F|A)=0,375$</span>
+5. <span style="color:LightGray;">$P(\overline{A}|F)=0,4$</span>
+6. $P(\overline{F}|A)$
+3. <span style="color:LightGray;">$P(A|\overline{F})$</span>
+4. <span style="color:LightGray;">$P(F|\overline{A})$</span>
+7. <span style="color:LightGray;">$P(\overline{A}|\overline{F})$</span>
+8. <span style="color:LightGray;">$P(\overline{F}|\overline{A})$</span>
+</div>
+
+<div style="width:35%; float:right; margin-top:100px;">
+$$P(\overline{A}|B)=1-P(A|B)$$
+</div>
+
+## Számítsuk ki az alábbiakat! {.smaller}
+
+<div style="width:60%; float:left">
+$P(A)=0,8$ &nbsp;&nbsp; $P(F)=0,5$ &nbsp;&nbsp; $P(A*F)=0,3$  
+
+1. <span style="color:LightGray;">$P(A|F)=0,6$</span>
+2. <span style="color:red;">$P(F|A)=0,375$</span>
+5. <span style="color:LightGray;">$P(\overline{A}|F)=0,4$</span>
+6. <span style="color:green;">$P(\overline{F}|A)=0,625$</span>
+3. <span style="color:LightGray;">$P(A|\overline{F})$</span>
+4. <span style="color:LightGray;">$P(F|\overline{A})$</span>
+7. <span style="color:LightGray;">$P(\overline{A}|\overline{F})$</span>
+8. <span style="color:LightGray;">$P(\overline{F}|\overline{A})$</span>
+</div>
+
+<div style="width:35%; float:right; margin-top:100px; border: 2px dashed green;">
+$$P(\overline{F}|A)=1-P(F|A)$$
+</div>
+
+## Számítsuk ki az alábbiakat! {.smaller}
+
+<div style="width:60%; float:left">
+$P(A)=0,8$ &nbsp;&nbsp; $P(F)=0,5$ &nbsp;&nbsp; $P(A*F)=0,3$  
+
+1. <span style="color:LightGray;">$P(A|F)=0,6$</span>
+2. <span style="color:LightGray;">$P(F|A)=0,375$</span>
+5. <span style="color:LightGray;">$P(\overline{A}|F)=0,4$</span>
+6. <span style="color:LightGray;">$P(\overline{F}|A)=0,625$</span>
+3. $P(A|\overline{F})$
+4. $P(F|\overline{A})$
+7. $P(\overline{A}|\overline{F})$
+8. $P(\overline{F}|\overline{A})$
+</div>
+
+<div style="width:35%; float:right; margin-top:80px;">
+$$P(A|B)=\frac{P(A*B)}{P(B)}$$
+$$P(\overline{A}|B)=1-P(A|B)$$
+</div>
+
+## Számítsuk ki az alábbiakat! {.smaller}
+
+<div style="width:60%; float:left">
+$P(A)=0,8$ &nbsp;&nbsp; $P(F)=0,5$ &nbsp;&nbsp; $P(A*F)=0,3$  
+
+1. <span style="color:LightGray;">$P(A|F)=0,6$</span>
+2. <span style="color:LightGray;">$P(F|A)=0,375$</span>
+5. <span style="color:LightGray;">$P(\overline{A}|F)=0,4$</span>
+6. <span style="color:LightGray;">$P(\overline{F}|A)=0,625$</span>
+3. $P(A|\overline{F})$
+4. <span style="color:LightGray;">$P(F|\overline{A})$</span>
+7. <span style="color:LightGray;">$P(\overline{A}|\overline{F})$</span>
+8. <span style="color:LightGray;">$P(\overline{F}|\overline{A})$</span>
+</div>
+
+<div style="width:35%; float:right; margin-top:100px; border: 2px dashed green;">
+$$P(A|\overline{F})=\frac{P(A*\overline{F})}{P(\overline{F})}$$
+</div>
+
+## Számítsuk ki az alábbiakat! {.smaller}
+
+<div style="width:60%; float:left">
+$P(A)=0,8$ &nbsp;&nbsp; $P(F)=0,5$ &nbsp;&nbsp; $P(A*F)=0,3$  
+
+1. <span style="color:LightGray;">$P(A|F)=0,6$</span>
+2. <span style="color:LightGray;">$P(F|A)=0,375$</span>
+5. <span style="color:LightGray;">$P(\overline{A}|F)=0,4$</span>
+6. <span style="color:LightGray;">$P(\overline{F}|A)=0,625$</span>
+3. $P(A|\overline{F})$
+4. <span style="color:LightGray;">$P(F|\overline{A})$</span>
+7. <span style="color:LightGray;">$P(\overline{A}|\overline{F})$</span>
+8. <span style="color:LightGray;">$P(\overline{F}|\overline{A})$</span>
+</div>
+
+<div style="width:35%; float:right; margin-top:100px; border: 2px dashed green;">
+$$P(A|\overline{F})=\frac{P(A\setminus F)}{1-P(F)}$$
+</div>
+
+## Számítsuk ki az alábbiakat! {.smaller}
+
+<div style="width:60%; float:left">
+$P(A)=0,8$ &nbsp;&nbsp; $P(F)=0,5$ &nbsp;&nbsp; $P(A*F)=0,3$  
+
+1. <span style="color:LightGray;">$P(A|F)=0,6$</span>
+2. <span style="color:LightGray;">$P(F|A)=0,375$</span>
+5. <span style="color:LightGray;">$P(\overline{A}|F)=0,4$</span>
+6. <span style="color:LightGray;">$P(\overline{F}|A)=0,625$</span>
+3. <span style="color:green;">$P(A|\overline{F})=1$</span>
+4. <span style="color:LightGray;">$P(F|\overline{A})$</span>
+7. <span style="color:LightGray;">$P(\overline{A}|\overline{F})$</span>
+8. <span style="color:LightGray;">$P(\overline{F}|\overline{A})$</span>
+</div>
+
+<div style="width:35%; float:right; margin-top:100px; border: 2px dashed green;">
+$$P(A|\overline{F})=\frac{0,8-0,3}{1-0,5}$$
+</div>
+
+## Számítsuk ki az alábbiakat! {.smaller}
+
+<div style="width:60%; float:left">
+$P(A)=0,8$ &nbsp;&nbsp; $P(F)=0,5$ &nbsp;&nbsp; $P(A*F)=0,3$  
+
+1. <span style="color:LightGray;">$P(A|F)=0,6$</span>
+2. <span style="color:LightGray;">$P(F|A)=0,375$</span>
+5. <span style="color:LightGray;">$P(\overline{A}|F)=0,4$</span>
+6. <span style="color:LightGray;">$P(\overline{F}|A)=0,625$</span>
+3. <span style="color:LightGray;">$P(A|\overline{F})=1$</span>
+4. $P(F|\overline{A})$
+7. <span style="color:LightGray;">$P(\overline{A}|\overline{F})$</span>
+8. <span style="color:LightGray;">$P(\overline{F}|\overline{A})$</span>
+</div>
+
+<div style="width:35%; float:right; margin-top:100px; border: 2px dashed green;">
+$$P(F|\overline{A})=\frac{P(F*\overline{A})}{P(\overline{A})}$$
+</div>
+
+## Számítsuk ki az alábbiakat! {.smaller}
+
+<div style="width:60%; float:left">
+$P(A)=0,8$ &nbsp;&nbsp; $P(F)=0,5$ &nbsp;&nbsp; $P(A*F)=0,3$  
+
+1. <span style="color:LightGray;">$P(A|F)=0,6$</span>
+2. <span style="color:LightGray;">$P(F|A)=0,375$</span>
+5. <span style="color:LightGray;">$P(\overline{A}|F)=0,4$</span>
+6. <span style="color:LightGray;">$P(\overline{F}|A)=0,625$</span>
+3. <span style="color:LightGray;">$P(A|\overline{F})=1$</span>
+4. $P(F|\overline{A})$
+7. <span style="color:LightGray;">$P(\overline{A}|\overline{F})$</span>
+8. <span style="color:LightGray;">$P(\overline{F}|\overline{A})$</span>
+</div>
+
+<div style="width:35%; float:right; margin-top:100px; border: 2px dashed green;">
+$$P(F|\overline{A})=\frac{P(F\setminus A)}{1-P(A)}$$
+</div>
+
+## Számítsuk ki az alábbiakat! {.smaller}
+
+<div style="width:60%; float:left">
+$P(A)=0,8$ &nbsp;&nbsp; $P(F)=0,5$ &nbsp;&nbsp; $P(A*F)=0,3$  
+
+1. <span style="color:LightGray;">$P(A|F)=0,6$</span>
+2. <span style="color:LightGray;">$P(F|A)=0,375$</span>
+5. <span style="color:LightGray;">$P(\overline{A}|F)=0,4$</span>
+6. <span style="color:LightGray;">$P(\overline{F}|A)=0,625$</span>
+3. <span style="color:LightGray;">$P(A|\overline{F})=1$</span>
+4. <span style="color:green;">$P(F|\overline{A})=1$</span>
+7. <span style="color:LightGray;">$P(\overline{A}|\overline{F})$</span>
+8. <span style="color:LightGray;">$P(\overline{F}|\overline{A})$</span>
+</div>
+
+<div style="width:35%; float:right; margin-top:100px; border: 2px dashed green;">
+$$P(F|\overline{A})=\frac{0,5-0,3}{1-0,8}$$
+</div>
+
+## Számítsuk ki az alábbiakat! {.smaller}
+
+<div style="width:60%; float:left">
+$P(A)=0,8$ &nbsp;&nbsp; $P(F)=0,5$ &nbsp;&nbsp; $P(A*F)=0,3$  
+
+1. <span style="color:LightGray;">$P(A|F)=0,6$</span>
+2. <span style="color:LightGray;">$P(F|A)=0,375$</span>
+5. <span style="color:LightGray;">$P(\overline{A}|F)=0,4$</span>
+6. <span style="color:LightGray;">$P(\overline{F}|A)=0,625$</span>
+3. <span style="color:LightGray;">$P(A|\overline{F})=1$</span>
+4. <span style="color:LightGray;">$P(F|\overline{A})=1$</span>
+7. $P(\overline{A}|\overline{F})$
+8. <span style="color:LightGray;">$P(\overline{F}|\overline{A})$</span>
+</div>
+
+<div style="width:35%; float:right; margin-top:100px; border: 2px dashed green;">
+$$P(\overline{A}|\overline{F})=1-P(A|\overline{F})$$
+</div>
+
+## Számítsuk ki az alábbiakat! {.smaller}
+
+<div style="width:60%; float:left">
+$P(A)=0,8$ &nbsp;&nbsp; $P(F)=0,5$ &nbsp;&nbsp; $P(A*F)=0,3$  
+
+1. <span style="color:LightGray;">$P(A|F)=0,6$</span>
+2. <span style="color:LightGray;">$P(F|A)=0,375$</span>
+5. <span style="color:LightGray;">$P(\overline{A}|F)=0,4$</span>
+6. <span style="color:LightGray;">$P(\overline{F}|A)=0,625$</span>
+3. <span style="color:LightGray;">$P(A|\overline{F})=1$</span>
+4. <span style="color:LightGray;">$P(F|\overline{A})=1$</span>
+7. <span style="color:green;">$P(\overline{A}|\overline{F})=0$</span>
+8. <span style="color:LightGray;">$P(\overline{F}|\overline{A})$</span>
+</div>
+
+<div style="width:35%; float:right; margin-top:100px; border: 2px dashed green;">
+$$P(\overline{A}|\overline{F})=1-1$$
+
+## Számítsuk ki az alábbiakat! {.smaller}
+
+<div style="width:60%; float:left">
+$P(A)=0,8$ &nbsp;&nbsp; $P(F)=0,5$ &nbsp;&nbsp; $P(A*F)=0,3$  
+
+1. <span style="color:LightGray;">$P(A|F)=0,6$</span>
+2. <span style="color:LightGray;">$P(F|A)=0,375$</span>
+5. <span style="color:LightGray;">$P(\overline{A}|F)=0,4$</span>
+6. <span style="color:LightGray;">$P(\overline{F}|A)=0,625$</span>
+3. <span style="color:LightGray;">$P(A|\overline{F})=1$</span>
+4. <span style="color:LightGray;">$P(F|\overline{A})=1$</span>
+7. <span style="color:LightGray;">$P(\overline{A}|\overline{F})=0$</span>
+8. $P(\overline{F}|\overline{A})$
+</div>
+
+<div style="width:35%; float:right; margin-top:100px; border: 2px dashed green;">
+$$P(\overline{F}|\overline{A})=1-P(F|\overline{A})$$
+</div>
+
+## Számítsuk ki az alábbiakat! {.smaller}
+
+<div style="width:60%; float:left">
+$P(A)=0,8$ &nbsp;&nbsp; $P(F)=0,5$ &nbsp;&nbsp; $P(A*F)=0,3$  
+
+1. <span style="color:LightGray;">$P(A|F)=0,6$</span>
+2. <span style="color:LightGray;">$P(F|A)=0,375$</span>
+5. <span style="color:LightGray;">$P(\overline{A}|F)=0,4$</span>
+6. <span style="color:LightGray;">$P(\overline{F}|A)=0,625$</span>
+3. <span style="color:LightGray;">$P(A|\overline{F})=1$</span>
+4. <span style="color:LightGray;">$P(F|\overline{A})=1$</span>
+7. <span style="color:LightGray;">$P(\overline{A}|\overline{F})=0$</span>
+8. <span style="color:green;">$P(\overline{F}|\overline{A})=0$</span>
+</div>
+
+<div style="width:35%; float:right; margin-top:100px; border: 2px dashed green;">
+$$P(\overline{F}|\overline{A})=1-1$$
+</div>
+
+## Számítsuk ki az alábbiakat! {.smaller}
+
+<div style="width:60%; float:left">
+$P(A)=0,8$ &nbsp;&nbsp; $P(F)=0,5$ &nbsp;&nbsp; $P(A*F)=0,3$  
+
+1. <span style="color:LightGray;">$P(A|F)=0,6$</span>
+2. <span style="color:LightGray;">$P(F|A)=0,375$</span>
+5. <span style="color:LightGray;">$P(\overline{A}|F)=0,4$</span>
+6. <span style="color:LightGray;">$P(\overline{F}|A)=0,625$</span>
+3. <span style="color:LightGray;">$P(A|\overline{F})=1$</span>
+4. <span style="color:LightGray;">$P(F|\overline{A})=1$</span>
+7. <span style="color:LightGray;">$P(\overline{A}|\overline{F})=0$</span>
+8. <span style="color:green;">$P(\overline{F}|\overline{A})=0$</span>
+</div>
+
+<div style="width:35%; float:right; margin-top:100px; border: 2px dashed green;">
+$$P(\overline{F}|\overline{A})=\frac{P(\overline{F}*\overline{A})}{P(\overline{A})}$$
+</div>
+
+## Számítsuk ki az alábbiakat! {.smaller}
+
+<div style="width:60%; float:left">
+$P(A)=0,8$ &nbsp;&nbsp; $P(F)=0,5$ &nbsp;&nbsp; $P(A*F)=0,3$  
+
+1. <span style="color:LightGray;">$P(A|F)=0,6$</span>
+2. <span style="color:LightGray;">$P(F|A)=0,375$</span>
+5. <span style="color:LightGray;">$P(\overline{A}|F)=0,4$</span>
+6. <span style="color:LightGray;">$P(\overline{F}|A)=0,625$</span>
+3. <span style="color:LightGray;">$P(A|\overline{F})=1$</span>
+4. <span style="color:LightGray;">$P(F|\overline{A})=1$</span>
+7. <span style="color:LightGray;">$P(\overline{A}|\overline{F})=0$</span>
+8. <span style="color:green;">$P(\overline{F}|\overline{A})=0$</span>
+</div>
+
+<div style="width:35%; float:right; margin-top:100px; border: 2px dashed green;">
+$$P(\overline{F}|\overline{A})=\frac{P(\overline{F+A})}{P(\overline{A})}$$
+</div>
+
+# Teljes valószínűség
+
+## Teljes valószínűség
+
+Van olyan, hogy könnyebb megtudni (kiszámítani, megfigyelni) feltételes valószínűségeket, és az esemény teljes valószínűségét ezekből kiszámítani.  
+<br><br>
+Pl. Vizsga eredménye a húzott tétel függvényében
+
+## Játék
+
+Van 3 fehér és 3 fekete golyónk. Ezeket szeretnénk elosztani 3 doboz között úgy, hogy  
+
+- mindegyik golyót beletesszük valamelyik dobozba
+- egy doboz sem marad üresen
+  
+A célunk, hogy ha ezek után valamelyik dobozból találomra kihúzunk egy golyót, az minél nagyobb valószínűséggel legyen fehér.  
+  
+Hogyan osztanák el a golyókat a dobozok között?
+
+<div class="centered">
+[Click me!](https://www.dropbox.com/scl/fi/mzgwecjss3ckxeu44ocrr/felteteles_jatek.xlsx?cloud_editor=excel&dl=0)
+</div>
+
+## Teljes valószínűség logikája
+
+Az esemény teljes valószínűsége egymást kölcsönösen kizáró alternatívákból épül fel:  
+
+- első dobozba nyúlok és fehéret húzok ($P(D_1*F)$)
+- második dobozba nyúlok és fehéret húzok ($P(D_2*F)$)
+- harmadik dobozba nyúlok és fehéret húzok ($P(D_3*F)$)
+  
+A teljes valószínűség, mivel kölcsönösen kizárják egymást:  
+$$P(F)=P(D_1*F)+P(D_2*F)+P(D_3*F)$$
+
+## Teljes valószínűség logikája
+
+Az egyes együttes bekövetkezések pedig kiszámíthatók a feltételes valószínűségekből:
+<br><br>
+$$P(A|B)=\frac{P(A*B)}{P(B)}$$
+
+## Teljes valószínűség logikája
+
+Az egyes együttes bekövetkezések pedig kiszámíthatók a feltételes valószínűségekből:
+<br><br>
+$$P(A*B)=P(A|B)*P(B)$$
+
+## Teljes valószínűség tétele
+
+<br><br><br>
+$$P(A)=P(A|B_1)*P(B_1)+P(A|B_2)*P(B_2)+...+P(A|B_k)*P(B_k)$$
+
+
+## Teljes valószínűség tétele
+
+<br><br><br>
+
+$$P(A)=\sum_{i=1}^{k}P(A|B_i)*P(B_i)$$
+
+## Alkalmazva a dobozokra
+
+<br><br><br>
+$$P(F)=P(F|D_1)*P(D_1)+P(F|D_2)*P(D_2)+P(F|D_3)*P(D_3)$$
+
+## Alkalmazva a dobozokra
+
+<br><br><br>
+$$P(F)=1*\frac{1}{3}+1*\frac{1}{3}+\frac{1}{4}*\frac{1}{3}$$
+
+## Alkalmazva a dobozokra
+
+<br><br><br>
+$$P(F)=1*\frac{1}{3}+1*\frac{1}{3}+\frac{1}{4}*\frac{1}{3}=\frac{9}{12}=\frac{3}{4}$$
+
+## Vizsga
+
+Egy hallgató vizsgázni készül. Felkészültségét és esélyeit a következőképpen tudja megbecsülni:  
+
+- A tételek 30%-át jól tudja
+- A tételek 50%-át viszonylag jól tudja
+- A tételek 20%-át alig tudja
+
+Esélybecslés:  
+
+- Ha jó tételt húz, 90%-os valószínűséggel átmegy
+- Ha viszonyla jó tételt húz, 70%-os valószínűséggel
+- Ha rossz tételt húz, 30%-os valószínűséggel
+
+Mennyi a valószínűsége, hogy átment a vizsgán?
+
+## Megoldás
+
+Először, hogy hogy jelöljük:  
+
+- A tételek 30%-át jól tudja &rArr; ?
+- A tételek 50%-át viszonylag jól tudja &rArr; ?
+- A tételek 20%-át alig tudja &rArr; ?
+
+Esélybecslés:  
+
+- Ha jó tételt húz, 90%-os valószínűséggel átmegy &rArr; ?
+- Ha viszonyla jó tételt húz, 70%-os valószínűséggel &rArr; ?
+- Ha rossz tételt húz, 30%-os valószínűséggel &rArr; ?
+
+## Megoldás
+
+Először, hogy hogy jelöljük:  
+
+- A tételek 30%-át jól tudja &rArr; $P(T_1)=0,3$
+- A tételek 50%-át viszonylag jól tudja &rArr; $P(T_2)=0,5$
+- A tételek 20%-át alig tudja &rArr; $P(T_3)=0,2$
+
+Esélybecslés:  
+
+- Ha jó tételt húz, 90%-os valószínűséggel átmegy &rArr; $P(A|T_1)=0,9$
+- Ha viszonyla jó tételt húz, 70%-os valószínűséggel &rArr; $P(A|T_2)=0,7$
+- Ha rossz tételt húz, 30%-os valószínűséggel &rArr; $P(A|T_3)=0,3$
+
+## Megoldás
+
+Végül csak behelyettesítünk
+<br><br>
+
+$$P(A)=\sum_{i=1}^{k}P(A|B_i)*P(B_i)$$
+
+## Megoldás
+
+Végül csak behelyettesítünk
+<br><br>
+
+$$P(A)=0,9*0,3+0,7*0,5+0,3*0,2$$
+
+## Megoldás
+
+Végül csak behelyettesítünk
+<br><br>
+
+$$P(A)=0,27+0,35+0,06=0,68$$
+
+# Bayes-tétel
+
+## De miért sikerült/nem sikerült?
+
+Most már tudjuk, hogy 68% a valószínűsége, hogy hallgatónk átmegy a vizsgán.  
+  
+Ha valóban átmegy, azt vajon milyen valószínűséggel köszönhette a szerencsének?  
+Ha nem megy át, mennyi a valószínűsége, hogy pechje volt?
+
+## Sikeres vizsga esetén
+
+Nézzük először az első esetet: sikerült a vizsga.  
+Mennyi a valószínűsége, hogy a hallgató  
+
+- jó tételt húzott?
+- viszonylag jó tételt húzott?
+- rossz tételt húzott?
+
+Tulajdonképpen arra vagyunk kíváncsiak, hogy a három egymást kölcsönösen kizáró eset hány százalékát adja a teljes 68%-os valószínűségnek.  
+  
+## Sikeres vizsga esetén
+
+Nézzük először az első esetet: sikerült a vizsga.  
+Mennyi a valószínűsége, hogy a hallgató  
+
+- jó tételt húzott? &rArr; $P(T_1|A)$
+- viszonylag jó tételt húzott? &rArr; $P(T_2|A)$
+- rossz tételt húzott? &rArr; $P(T_3|A)$
+
+Tulajdonképpen arra vagyunk kíváncsiak, hogy a három egymást kölcsönösen kizáró eset hány százalékát adja a teljes 68%-os valószínűségnek.  
+
+## Sikeres vizsga esetén
+
+Alkalmazzuk rá a feltételes valószínűség alapképletét:
+<br><br>
+$$P(A|B)=\frac{P(A*B)}{P(B)}$$
+
+## Sikeres vizsga esetén
+
+Alkalmazzuk rá a feltételes valószínűség alapképletét:
+<br><br>
+$$P(T_1|A)=\frac{P(T_1*A)}{P(A)}$$
+
+## Sikeres vizsga esetén
+
+A számlálót szétírjuk:
+<br><br>
+$$P(T_1|A)=\frac{P(A|T_1)*P(T_1)}{P(A)}$$
+
+## Sikeres vizsga esetén
+
+Behelyettesítünk:
+<br><br>
+$$P(T_1|A)=\frac{0,9*0,3}{0,68}$$
+
+## Sikeres vizsga esetén
+
+Behelyettesítünk:
+<br><br>
+$$P(T_1|A)=\frac{0,27}{0,68}\approx 0,397$$
+
+## Sikeres vizsga esetén
+
+Nézzük először az első esetet: sikerült a vizsga.  
+Mennyi a valószínűsége, hogy a hallgató  
+
+- jó tételt húzott? &rArr; $P(T_1|A)=0,397$
+- viszonylag jó tételt húzott? &rArr; $P(T_2|A)=?$
+- rossz tételt húzott? &rArr; $P(T_3|A)=?$
+
+## Sikeres vizsga esetén
+
+Nézzük először az első esetet: sikerült a vizsga.  
+Mennyi a valószínűsége, hogy a hallgató  
+
+- jó tételt húzott? &rArr; $P(T_1|A)=0,397$
+- viszonylag jó tételt húzott? &rArr; $P(T_2|A)=\frac{0,35}{0,68}=0,515$
+- rossz tételt húzott? &rArr; $P(T_3|A)=?$
+
+## Sikeres vizsga esetén
+
+Nézzük először az első esetet: sikerült a vizsga.  
+Mennyi a valószínűsége, hogy a hallgató  
+
+- jó tételt húzott? &rArr; $P(T_1|A)=0,397$
+- viszonylag jó tételt húzott? &rArr; $P(T_2|A)=0,515$
+- rossz tételt húzott? &rArr; $P(T_3|A)=\frac{0,06}{0,68}=0,088$
+
+
+## Sikeres vizsga esetén
+
+Nézzük először az első esetet: sikerült a vizsga.  
+Mennyi a valószínűsége, hogy a hallgató  
+
+- jó tételt húzott? &rArr; $P(T_1|A)=0,397$
+- viszonylag jó tételt húzott? &rArr; $P(T_2|A)=0,515$
+- rossz tételt húzott? &rArr; $P(T_3|A)=0,088$
+
+Figyeljék meg, hogy a három valószínűség összege 1!
+
+## Sikertelen vizsga esetén
+
+Mi a helyzet, ha a vizsga nem sikerült?  
+Mennyi a valószínűsége, hogy a hallgató  
+
+- jó tételt húzott?
+- viszonylag jó tételt húzott?
+- rossz tételt húzott?
+
+Ebben az esetben is három egymást kölcsönösen kizáró eset van.
+
+## Sikertelen vizsga esetén
+
+Mi a helyzet, ha a vizsga nem sikerült?  
+Mennyi a valószínűsége, hogy a hallgató  
+
+- jó tételt húzott? &rArr; $P(T_1|\overline{A})$
+- viszonylag jó tételt húzott? &rArr; $P(T_2|\overline{A})$
+- rossz tételt húzott? &rArr; $P(T_3|\overline{A})$
+
+Ebben az esetben is három egymást kölcsönösen kizáró eset van.
+
+## Sikertelen vizsga esetén
+
+Nézzük az első esetet.  
+Ismét írjuk fel az alapképletet:  
+<br>
+$$P(A|B)=\frac{P(A*B)}{P(B)}$$
+
+## Sikertelen vizsga esetén
+
+Nézzük az első esetet.  
+Ismét írjuk fel az alapképletet:  
+<br>
+$$P(T_1|\overline{A})=\frac{P(T_1*\overline{A})}{P(\overline{A})}$$
+
+## Sikertelen vizsga esetén
+
+Nézzük az első esetet.  
+Az első lehetőség:  
+<br>
+$$P(T_1|\overline{A})=\frac{P(T_1\setminus A)}{1-P(A)}$$
+
+## Sikertelen vizsga esetén
+
+Nézzük az első esetet.  
+Az első lehetőség:  
+<br>
+$$P(T_1|\overline{A})=\frac{P(T_1)-P(T_1*A)}{1-P(A)}$$
+
+## Sikertelen vizsga esetén
+
+Nézzük az első esetet.  
+Az első lehetőség:  
+<br>
+$$P(T_1|\overline{A})=\frac{0,3-0,27}{1-0,68}=\frac{0,03}{0,32}\approx 0,094$$
+
+## Sikertelen vizsga esetén
+
+Nézzük az első esetet.  
+A másik lehetőség:  
+<br>
+$$P(T_1|\overline{A})=\frac{P(T_1*\overline{A})}{1-P(A)}$$
+
+## Sikertelen vizsga esetén
+
+Nézzük az első esetet.  
+A másik lehetőség:  
+<br>
+$$P(T_1|\overline{A})=\frac{P(\overline{A}|T_1)*P(T_1)}{1-P(A)}$$
+
+## Sikertelen vizsga esetén
+
+Nézzük az első esetet.  
+A másik lehetőség:  
+<br>
+$$P(T_1|\overline{A})=\frac{(1-0,9)*0,3}{1-0,68}=\frac{0,03}{0,32}\approx 0,094$$
+
+## Sikertelen vizsga esetén
+
+Mi a helyzet, ha a vizsga nem sikerült?  
+Mennyi a valószínűsége, hogy a hallgató  
+
+- jó tételt húzott? &rArr; $P(T_1|\overline{A})=0,094$
+- viszonylag jó tételt húzott? &rArr; $P(T_2|\overline{A})=?$
+- rossz tételt húzott? &rArr; $P(T_3|\overline{A})=?$
+
+## Sikertelen vizsga esetén
+
+Mi a helyzet, ha a vizsga nem sikerült?  
+Mennyi a valószínűsége, hogy a hallgató  
+
+- jó tételt húzott? &rArr; $P(T_1|\overline{A})=0,094$
+- viszonylag jó tételt húzott? &rArr; $P(T_2|\overline{A})=\frac{0,15}{0,32}=0,469$
+- rossz tételt húzott? &rArr; $P(T_3|\overline{A})=\frac{0,14}{0,32}=0,438$
+
+Az összeg ezúttal is (kb.) 1
+
+## Bayes-tétel általánosan
+
+<br><br><br>
+$$P(B_k|A)=\frac{P(A|B_k)*P(B_k)}{P(A)}=\frac{P(A|B_k)*P(B_k)}{\sum_{i=1}^{k}P(A|B_i)*P(B_i)}$$

@@ -1,0 +1,1139 @@
+---
+title: "Becsléselmélet"
+subtitle: "Statisztika 1. szeminárium"
+author: "Morauszki András"
+university: "PPKE-BTK"
+output: 
+  ioslides_presentation:
+    logo: ppke.jpg
+    widescreen: true
+    css: mystyle.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(tidyverse)
+library(patchwork)
+library(here)
+source(here("Statisztika 1/02 scripts/shadecurve.R"))
+source(here("Statisztika 1/02 scripts/plot_normal.R"))
+
+
+round2 = function(x, n) {
+  posneg = sign(x)
+  z = abs(x)*10^n
+  z = z + 0.5 + sqrt(.Machine$double.eps)
+  z = trunc(z)
+  z = z/10^n
+  z*posneg
+}
+```
+
+## Az előző részek tartalmából
+
+A legutóbbi alkalommal megnéztük, hogyan számítjuk ki:  
+
+- a mintaátlagot ($\overline{X}$)
+- a k. t. szórást ($s^{*}$)
+
+Ehhez tegyük hozzá a relatív gyakoriságot:  
+
+- $p = \frac{k}{N}$
+
+## Becslések
+
+Ezek a kiszámított statisztikák becslések:  
+
+- a mintaátlag a várható értéké
+- a k.t. szórás az elméleti szórásé
+- a relatív gyakoriság a valószínűségeké
+
+## Becslések
+
+Ezek a kiszámított statisztikák becslések:  
+
+- a mintaátlag a várható értéké: &emsp; $\overline{X} \Rightarrow E(\xi)$
+- a k.t. szórás az elméleti szórásé &emsp; $s^{*} \Rightarrow D(\xi)$
+- a relatív gyakoriság a valószínűségeké &emsp; $p \Rightarrow p_i$
+
+## Becslések
+
+Ezek a kiszámított statisztikák becslések:  
+
+- a mintaátlag a várható értéké: &emsp; $\overline{X} \Rightarrow \mu$
+- a k.t. szórás az elméleti szórásé &emsp; $s^{*} \Rightarrow \sigma$
+- a relatív gyakoriság a valószínűségeké &emsp; $p \Rightarrow p_i$
+
+## Becslések
+
+Ezek a kiszámított statisztikák becslések:  
+
+- a mintaátlag a várható értéké: &emsp; $\overline{X} \Rightarrow \mu$
+- a k.t. szórás az elméleti szórásé &emsp; $s^{*} \Rightarrow \sigma$
+- a relatív gyakoriság a valószínűségeké &emsp; $p \Rightarrow p_i$
+
+Mivel a becslés eredménye egy-egy szám, ezeket **pontbecslésnek** nevezzük
+
+## A pontbecslések változók
+
+Tegyük fel, hogy van egy 10 milliós populációnk, amelyben  
+
+- a magasság várható értéke 170 cm, szórása 10 cm
+- és a populáció 25%-a szereti a vaníliafagylaltot.
+
+Ha ebből a populációból 100 elemű véletlen mintákat veszünk, a fenti értékekre adott becsléseink mintáról mintára különböznek:
+
+```{r, echo = FALSE, message = FALSE}
+size <- 100
+mean <- 170
+sd <- 10
+
+sample1 <- rnorm(size, mean, sd)
+sample2 <- rnorm(size, mean, sd)
+sample3 <- rnorm(size, mean, sd)
+
+qual1 <- 100 * rhyper(1, 2500000, 7500000, size) / size
+qual2 <- 100 * rhyper(1, 2500000, 7500000, size) / size
+qual3 <- 100 * rhyper(1, 2500000, 7500000, size) / size
+
+mean <- round(c(mean(sample1), mean(sample2), mean(sample3)), 2)
+sdevs <- round(c(sd(sample1), sd(sample2), sd(sample3)), 2)
+ps <- c(qual1, qual2, qual3)
+
+outtable <- cbind(rep(size, 3), mean, sdevs, ps)
+colnames(outtable) <- c("Elemszám", "Átlag", "Szórás", "Arány")
+rownames(outtable) <- c("1. minta", "2. minta", "3. minta")
+knitr::kable(outtable)
+```
+
+## Ha pedig változók
+
+Akkor rendelkeznek  
+
+- várható értékkel
+- szórással  
+
+Előbbi megegyezik az adott paraméterrel (várható értékkel, szórással, valószínűséggel) &rArr; **torzítatlan**
+  
+Utóbbit nevezzük az adott becslés **standard hibájának**.
+
+## Mai célunk
+
+A pontbecsléshez megadni egy **intervallumot**, amelybe a becsülni kívánt paraméter **kellően nagy valószínűséggel** beleesik.
+
+- Ezt az intervallumot **konfidenciaintervallumnak**,
+- alsó és felső határát **konfidenciahatároknak**,
+- a kellően nagy valószínűséget pedig **konfidenciaszintnek** (1 - &alpha;) nevezzük.  
+
+A bevett konfidenciaszint társadalomtudományokban 95%, de választhatunk kisebbet vagy nagyobbat is (pl. 90 vagy 99%-ot).
+
+## A mintaátlag eloszlása
+
+Az intervallumbecsléshez azt tudjuk kihasználni, hogy az átlag  
+
+- normális eloszlású változó, 
+- akkor is, ha maga a változó, amelyből számoljuk, nem (**centrális határeloszlás-tétel**)
+- amelynek várható értéke egyenlő annak a változónak a várható értékével, amelyből számoljuk, 
+- szórása pedig $SE = \frac{\sigma}{\sqrt{N}}$, ahol $\sigma$ az adott változó szórása.
+
+# A normális eloszlás
+
+## A normális eloszlás
+
+Sok változó, illetve statisztika normális eloszlást követ
+  
+Paraméterei:  
+
+- várható érték: $\mu$
+- Szórás: $\sigma$
+
+Jelölése: $N(\mu;\sigma)$
+
+Sűrűségfüggvénye: az ún. Gauss-görbe
+
+Kiemelt esete: **standard normális eloszlás** - $N(0; 1)$
+
+## A Gauss-görbe
+
+```{r, echo = FALSE, fig.height = 5, fig.width = 10}
+mean.1 <- 170
+sd.1 <- 10
+x <- seq(mean.1 - 3*sd.1, mean.1 + 3*sd.1, by = 0.01)
+normaldata1 <- data.frame(
+  x = x,
+  y = dnorm(x, mean = mean.1, sd = sd.1)
+)
+
+mean.1 <- 0
+sd.1 <- 1
+x <- seq(mean.1 - 3*sd.1, mean.1 + 3*sd.1, by = 0.01)
+normaldata <- data.frame(
+  x = x,
+  y = dnorm(x, mean = mean.1, sd = sd.1),
+  yc = pnorm(x, mean = mean.1, sd = sd.1)
+)
+
+n.170.10 <- ggplot(normaldata1, aes(x = x, y = y)) + geom_line() + 
+  geom_area(fill = "lightblue", alpha = 0.7) + theme_classic() + ylab("") + xlab("") +
+  ggtitle("N(170;10)") +
+  scale_x_continuous(breaks = seq(140, 200, 10))
+
+n.0.1 <- ggplot(normaldata, aes(x = x, y = y)) + geom_line() +
+  geom_area(fill = "lightblue", alpha = 0.7) + theme_classic() + ylab("") + xlab("") + 
+  ggtitle("N(0;1)") +
+  scale_x_continuous(breaks = seq(-3, 3, 1))
+
+n.170.10 + n.0.1
+```
+
+## A N(0;1) táblázat használata
+
+```{r, echo = FALSE, fig.height = 5, fig.width = 10}
+cdf.0.1 <- ggplot(normaldata, aes(x = x, y = yc)) + geom_area(fill = "lightblue", alpha = 0.7) + geom_line(size = 1.3)
+cdf.0.1 <- cdf.0.1 + geom_vline(xintercept = 1.35, lty = "dashed") + 
+  geom_hline(yintercept = pnorm(1.35, 0, 1), lty = "dashed") +
+  scale_x_continuous(breaks = c(0, 1.35)) + 
+  scale_y_continuous(breaks = c(0, 0.5, pnorm(1.35, 0, 1), 1), 
+                     labels = c(paste(c(0, 0.5) * 100, "%"), "?", "100%")) +
+  theme_classic() + ylab("F(x)")
+
+n.0.1 <- ggplot(normaldata, aes(x = x, y = y)) + geom_line() 
+pdf.1 <- n.0.1 + shade_curve(normaldata, zstart = -3, zend = 1.35, fill = "darkgreen", alpha = 0.7) +
+  shade_curve(normaldata, zstart = 1.35, zend = 3, fill = "grey", alpha = 0.3) + 
+  theme_classic() + ylab("") + xlab("") +
+  scale_x_continuous(breaks = 1.35)
+  
+
+cdf.0.1 + (pdf.1 + annotate("text", x = 0, y = 0.1, label = "?", col = "white"))
+```
+
+## A N(0;1) táblázat használata
+
+```{r, echo = FALSE, fig.height = 5, fig.width = 10, message = FALSE}
+cdf.0.1 <- cdf.0.1 + 
+  scale_y_continuous(breaks = c(0, 0.5, pnorm(1.35, 0, 1), 1), 
+                     labels = paste(c(0, 0.5, round(pnorm(1.35, 0, 1), 4), 1)*100, "%"))
+
+pdf.1 <- pdf.1 + 
+  annotate("text", x = 0, y = 0.1, label = "91,15%", col = "white")
+
+cdf.0.1 + pdf.1
+```
+
+## 1. feladat
+
+```{r, echo = FALSE, fig.height = 5, fig.width = 10}
+x <- 1.45
+pdf.1 <- plot_normal(x, 1)
+
+pdf.1 + annotate("text", x = 0, y = 0.1, label = "?", col = "white")
+```
+
+## 1. feladat
+
+```{r, echo = FALSE, fig.height = 5, fig.width = 10}
+x <- 1.45
+pdf.1 <- plot_normal(x, 1)
+
+pdf.1 + annotate("text", x = 0, y = 0.1, 
+                 label = pnorm(x) %>%
+                   round2(4) %>%
+                   magrittr::multiply_by(100) %>%
+                   paste0("%"), 
+                 col = "white")
+```
+
+## 2. feladat
+
+```{r, echo = FALSE, fig.height = 5, fig.width = 10}
+pdf.1 <- plot_normal(x, 2)
+
+pdf.1 + annotate("text", x = 1.8, y = 0.03, label = "?", col = "white")
+```
+
+## 2. feladat
+
+```{r, echo = FALSE, fig.height = 5, fig.width = 10}
+pdf.1 <- plot_normal(x, 2)
+
+pdf.1 + annotate("text", x = 1.8, y = 0.03, 
+                 label = pnorm(x, lower.tail = FALSE) %>%
+                   round2(4) %>%
+                   magrittr::multiply_by(100) %>%
+                   paste0("%"), 
+                 col = "white")
+```
+
+## 3. feladat
+
+```{r, echo = FALSE, fig.height = 5, fig.width = 10}
+x <- -1.31
+pdf.1 <- plot_normal(x, 2)
+
+pdf.1 + annotate("text", x = 0, y = 0.1, label = "?", col = "white")
+```
+
+## 3. feladat
+
+```{r, echo = FALSE, fig.height = 5, fig.width = 10}
+x <- -1.31
+pdf.1 <- plot_normal(x, 2)
+
+pdf.1 + annotate("text", x = 0, y = 0.1, 
+                 label = pnorm(x, lower.tail = FALSE) %>%
+                   round2(4) %>%
+                   magrittr::multiply_by(100) %>%
+                   paste0("%"), 
+                 col = "white")
+```
+
+## 4. feladat
+
+```{r, echo = FALSE, fig.height = 5, fig.width = 10}
+pdf.1 <- plot_normal(x, 1)
+
+pdf.1 + annotate("text", x = -1.8, y = 0.03, label = "?", col = "white")
+```
+
+## 4. feladat
+
+```{r, echo = FALSE, fig.height = 5, fig.width = 10}
+pdf.1 <- plot_normal(x, 1)
+
+pdf.1 + annotate("text", x = -1.8, y = 0.03, 
+                 label = pnorm(x) %>%
+                   round2(4) %>%
+                   magrittr::multiply_by(100) %>%
+                   paste0("%"), 
+                 col = "white")
+```
+
+## 5. feladat
+
+```{r, echo = FALSE, fig.height = 5, fig.width = 10}
+x <- c(-1.45, 1.45)
+pdf.1 <- plot_normal(x, 2)
+
+pdf.1 + annotate("text", x = 0, y = 0.1, label = "?", col = "white")
+```
+
+## 5. feladat
+
+```{r, echo = FALSE, fig.height = 5, fig.width = 10}
+x <- c(-1.45, 1.45)
+pdf.1 <- plot_normal(x, 2)
+
+pdf.1 + annotate("text", x = 0, y = 0.1, 
+                 label = (pnorm(x[2])-pnorm(x[1])) %>%
+                   round2(4) %>%
+                   magrittr::multiply_by(100) %>%
+                   paste0("%"), 
+                 col = "white")
+```
+
+## 6. feladat
+
+```{r, echo = FALSE, fig.height = 5, fig.width = 10}
+pdf.1 <- plot_normal(x, c(1, 3))
+
+pdf.1 + annotate("text", x = -1.8, y = 0.03, label = "?", col = "white") +
+  annotate("text", x = 1.8, y = 0.03, label = "?", col = "white")
+```
+
+## 6. feladat
+
+```{r, echo = FALSE, fig.height = 5, fig.width = 10}
+pdf.1 <- plot_normal(x, c(1, 3))
+
+pdf.1 + annotate("text", x = -1.8, y = 0.03, 
+                 label = pnorm(x[1]) %>%
+                   round2(4) %>%
+                   magrittr::multiply_by(100) %>%
+                   paste0("%"), 
+                 col = "white") +
+  annotate("text", x = 1.8, y = 0.03, 
+                 label = pnorm(x[2], lower.tail = FALSE) %>%
+                   round2(4) %>%
+                   magrittr::multiply_by(100) %>%
+                   paste0("%"), 
+                 col = "white")
+```
+
+## 7. feladat
+
+```{r, echo = FALSE, fig.height = 5, fig.width = 10, message = FALSE}
+x <- c(-1.96, 1.96)
+
+pdf.1 <- plot_normal(x, 2)
+
+pdf.1 + annotate("text", x = 0, y = 0.1, label = "95%", col = "white") +
+  scale_x_continuous(breaks = x, labels = c("?", "?"))
+```
+
+## 7. feladat
+
+```{r, echo = FALSE, fig.height = 5, fig.width = 10, message = FALSE}
+pdf.1 + annotate("text", x = 0, y = 0.1, label = "95%", col = "white") 
+```
+
+## 8. feladat
+
+```{r, echo = FALSE, fig.height = 5, fig.width = 10, message = FALSE}
+x <- c(-1.65, 1.65)
+
+pdf.1 <- plot_normal(x, 2)
+
+pdf.1 + annotate("text", x = 0, y = 0.1, label = "90%", col = "white") +
+  scale_x_continuous(breaks = x, labels = c("?", "?"))
+```
+
+## 8. feladat
+
+```{r, echo = FALSE, fig.height = 5, fig.width = 10, message = FALSE}
+pdf.1 + annotate("text", x = 0, y = 0.1, label = "90%", col = "white") 
+```
+
+## 9. feladat
+
+```{r, echo = FALSE, fig.height = 5, fig.width = 10, message = FALSE}
+x <- c(-2.58, 2.58)
+
+pdf.1 <- plot_normal(x, 2)
+
+pdf.1 + annotate("text", x = 0, y = 0.1, label = "99%", col = "white") +
+  scale_x_continuous(breaks = x, labels = c("?", "?"))
+```
+
+## 9. feladat
+
+```{r, echo = FALSE, fig.height = 5, fig.width = 10, message = FALSE}
+pdf.1 + annotate("text", x = 0, y = 0.1, label = "99%", col = "white") 
+```
+
+## Táblázatos valószínűség kiszámítása
+
+$$
+\begin{aligned}
+1-\alpha &= 0,95 \\ \\
+\alpha &=0,05 \\ \\
+\frac{\alpha}{2} &= 0,025 \\ \\
+1-\frac{\alpha}{2} &= 0,975
+\end{aligned}
+$$
+
+
+# Konvertálás
+
+## Standardról és vissza
+
+Változó standardizálása:
+$$z = \frac{x-\mu}{\sigma}$$
+Standard normális változó visszaalakítása:
+$$x = \mu + z * \sigma$$
+
+## 10. feladat
+
+```{r, echo = FALSE, fig.height = 5, fig.width = 10, message = FALSE}
+pdf.1 <- plot_normal(c(150, 190), 2, mean = 170, sd = 10, title = TRUE)
+pdf.2 <- plot_normal(c(-2, 2), 2, title = TRUE)
+
+(pdf.1 + annotate("text", x = 170, y = 0.01, label = "?", col = "white")) +
+  (pdf.2 + annotate("text", x = 0, y = 0.1, label = "?", col = "white") +
+     scale_x_continuous(breaks = c(-2, 2), labels = c("?", "?")))
+```
+
+## 10. feladat
+
+```{r, echo = FALSE, fig.height = 5, fig.width = 10, message = FALSE}
+pdf.1 <- plot_normal(c(150, 190), 2, mean = 170, sd = 10, title = TRUE)
+pdf.2 <- plot_normal(c(-2, 2), 2, title = TRUE)
+
+(pdf.1 + annotate("text", x = 170, y = 0.01, 
+                  label = (pnorm(190, 170, 10)-pnorm(150, 170, 10)) %>%
+                    round2(4) %>%
+                    magrittr::multiply_by(100) %>%
+                    paste0("%"), 
+                  col = "white")) +
+  (pdf.2 + annotate("text", x = 0, y = 0.1, 
+                  label = (pnorm(2)-pnorm(-2)) %>%
+                    round2(4) %>%
+                    magrittr::multiply_by(100) %>%
+                    paste0("%"), 
+                  col = "white"))
+```
+
+## 11. feladat
+
+```{r, echo = FALSE, fig.height = 5, fig.width = 10, message = FALSE}
+pdf.1 <- plot_normal(c(-1.96, 1.96), 2, title = TRUE)
+pdf.2 <- plot_normal(170 + 10 * 1.96 * c(-1, 1), 2, mean = 170, sd = 10, title = TRUE)
+
+(pdf.1 + annotate("text", x = 0, y = 0.1, label = "95%", col = "white")) +
+  (pdf.2 + annotate("text", x = 170, y = 0.01, label = "95%", col = "white") +
+     scale_x_continuous(breaks = 170 + 10 * 1.96 * c(-1, 1), labels = c("?", "?")))
+```
+
+## 11. feladat
+
+```{r, echo = FALSE, fig.height = 5, fig.width = 10, message = FALSE}
+pdf.1 <- plot_normal(c(-1.96, 1.96), 2, title = TRUE)
+pdf.2 <- plot_normal(170 + 10 * 1.96 * c(-1, 1), 2, mean = 170, sd = 10, title = TRUE)
+
+(pdf.1 + annotate("text", x = 0, y = 0.1, label = "95%", col = "white")) +
+  (pdf.2 + annotate("text", x = 170, y = 0.01, label = "95%", col = "white"))
+```
+
+# Vissza az átlaghoz
+
+## Alkalmazzuk rá az új ismereteket!
+
+Fő információk:  
+
+- az átlag normális eloszlású változó
+- várható értéke a változó várható értéke
+- szórása $SE = \frac{\sigma}{\sqrt{N}}$
+
+Tegyük fel, hogy van egy változónk (magasság), amelynek várható értéke 170 cm, szórása 10 cm. 100 elemű mintákat veszünk. Milyen értékek közé esik a mintaátlag 95%-os valószínűséggel?
+
+## Az átlag eloszlása
+
+```{r, message = FALSE, fig.height = 5, fig.width = 10}
+stat_list <- list()
+
+for (i in 1:1000) {
+  temp_data <- rnorm(100, 170, 10)
+  stat_list[[i]] <- c(mean(temp_data), sd(temp_data))
+}
+
+stat_list <- stat_list %>% 
+  purrr::reduce(rbind) %>%
+  magrittr::set_colnames(c("mean", "sd")) %>%
+  as.data.frame()
+
+x <- seq(167, 173, by = 0.1)
+y <- dnorm(x, 170, 1)
+
+norm_data <- data.frame(
+  x = x,
+  y = y
+)
+
+plot <-  ggplot(stat_list, aes(x = mean)) +
+  geom_histogram(aes(y = ..density..), bins = 30,
+                 fill = "dodgerblue4", color = "black", alpha = 0.7) +
+  geom_line(data = norm_data, aes(x = x, y = y), linetype = "dashed", size = 1.5) +
+  theme_classic() +
+  ggtitle("1000db 100-elemű minta átlagának megoszlása")
+
+plot
+```
+
+## 12. feladat
+
+```{r, echo = FALSE, fig.height = 5, fig.width = 10, message = FALSE}
+pdf.1 <- plot_normal(c(-1.96, 1.96), 2, title = TRUE)
+pdf.2 <- plot_normal(170 + 1.96 * c(-1, 1), 2, mean = 170, sd = 1, title = TRUE)
+
+(pdf.1 + annotate("text", x = 0, y = 0.1, label = "95%", col = "white")) +
+  (pdf.2 + annotate("text", x = 170, y = 0.1, label = "95%", col = "white") +
+     scale_x_continuous(breaks = 170 + 1.96 * c(-1, 1), labels = c("?", "?")))
+```
+
+## 12. feladat
+
+```{r, echo = FALSE, fig.height = 5, fig.width = 10, message = FALSE}
+pdf.1 <- plot_normal(c(-1.96, 1.96), 2, title = TRUE)
+pdf.2 <- plot_normal(170 + 1.96 * c(-1, 1), 2, mean = 170, sd = 1, title = TRUE)
+
+(pdf.1 + annotate("text", x = 0, y = 0.1, label = "95%", col = "white")) +
+  (pdf.2 + annotate("text", x = 170, y = 0.1, label = "95%", col = "white"))
+```
+
+## 1. bökkenő: ismeretlen várható érték
+
+Megoldás:  
+
+- Ha a becslés 95%-os valószínűséggel az átlagtól legfeljebb $1,96*\frac{\sigma}{\sqrt{N}}$ távolságra van
+- akkor az átlag a becsléstől 95%-os valószínűséggel legfeljebb ugyanekkora távolságra van
+
+&rArr; A becslést alapul véve (e köré) számítjuk ki a konfidenciaintervallumot.
+
+## Megoldás 
+
+Képlet:
+
+$$\overline{X} \pm z_{1-\frac{\alpha}{2}}*\frac{\sigma}{\sqrt{N}}$$
+
+Ahol $\pm z_{1-\frac{\alpha}{2}}$ a st. normális eloszlásnak az $1-\alpha$ konfidenciaszinthez tartozó határértékei:  
+
+- 95%-hoz $z_{0.975}=1,96$
+- 90%-hoz $z_{0.95}=1,65$
+- 99%-hoz $z_{0.995}=2,58$
+
+## Eredmény
+
+```{r, echo = FALSE, fig.height = 5}
+intdata <- stat_list %>% sample_n(200, replace = FALSE) %>% 
+  mutate(row.no = min_rank(mean), 
+         conf.95.low = mean - 1.96, conf.95.hi = mean + 1.96, cont.95 = (conf.95.low <= 170)&(conf.95.hi >= 170),
+         conf.90.low = mean - 1.65, conf.90.hi = mean + 1.65, cont.90 = (conf.90.low <= 170)&(conf.90.hi >= 170),
+         conf.99.low = mean - 2.58, conf.99.hi = mean + 2.58, cont.99 = (conf.99.low <= 170)&(conf.99.hi >= 170))
+conf.int.95 <- ggplot(intdata, aes(x = row.no, y = mean, color = cont.95))
+conf.int.95 + geom_pointrange(aes(ymin = conf.95.low, ymax = conf.95.hi), alpha = 0.5) + 
+  geom_hline(yintercept = 170, linetype = "dashed") +
+  theme_classic() + xlab("") + ylab("") + theme(legend.position = "bottom") + ggtitle("95%-os konf.intervallumok (200 szimulált mintában)") +
+  scale_color_manual(values = c("#B4070F", "#189302"),
+                     name = "Tartalmazza a várható értéket",
+                     breaks = c("FALSE", "TRUE"),
+                     labels = c("Nem", "Igen")) +
+  geom_hline(yintercept = 171.96, linetype = "dotted") +
+  geom_hline(yintercept = 168.04, linetype = "dotted") +
+  ylim(c(162, 178))
+```
+
+## Eredmény
+
+Ha nagyobb (99%) megbízhatóságot szeretnénk, növelni kell az intervallum szélességét:  
+```{r, echo = FALSE, fig.height = 5}
+conf.int.99 <- ggplot(intdata, aes(x = row.no, y = mean, color = cont.99))
+conf.int.99 + geom_pointrange(aes(ymin = conf.99.low, ymax = conf.99.hi), alpha = 0.5) + 
+  geom_hline(yintercept = 170, linetype = "dashed") +
+  theme_classic() + xlab("") + ylab("") + theme(legend.position = "bottom") + ggtitle("99%-os konf.intervallumok (200 szimulált mintában)") +
+  scale_color_manual(values = c("#B4070F", "#189302"),
+                     name = "Tartalmazza a várható értéket",
+                     breaks = c("FALSE", "TRUE"),
+                     labels = c("Nem", "Igen")) +
+  ylim(c(162, 178))
+```
+
+## Eredmény
+
+De, választhatunk kisebb (90%) konfidenciaszintet is:  
+```{r, echo = FALSE, fig.height = 5}
+conf.int.90 <- ggplot(intdata, aes(x = row.no, y = mean, color = cont.90))
+conf.int.90 + geom_pointrange(aes(ymin = conf.90.low, ymax = conf.90.hi)) + 
+  geom_hline(yintercept = 170, linetype = "dashed") +
+  theme_classic() + xlab("") + ylab("") + theme(legend.position = "bottom") + ggtitle("90%-os konf.intervallumok (200 szimulált mintában)") +
+  scale_color_manual(values = c("#B4070F", "#189302"),
+                     name = "Tartalmazza a várható értéket",
+                     breaks = c("FALSE", "TRUE"),
+                     labels = c("Nem", "Igen")) +
+  ylim(c(162, 178))
+```
+
+## Intervallumbecslés: feladatok
+
+```{r exercises, results = 'asis'}
+exercise <- "- $N=%d; \\overline{X}=%.1f; \\sigma=%d; 1-\\alpha=%.2f$ \n"
+N <- c(100, 200, 50)
+avg <- c(98.4, 168.3, 13.5)
+sig <- c(10, 10, 5)
+clev <- c(0.95, 0.90, 0.99)
+z <- c(1.96, 1.65, 2.58)
+
+
+for (i in 1:length(N)) {
+  cat(sprintf(exercise, N[i], avg[i], sig[i], clev[i]))
+}
+int_length <- z*sig/sqrt(N)
+ci_low <- avg - int_length
+ci_high <- avg + int_length
+```
+
+## Intervallumbecslés: 1. feladat
+
+$$\overline{X} \pm z_{1-\frac{\alpha}{2}}*\frac{\sigma}{\sqrt{N}}$$
+
+```{r solutions}
+expression <- c("$$%.1f \\pm %.2f*\\frac{%d}{\\sqrt{%d}}=?$$ \n",
+                "$$%.1f \\pm %.2f*\\frac{%d}{\\sqrt{%d}}=%.1f \\pm %.2f$$ \n",
+                "$$%.1f \\pm %.2f*\\frac{%d}{\\sqrt{%d}}= [%.2f; %.2f]$$ \n")
+i <- 1
+```
+
+```{r results = 'asis'}
+cat(sprintf(expression[1], avg[i], z[i], sig[i], N[i]))
+```
+
+## Intervallumbecslés: 1. feladat
+
+$$\overline{X} \pm z_{1-\frac{\alpha}{2}}*\frac{\sigma}{\sqrt{N}}$$
+
+```{r results = 'asis'}
+cat(sprintf(expression[2], avg[i], z[i], sig[i], N[i], avg[i], int_length[i]))
+```
+
+## Intervallumbecslés: 1. feladat
+
+$$\overline{X} \pm z_{1-\frac{\alpha}{2}}*\frac{\sigma}{\sqrt{N}}$$
+
+```{r results = 'asis'}
+cat(sprintf(expression[3], avg[i], z[i], sig[i], N[i], ci_low[i], ci_high[i]))
+```
+
+## Intervallumbecslés: 2. feladat
+
+$$\overline{X} \pm z_{1-\frac{\alpha}{2}}*\frac{\sigma}{\sqrt{N}}$$
+
+```{r}
+i <- 2
+```
+
+```{r results = 'asis'}
+cat(sprintf(expression[1], avg[i], z[i], sig[i], N[i]))
+```
+
+## Intervallumbecslés: 2. feladat
+
+$$\overline{X} \pm z_{1-\frac{\alpha}{2}}*\frac{\sigma}{\sqrt{N}}$$
+
+```{r results = 'asis'}
+cat(sprintf(expression[2], avg[i], z[i], sig[i], N[i], avg[i], int_length[i]))
+```
+
+## Intervallumbecslés: 2. feladat
+
+$$\overline{X} \pm z_{1-\frac{\alpha}{2}}*\frac{\sigma}{\sqrt{N}}$$
+
+```{r results = 'asis'}
+cat(sprintf(expression[3], avg[i], z[i], sig[i], N[i], ci_low[i], ci_high[i]))
+```
+
+## Intervallumbecslés: 3. feladat
+
+$$\overline{X} \pm z_{1-\frac{\alpha}{2}}*\frac{\sigma}{\sqrt{N}}$$
+
+```{r}
+i <- 3
+```
+
+```{r results = 'asis'}
+cat(sprintf(expression[1], avg[i], z[i], sig[i], N[i]))
+```
+
+
+## Intervallumbecslés: 3. feladat
+
+$$\overline{X} \pm z_{1-\frac{\alpha}{2}}*\frac{\sigma}{\sqrt{N}}$$
+
+```{r results = 'asis'}
+cat(sprintf(expression[2], avg[i], z[i], sig[i], N[i], avg[i], int_length[i]))
+```
+
+## Intervallumbecslés: 3. feladat
+
+$$\overline{X} \pm z_{1-\frac{\alpha}{2}}*\frac{\sigma}{\sqrt{N}}$$
+
+```{r results = 'asis'}
+cat(sprintf(expression[3], avg[i], z[i], sig[i], N[i], ci_low[i], ci_high[i]))
+```
+
+## 2. bökkenő: becsült szórás
+
+- $\sigma$ nem ismert, ezért $s^{*}$-ot használjuk
+- Normális eloszlás helyett Student-féle t-eloszlás
+- egy paramétere van: df
+
+```{r, echo = FALSE, fig.height = 3}
+x <- seq(-4, 4, by = 0.01)
+y.1 <- dt(x, df = 1)
+y.2 <- dt(x, df = 2)
+y.5 <- dt(x, df = 5)
+stn <- dnorm(x, mean = 0, sd = 1)
+
+tplotdata <- data.frame(x = x,
+                        df1 = y.1,
+                        df2 = y.2,
+                        df5 = y.5,
+                        norm = stn) %>%
+  pivot_longer(-x, names_to = "df", values_to = "y")
+
+tplot <- ggplot(tplotdata, aes(x = x, y = y, color = df))
+tplot + geom_line(size = 1) +
+  theme_classic() + xlab("") + ylab("") +
+  scale_y_continuous(breaks = NULL) +
+  scale_color_manual(values = c("red", "green", "blue", "black"),
+                     name = "Szabadságfok",
+                     breaks = c("df1", "df2", "df5", "norm"),
+                     labels = c("df = 1", "df = 2", "df = 5", "st. normális")) +
+  theme(legend.position = "bottom")
+```
+
+## Az új képlet
+
+$$\overline{X} \pm t_{df;1-\frac{\alpha}{2}}*\frac{s^{\ast}}{\sqrt{N}}$$  
+  
+
+- $t_{1-\frac{\alpha}{2}}$ a t-eloszlásnak az $1-\alpha$ konfidenciaszintnek és $df$ szabadságfoknak megfelelő értéke
+- a Student-féle t-eloszlás táblázatában
+- az $1-\frac{\alpha}{2}$ oszlopban és
+- a $df=N-1$ sorban találjuk
+
+## Intervallumbecslés becsült szórással: feladatok
+
+```{r exercises2, results = 'asis'}
+exercise <- "- $N=%d; \\overline{X}=%.1f; s^{*}=%.1f; 1-\\alpha=%.2f$ \n"
+N <- c(121, 30, 100)
+df_list <- c(1:30, 40, 60, 120)
+df <- NULL
+for (i in 1:length(N)) {
+  df[i] <- max(df_list[df_list <= N[i]-1])
+}
+avg <- c(98.4, 168.3, 13.5)
+s <- c(9.8, 10.4, 5.6)
+clev <- c(0.95, 0.90, 0.99)
+# z <- c(1.96, 1.65, 2.58)
+t <- qt(1-(1-clev)/2, df) %>% round(2)
+
+
+for (i in 1:length(N)) {
+  cat(sprintf(exercise, N[i], avg[i], s[i], clev[i]))
+}
+int_length <- t*s/sqrt(N)
+ci_low <- avg - int_length
+ci_high <- avg + int_length
+```
+
+## Intervallumbecslés: 1. feladat
+
+$$\overline{X} \pm t_{df;1-\frac{\alpha}{2}}*\frac{s^{\ast}}{\sqrt{N}}$$
+
+```{r solutions2}
+expression <- c("$$%.1f \\pm %.2f*\\frac{%.1f}{\\sqrt{%d}}=?$$ \n",
+                "$$%.1f \\pm %.2f*\\frac{%.1f}{\\sqrt{%d}}=%.1f \\pm %.2f$$ \n",
+                "$$%.1f \\pm %.2f*\\frac{%.1f}{\\sqrt{%d}}= [%.2f; %.2f]$$ \n")
+i <- 1
+```
+
+```{r results = 'asis'}
+cat(sprintf(expression[1], avg[i], t[i], s[i], N[i]))
+```
+
+
+## Intervallumbecslés: 1. feladat
+
+$$\overline{X} \pm t_{df;1-\frac{\alpha}{2}}*\frac{s^{\ast}}{\sqrt{N}}$$
+
+```{r results = 'asis'}
+cat(sprintf(expression[2], avg[i], t[i], s[i], N[i], avg[i], int_length[i]))
+```
+
+## Intervallumbecslés: 1. feladat
+
+$$\overline{X} \pm t_{df;1-\frac{\alpha}{2}}*\frac{s^{\ast}}{\sqrt{N}}$$
+
+```{r results = 'asis'}
+cat(sprintf(expression[3], avg[i], t[i], s[i], N[i], ci_low[i], ci_high[i]))
+```
+
+
+## Intervallumbecslés: 2. feladat
+
+$$\overline{X} \pm t_{df;1-\frac{\alpha}{2}}*\frac{s^{\ast}}{\sqrt{N}}$$
+
+```{r}
+i <- 2
+```
+
+```{r results = 'asis'}
+cat(sprintf(expression[1], avg[i], t[i], s[i], N[i]))
+```
+
+
+## Intervallumbecslés: 2. feladat
+
+$$\overline{X} \pm t_{df;1-\frac{\alpha}{2}}*\frac{s^{\ast}}{\sqrt{N}}$$
+
+```{r results = 'asis'}
+cat(sprintf(expression[2], avg[i], t[i], s[i], N[i], avg[i], int_length[i]))
+```
+
+## Intervallumbecslés: 2. feladat
+
+$$\overline{X} \pm t_{df;1-\frac{\alpha}{2}}*\frac{s^{\ast}}{\sqrt{N}}$$
+
+```{r results = 'asis'}
+cat(sprintf(expression[3], avg[i], t[i], s[i], N[i], ci_low[i], ci_high[i]))
+```
+
+## Intervallumbecslés: 3. feladat
+
+$$\overline{X} \pm t_{df;1-\frac{\alpha}{2}}*\frac{s^{\ast}}{\sqrt{N}}$$
+
+```{r}
+i <- 3
+```
+
+```{r results = 'asis'}
+cat(sprintf(expression[1], avg[i], t[i], s[i], N[i]))
+```
+
+
+## Intervallumbecslés: 3. feladat
+
+$$\overline{X} \pm t_{df;1-\frac{\alpha}{2}}*\frac{s^{\ast}}{\sqrt{N}}$$
+
+```{r results = 'asis'}
+cat(sprintf(expression[2], avg[i], t[i], s[i], N[i], avg[i], int_length[i]))
+```
+
+## Intervallumbecslés: 3. feladat
+
+$$\overline{X} \pm t_{df;1-\frac{\alpha}{2}}*\frac{s^{\ast}}{\sqrt{N}}$$
+
+```{r results = 'asis'}
+cat(sprintf(expression[3], avg[i], t[i], s[i], N[i], ci_low[i], ci_high[i]))
+```
+
+# Intervallumbecslés arányra
+
+## Az arány eloszlása
+
+- visszatevés nélküli mintavétel esetén a darabszám és az arány **hipergeometrikus** eloszlást követ
+
+$$E(\xi)=n*\frac{K}{N}$$
+$$D(\xi)=\sqrt{n*\frac{K}{N}*(1-\frac{K}{N})*\frac{N-n}{N-1}}$$
+
+Jelöljük $\frac{K}{N}$-t $p$-vel!
+
+## Az arány eloszlása
+
+- visszatevés nélküli mintavétel esetén a darabszám és az arány **hipergeometrikus** eloszlást követ
+
+$$E(\xi)=n* p$$
+$$D(\xi)=\sqrt{n* p*(1-p)*\frac{N-n}{N-1}}$$
+
+Nézzük az utolsó tagot!
+
+## Az a bizonyos utolsó tag
+
+$$\frac{N-n}{N-1}$$
+
+Nagy populáció (N), és ahhoz képest kis minták (n) esetében ez nagyon közel van az 1-hez.
+
+Pl. 10 milliós populáció és  
+
+```{r, results = 'asis'}
+population <- 10000000
+n <- c(100, 200, 500, 1000, 2000)
+
+last <- (population - n) / (population - 1)
+
+text <- "- n = %d fő &rArr; %.4f \n"
+
+for (i in 1:length(n)) {
+  cat(sprintf(text, n[i], last[i]))
+}
+```
+
+## Binomiálissal való közelítés
+
+Ha kicsi a minta, még ha visszatevéses is a mintavétel, aligha kerül be valaki kétszer
+
+$$E(\xi)=n* p$$
+$$D(\xi)=\sqrt{n* p*(1-p)}$$
+
+Ez így darabszám! Az arányhoz osszuk el a mintanagysággal (itt: $n$)!
+
+## Binomiálissal való közelítés
+
+Ha kicsi a minta, még ha visszatevéses is a mintavétel, aligha kerül be valaki kétszer
+
+$$E(\xi)=\frac{n* p}{n}=p$$
+$$D(\xi)=\frac{\sqrt{n* p*(1-p)}}{n}$$
+
+
+## Binomiálissal való közelítés
+
+Ha kicsi a minta, még ha visszatevéses is a mintavétel, aligha kerül be valaki kétszer
+
+$$E(\xi)=p$$
+$$D(\xi)=\sqrt{\frac{n* p*(1-p)}{n^2}}$$
+
+
+## Binomiálissal való közelítés
+
+Ha kicsi a minta, még ha visszatevéses is a mintavétel, aligha kerül be valaki kétszer
+
+$$E(\xi)=p$$
+$$D(\xi)=\sqrt{\frac{p*(1-p)}{n}}$$
+
+## Normális eloszlással való közelítés
+
+```{r, fig.height = 5}
+K <- 300000
+N <- 1000000
+n.exp <- 1000
+n.sam <- 100
+hyper <- data.frame(sim = rhyper(n.exp, m = K, n = N-K, n.sam) / n.sam)
+
+texpected <- K/N
+tdev.hyper <- sqrt(n.sam*K/N*(1-K/N)*(N-n.sam)/(N-1)) / n.sam
+tdev.binom <- sqrt(n.sam*K/N*(1-K/N)) / n.sam
+x <- seq(texpected - 3*tdev.hyper, texpected + 3*tdev.hyper, by = 0.01)
+normaldata2 <- data.frame(
+  x = x,
+  y = dnorm(x, texpected, tdev.binom)
+)
+FDbin <- ifelse((range(hyper$sim)[2]-hyper$sim[1])>25, 
+                    2*IQR(hyper$sim)/(n.exp^(1/3)), 1)
+
+hyper.plot <- ggplot(hyper, aes(sim))
+
+hyper.plot + 
+  geom_histogram(aes(y = ..density..), 
+                            col = "black", fill = "lightblue", binwidth = 0.01) +
+  labs(main = "Szimulált (1000 szimuláció) ismétlés nélküli mintavétel (N = 1M, K = 300e, n = 100)", 
+       x = "Speciális elemek aránya", y = "") + 
+  geom_line(data = normaldata2, aes(x = x, y = y), color = "blue", size = 1.2, linetype = "dashed") +
+  theme_classic() + 
+  scale_y_continuous(breaks = NULL)
+```
+
+## Intervallumbecslés az arányra
+
+Általános képlet:
+<p style="text-align:center;">pontbecslés &plusmn; valahányszor a st. hiba </p>
+  
+Alkalmazva az arányra:
+$$p \pm z_{1-\frac{\alpha}{2}}*\sqrt{\frac{p*(1-p)}{N}}$$
+
+## Intervallumbecslés arányra: feladatok
+
+```{r exercises3, results = 'asis'}
+exercise <- "- $N=%d; p=%.2f; 1-\\alpha=%.2f$ \n"
+N <- c(200, 100, 1000)
+
+p <- c(0.25, 0.5, 0.6)
+
+clev <- c(0.95, 0.90, 0.99)
+z <- c(1.96, 1.65, 2.58)
+
+for (i in 1:length(N)) {
+  cat(sprintf(exercise, N[i], p[i], clev[i]))
+}
+int_length <- z*sqrt(p*(1-p)/N)
+ci_low <- p - int_length
+ci_high <- p + int_length
+```
+
+## Intervallumbecslés: 1. feladat
+
+$$p \pm z_{1-\frac{\alpha}{2}}*\sqrt{\frac{p*(1-p)}{N}}$$
+
+```{r solutions3}
+expression <- c("$$%.2f \\pm %.2f*\\sqrt{\\frac{%.2f*(1-%.2f)}{%d}}=?$$ \n",
+                "$$%.2f \\pm %.2f*\\sqrt{\\frac{%.2f*(1-%.2f)}{%d}}=%.2f \\pm %.3f$$ \n",
+                "$$%.2f \\pm %.2f*\\sqrt{\\frac{%.2f*(1-%.2f)}{%d}}= [%.3f; %.3f]$$ \n")
+i <- 1
+```
+
+```{r results = 'asis'}
+cat(sprintf(expression[1], p[i], z[i], p[i], p[i], N[i]))
+```
+
+
+## Intervallumbecslés: 1. feladat
+
+$$p \pm z_{1-\frac{\alpha}{2}}*\sqrt{\frac{p*(1-p)}{N}}$$
+
+```{r results = 'asis'}
+cat(sprintf(expression[2], p[i], z[i], p[i], p[i], N[i], p[i], int_length[i]))
+```
+
+## Intervallumbecslés: 1. feladat
+
+$$p \pm z_{1-\frac{\alpha}{2}}*\sqrt{\frac{p*(1-p)}{N}}$$
+
+```{r results = 'asis'}
+cat(sprintf(expression[3], p[i], z[i], p[i], p[i], N[i], ci_low[i], ci_high[i]))
+```
+
+
+## Intervallumbecslés: 2. feladat
+
+$$p \pm z_{1-\frac{\alpha}{2}}*\sqrt{\frac{p*(1-p)}{N}}$$
+
+```{r}
+i <- 2
+```
+
+```{r results = 'asis'}
+cat(sprintf(expression[1], p[i], z[i], p[i], p[i], N[i]))
+```
+
+
+## Intervallumbecslés: 2. feladat
+
+$$p \pm z_{1-\frac{\alpha}{2}}*\sqrt{\frac{p*(1-p)}{N}}$$
+
+```{r results = 'asis'}
+cat(sprintf(expression[2], p[i], z[i], p[i], p[i], N[i], p[i], int_length[i]))
+```
+
+## Intervallumbecslés: 2. feladat
+
+$$p \pm z_{1-\frac{\alpha}{2}}*\sqrt{\frac{p*(1-p)}{N}}$$
+
+```{r results = 'asis'}
+cat(sprintf(expression[3], p[i], z[i], p[i], p[i], N[i], ci_low[i], ci_high[i]))
+```
+
+## Intervallumbecslés: 3. feladat
+
+$$p \pm z_{1-\frac{\alpha}{2}}*\sqrt{\frac{p*(1-p)}{N}}$$
+
+```{r}
+i <- 3
+```
+
+```{r results = 'asis'}
+cat(sprintf(expression[1], p[i], z[i], p[i], p[i], N[i]))
+```
+
+
+## Intervallumbecslés: 3. feladat
+
+$$p \pm z_{1-\frac{\alpha}{2}}*\sqrt{\frac{p*(1-p)}{N}}$$
+
+```{r results = 'asis'}
+cat(sprintf(expression[2], p[i], z[i], p[i], p[i], N[i], p[i], int_length[i]))
+```
+
+## Intervallumbecslés: 3. feladat
+
+$$p \pm z_{1-\frac{\alpha}{2}}*\sqrt{\frac{p*(1-p)}{N}}$$
+
+```{r results = 'asis'}
+cat(sprintf(expression[3], p[i], z[i], p[i], p[i], N[i], ci_low[i], ci_high[i]))
+```
+
+## Legfontosabb tudnivalók
+
+Intervallumbecslés lényege:  
+
+- a pontbecslés alapján megadunk egy intervallumot (**konfidenciaintervallum**),
+- amelybe a becsülni kívánt **populációs** paraméter
+- megadott valószínűséggel (**konfidenciaszint**) beleesik (általában $1-\alpha=0.95$)
+
+Hogyan?  
+
+- A pontbecslésből kivonjuk és hozzáadjuk a becslés szórásának (**standard hibájának**) valahányszorosát
+- Azt, hogy hányszorosát, a standard normális vagy a Student-féle t-eloszlás táblázatából olvassuk ki
+
+## Legfontosabb tudnivalók {.smaller}
+
+Intervallumbecslés átlagra:  
+
+- Ha ismert az elméleti szórás: $\overline{X}\pm z_{1-\frac{\alpha}{2}}*\frac{\sigma}{\sqrt{N}}$
+- Ha a szórást becsüljük: $\overline{X}\pm t_{df;1-\frac{\alpha}{2}}*\frac{s^*}{\sqrt{N}}$
+
+Intervallumbecslés arányra:  
+
+- $p \pm z_{1-\frac{\alpha}{2}}*\sqrt{\frac{p*(1-p)}{N}}$
+
+Az intervallum hossza függ:  
+
+- konfidenciaszint &rArr; $z_{1-\frac{\alpha}{2}} / t_{df;1-\frac{\alpha}{2}}$
+- szórás / arány (max. 0,5-nél)
+- mintanagyság

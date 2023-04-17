@@ -1,0 +1,468 @@
+---
+title: "Egymintás próbák"
+subtitle: "Statisztika 1. szeminárium"
+author: "Morauszki András"
+university: "PPKE-BTK"
+output: 
+  ioslides_presentation:
+    logo: ppke.jpg
+    widescreen: true
+    css: mystyle.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, fig.align = "center")
+library(tidyverse)
+library(patchwork)
+library(here)
+library(latex2exp)
+source(here("Statisztika 1/02 scripts/shadecurve.R"))
+source(here("Statisztika 1/02 scripts/plot_normal.R"))
+
+
+round2 = function(x, n) {
+  posneg = sign(x)
+  z = abs(x)*10^n
+  z = z + 0.5 + sqrt(.Machine$double.eps)
+  z = trunc(z)
+  z = z/10^n
+  z*posneg
+}
+```
+
+## Alapfogalmak és kérdések
+
+- Mi a statisztikai hipotézis?
+- Milyen a jó hipotézis?
+- Mire vonatkozik a hipotézis?
+- Milyen paraméterekre, jellemzőkre vonatkozhat?
+- Minek végzünk hipotézisvizsgálatot?
+- Mi a nullhipotézis / ellenhipotézis? Milyen ezek viszonya?
+- Mi az első / másodfajú hiba?
+- Mi a nulleloszlás?
+- Mit jelent, hogy egy próba szignifikáns?
+
+## Nullhipotézis / ellenhipotézis
+
+$H_0$: nincs összefüggés / különbség  
+$H_1$: van összefüggés / különbség (egyik vagy mindkét irányba)  
+
+Egymást kizárók:  
+pl.  
+  
+$H_0: \mu = 170$  
+$H_1: \mu \ne 170$  
+vagy:  
+$H_1: \mu < 170$  
+vagy:  
+$H_1: \mu > 170$  
+
+## Elsőfajú és másodfajú hiba
+
+Két esetben döntünk jól:  
+
+- $H_0$ igaz, és megtartjuk
+- $H_0$ nem igaz, és elvetjük
+
+Kétféle hibát követhetünk el:  
+
+- $H_0$ nem igaz, de megtartjuk
+- $H_0$ igaz, de elvetjük
+
+Mit gondolnak, melyik a súlyosabb?
+
+## Elsőfajú és másodfajú hiba
+
+**Elsőfajú hiba**: a nullhipotézis igaz (&rArr; nincs összefüggés), mi mégis elvetjük  
+  
+<p class="centered">Hamis pozitív eredmény</p>  
+  
+  
+**Másodfajú hiba**: a nullhipotézis nem igaz (&rArr; van összefüggés), de mi megtartjuk  
+  
+<p class="centered">Hamis negatív eredmény</p>  
+  
+  
+Az egyik valószínűségének csökkentése sajnos növeli a másikat.
+
+## Elsőfajú és másodfajú hiba
+
+![](img/errors.jpg){width=100%}
+
+## Nulleloszlás
+
+Minden próbához tartozik egy nulleloszlás:  
+  
+**Ha igaz a nullhipotézis**, akkor a próba ilyen eloszlású változó.  
+
+A saját próbánk értékét összevetjük ezzel az eloszlással: mennyire extrém?
+Ha túl kicsi annak a valószínűsége, hogy igaz nullhipotézis esetén ilyen tesztértéket kapjunk, akkor elvetjük a nullhipotézist. 
+
+
+
+## Szignifikáns próba
+
+**Szignifikanciaszint** (jele: &alpha;): annak a valószínűsége, hogy **ha igaz a nullhipotézis**, ilyen vagy ennél extrémebb tesztértéket kapjunk. Csak akkor vetjük el a $H_0$-t, ha ez kellően kicsi (általában < 5%)  
+  
+**Próba ereje**: annak a valószínűsége, hogy adott nagyságú eltérés esetén szignifikáns teszteredményt kapunk &rArr; kimutatjuk az eltérés / összefüggés létét.
+
+**Szignifikáns próba**: annyit jelent, hogy a különbség / összefüggés a populációban is létezik (nem 0 nagyságú). **Nem** jelenti, hogy ez az összefüggés erős!
+
+**Nem szignifikáns eredmény**: nem jelenti, hogy nincs különbség / összefüggés, csak hogy nem tudtunk ilyet kimutatni.
+
+# Egymintás próbák
+
+## Egymintás próbák a várható értékre {.smaller}
+
+- Arra vonatkoznak, hogy a várható érték eltér-e egy viszonyítási értéktől
+- A mintában igen
+- Kérdés, eléggé eltér-e a mintában ahhoz, hogy feltételezhető legyen, hogy a populációban is
+  
+$$H_0: \mu = m$$
+$$H_1: \mu \ne m$$
+
+<p class="centered">vagy</p>
+<div class="smaller">
+$$H_1: \mu < m$$
+</div>
+<p class="centered">vagy</p>
+$$H_1: \mu > m$$
+
+## Választási lehetőségek {.smaller}
+
+Mindkét esetben feltétel a **normális eloszlás**  
+
+1. Ismert populációs szórás esetén: **Egymintás u-próba**
+  
+$$u = \frac{\overline{X}-m}{\frac{\sigma}{\sqrt{N}}}$$
+Nulleloszlása: standard normális eloszlás
+  
+2. Becsült szórás esetén: **Egymintás t-próba**
+  
+$$t = \frac{\overline{X}-m}{\frac{s^*}{\sqrt{N}}}$$
+Nulleloszlása: Student-féle t-eloszlás $df = N-1$ szabadságfokkal
+
+## Egymintás u-próba nulleloszlása
+
+```{r}
+n <- 10
+means <- list()
+means_t <- list()
+for (i in 1:1000) {
+  temp <- rnorm(n, 165, 7) 
+  means[[i]] <- temp %>% 
+    mean() %>% 
+    magrittr::subtract(165) %>% 
+    magrittr::divide_by(7/sqrt(n))
+  means_t[[i]] <- temp %>%
+    mean() %>%
+    magrittr::subtract(165) %>%
+    magrittr::divide_by(sd(temp)/sqrt(n))
+}
+means <- means %>% 
+  reduce(c) %>% 
+  as.data.frame() %>%
+  magrittr::set_colnames("u_stat")
+
+means_t <- means_t %>%
+  reduce(c) %>%
+  as.data.frame() %>%
+  magrittr::set_colnames("t_stat")
+
+x <- seq(-3, 3, length.out = 1000)
+y <- dnorm(x)
+y_t <- dt(x, df = n-1)
+
+normaldata <- data.frame(
+  x = x,
+  y = y
+)
+
+studentdata <- data.frame(
+  x = x,
+  y = y
+)
+
+ggplot(means, aes(x = u_stat)) +
+  theme_classic() +
+  geom_histogram(aes(y = ..density..), color = "black", fill = "dodgerblue4", alpha = 0.5) +
+  geom_line(data = normaldata, aes(x = x, y = y), linetype = "dashed", size = 1.2) +
+  xlab("u") +
+  ylab("") +
+  geom_vline(xintercept = c(-1.96, 1.96), 
+           linetype = "dotted", color = "darkred", size = 1.1)
+```
+
+## Egymintás t-próba nulleloszlása
+
+```{r}
+ggplot(means_t, aes(x = t_stat)) +
+  theme_classic() +
+  geom_histogram(aes(y = ..density..), color = "black", fill = "dodgerblue4", alpha = 0.5) +
+  geom_line(data = studentdata, aes(x = x, y = y), linetype = "dashed", size = 1.2) +
+  xlab("t") +
+  ylab("") +
+  geom_vline(xintercept = qt(0.975, 9) * c(-1, 1), 
+           linetype = "dotted", color = "darkred", size = 1.1)
+```
+
+## Amit mi fogunk tenni
+
+```{r}
+plot_normal(c(-1.96, 1.96), colored = 2, color = c("darkgreen", "red")) +
+  annotate("text", x = 0, y = 0.1, label = "95%", color = "white", size = 10) +
+  annotate("text", x = c(-2.5, 2.5), y = 0.05, label = "2,5%", color = "black", size = 5)
+```
+
+## Amit az SPSS (és tsai) tesz
+
+```{r}
+u <- 1.43
+plot_normal(c(-abs(u), abs(u)), colored = 2, color = c("darkgreen", "red")) +
+  annotate("text", x = 0, y = 0.1, 
+           label = (pnorm(abs(u)) - pnorm(-abs(u))) %>%
+             round2(4) %>%
+             magrittr::multiply_by(100) %>%
+             paste0("%"), 
+           color = "white", size = 10) +
+  annotate("text", x = c(-2.5, 2.5), y = 0.05, 
+           label = pnorm(abs(u), lower.tail = FALSE) %>%
+             round2(4) %>%
+             magrittr::multiply_by(100) %>%
+             paste0("%"), 
+           color = "black", size = 5) +
+  annotate("segment", 
+           x = c(u, -u), xend = c(u, -u), 
+           y = 0, yend = dnorm(u) + 0.05, 
+           linetype = "dashed", size = 1.2,
+           color = "black") +
+  ggtitle(paste0("u = ", u %>% round2(2), "; p = ", 2*pnorm(-abs(u)) %>% round2(4)))
+```
+
+## Ha a nullhipotézis nem igaz
+
+$\mu = 170; m = 165; \sigma = 7, N = 10$
+
+```{r}
+n <- 10
+means <- list()
+means_t <- list()
+for (i in 1:1000) {
+  temp <- rnorm(n, 170, 7) 
+  means[[i]] <- temp %>% 
+    mean() %>% 
+    magrittr::subtract(165) %>% 
+    magrittr::divide_by(7/sqrt(n))
+  means_t[[i]] <- temp %>%
+    mean() %>%
+    magrittr::subtract(165) %>%
+    magrittr::divide_by(sd(temp)/sqrt(n))
+}
+means <- means %>% 
+  reduce(c) %>% 
+  as.data.frame() %>%
+  magrittr::set_colnames("u_stat") %>%
+  mutate(sig = case_when(
+    u_stat > -1.96 & u_stat < 1.96 ~ "no",
+    TRUE ~ "yes"
+  ))
+
+means_t <- means_t %>%
+  reduce(c) %>%
+  as.data.frame() %>%
+  magrittr::set_colnames("t_stat") %>%
+  mutate(sig = case_when(
+    t_stat > qt(0.025, n-1) & t_stat < qt(0.975, n-1) ~ "no",
+    TRUE ~ "yes"
+  ))
+
+x <- seq(-3, 3, length.out = 1000)
+y <- dnorm(x)
+y_t <- dt(x, df = n-1)
+
+normaldata <- data.frame(
+  x = x,
+  y = y
+)
+
+studentdata <- data.frame(
+  x = x,
+  y = y
+)
+
+ggplot(means, aes(x = u_stat)) +
+  theme_classic() +
+  geom_histogram(aes(y = ..density..), color = "black", fill = "dodgerblue4", alpha = 0.5) +
+  geom_line(data = normaldata, aes(x = x, y = y), linetype = "dashed", size = 1.2) +
+  xlab("u") +
+  ylab("") +
+  annotate("text", x = 4.2, y = 0.3, 
+           label = sum(means$sig == "yes") %>%
+             magrittr::divide_by(nrow(means)) %>%
+             round2(4) %>%
+             magrittr::multiply_by(100) %>%
+             paste0("%")) +
+  geom_vline(xintercept = c(-1.96, 1.96), 
+           linetype = "dotted", color = "darkred", size = 1.1)
+```
+
+## Ha becsült szórással dolgozunk
+
+$\mu = 170; m = 165; (\sigma = 7), N = 10$
+
+```{r}
+ggplot(means_t, aes(x = t_stat)) +
+  theme_classic() +
+  geom_histogram(aes(y = ..density..), color = "black", fill = "dodgerblue4", alpha = 0.5) +
+  geom_line(data = studentdata, aes(x = x, y = y), linetype = "dashed", size = 1.2) +
+  xlab("t") +
+  ylab("") +
+  annotate("text", x = 5, y = 0.3, 
+           label = sum(means_t$sig == "yes") %>%
+             magrittr::divide_by(nrow(means_t)) %>%
+             round2(4) %>%
+             magrittr::multiply_by(100) %>%
+             paste0("%")) +
+  geom_vline(xintercept = qt(0.975, 9) * c(-1, 1), 
+           linetype = "dotted", color = "darkred", size = 1.1)
+```
+
+## Nagyobb elemszámnál
+
+$\mu = 170; m = 165; \sigma = 7, N = 100$
+
+```{r}
+n <- 100
+means <- list()
+means_t <- list()
+for (i in 1:1000) {
+  temp <- rnorm(n, 170, 7) 
+  means[[i]] <- temp %>% 
+    mean() %>% 
+    magrittr::subtract(165) %>% 
+    magrittr::divide_by(7/sqrt(n))
+  means_t[[i]] <- temp %>%
+    mean() %>%
+    magrittr::subtract(165) %>%
+    magrittr::divide_by(sd(temp)/sqrt(n))
+}
+means <- means %>% 
+  reduce(c) %>% 
+  as.data.frame() %>%
+  magrittr::set_colnames("u_stat") %>%
+  mutate(sig = case_when(
+    u_stat > -1.96 & u_stat < 1.96 ~ "no",
+    TRUE ~ "yes"
+  ))
+
+means_t <- means_t %>%
+  reduce(c) %>%
+  as.data.frame() %>%
+  magrittr::set_colnames("t_stat") %>%
+  mutate(sig = case_when(
+    t_stat > qt(0.025, n-1) & t_stat < qt(0.975, n-1) ~ "no",
+    TRUE ~ "yes"
+  ))
+
+x <- seq(-3, 3, length.out = 1000)
+y <- dnorm(x)
+y_t <- dt(x, df = n-1)
+
+normaldata <- data.frame(
+  x = x,
+  y = y
+)
+
+studentdata <- data.frame(
+  x = x,
+  y = y
+)
+
+ggplot(means, aes(x = u_stat)) +
+  theme_classic() +
+  geom_histogram(aes(y = ..density..), fill = "dodgerblue4", color = "black", alpha = 0.5) +
+  geom_line(data = normaldata, aes(x = x, y = y), linetype = "dashed", size = 1.2) +
+  xlab("u") +
+  ylab("") +
+  geom_vline(xintercept = c(-1.96, 1.96), 
+           linetype = "dotted", color = "darkred", size = 1.1)
+```
+
+## Néhány példa
+
+```{r, results = "asis"}
+ex_text <- "- $N = %d; \\overline{X}=%.1f; %s = %.1f; m = %d; \\alpha = %.2f$\n"
+N <- c(200, 100, 30, 100)
+df_list <- c(1:30, 40, 60, 120)
+df <- NULL
+for (i in 1:length(N)) {
+  df[i] <- max(df_list[df_list <= N[i]-1])
+}
+avg <- c(171.5, 98.7, 167.2, 205)
+known <- c("\\sigma", "\\sigma", "s^*", "s^*")
+s <- c(7, 10, 6.5, 41)
+m <- c(170, 100, 170, 200)
+alpha <- c(0.05, 0.10, 0.05, 0.01)
+
+for (i in 1:length(N)) {
+  cat(sprintf(ex_text, N[i], avg[i], known[i], s[i], m[i], alpha[i]))
+}
+```
+
+```{r, results = "asis"}
+hip0 <- "$$H_0: \\mu = %d$$\n"
+hip1 <- "$$H_1: \\mu \\ne %d$$\n"
+test <- "$$%s=\\frac{%.1f-%d}{\\frac{%.1f}{\\sqrt{%d}}}=%.2f$$\n"
+limit <- "$$\\pm %s = \\pm %.2f$$\n"
+distrib <- c(sprintf("z_{%.3f}", 1 - alpha[1:2] / 2), sprintf("t_{%.3f;%d}", 1 - alpha[3:4] / 2, df[3:4]))
+ans <- "A különbség $\\alpha = %.2f$ szignifikanciaszint mellett %s\n\n"
+spss <- "SPSS: p = %.3f\n\n"
+
+result <- (avg - m) / (s / sqrt(N))
+crit <- c(qnorm(1 - alpha[1:2] / 2), qt(1 - alpha[3:4] / 2, df[3:4])) %>% round2(2)
+p <- c(2 * pnorm(abs(result[1:2]), lower.tail = FALSE), 
+       2 * pt(abs(result[3:4]), df[3:4], lower.tail = FALSE)) %>% round2(3)
+
+answer <- abs(result) > crit
+
+solution <- list()
+for (i in 1:length(N)) {
+  solution[[i]] <- list(
+    c(
+      sprintf("## %d. feladat\n\n", i),
+      sprintf(ex_text %>% str_sub(start = 3L), N[i], avg[i], known[i], s[i], m[i], alpha[i]),
+      "\n"
+      ),
+    c(
+      sprintf(hip0, m[i]),
+      sprintf(hip1, m[i])
+    ),
+    sprintf(test, c("u", "u", "t", "t")[i], avg[i], m[i], s[i], N[i], result[i]),
+    sprintf(limit, distrib[i], crit[i]),
+    sprintf(ans, alpha[i], ifelse(answer[i], "szignifikáns", "nem szignifikáns")),
+    sprintf(spss, p[i])
+  )
+}
+
+for (i in 1:length(N)) {
+  for (j in 1:length(solution[[i]])) {
+    cat(solution[[i]][1:j] %>% reduce(c))
+    cat("\n")
+  }
+}
+```
+
+## Összegzés
+
+Statisztikai hipotézisvizsgálat alapjai:  
+
+- nullhipotézis / ellenhipotézis
+- első / másodfajú hiba
+- próba és nulleloszlás
+- szignifikanciaszint / próba ereje
+- mit (nem) jelent a (nem) szignifikáns eredmény?
+
+Egymintás próbák:  
+
+- ismert populációs szórással &rArr; u
+- mintából becsült szórással &rArr; t

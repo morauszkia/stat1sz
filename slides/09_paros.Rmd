@@ -1,0 +1,244 @@
+---
+title: "Páros próbák"
+subtitle: "Statisztika 1. szeminárium"
+author: "Morauszki András"
+university: "PPKE-BTK"
+output: 
+  ioslides_presentation:
+    logo: ppke.jpg
+    widescreen: true
+    css: mystyle.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, fig.align = "center")
+library(tidyverse)
+library(patchwork)
+library(here)
+library(latex2exp)
+library(huxtable)
+source(here("Statisztika 1/02 scripts/shadecurve.R"))
+source(here("Statisztika 1/02 scripts/plot_normal.R"))
+
+
+round2 = function(x, n) {
+  posneg = sign(x)
+  z = abs(x)*10^n
+  z = z + 0.5 + sqrt(.Machine$double.eps)
+  z = trunc(z)
+  z = z/10^n
+  z*posneg
+}
+```
+
+## Páros próbák
+
+**Sima kétmintás próbák** (u-, t-, Welch-próba):  
+
+- Várható érték különbsége két **független** populációban (pl. férfiak és nők, két ország)
+- Longitudinális vizsgálatok: **trend- és kohorszvizsgálatok**
+- Van-e különbség a két várható értékben?
+
+**Páros próbák** (páros t-próba):
+
+- Értékek párosíthatók (pl. házastársak, ugyanazok a személyek)
+- Longitudinális: **panelvizsgálatok**
+- Van-e valamilyen határozott iránya a változásnak?
+
+## Páros t-próba
+
+Régi neve: **egymintás t-próba a különbségre**
+
+Lépései:  
+
+1. Különbségek kiszámítása (jelöljük: $d$)
+2. t-próba annak vizsgálatára, hogy a különbségek várható értéke **a populációba** 0-e  
+
+$$H_0: \delta = 0$$
+$$H_1: \delta \ne 0$$
+
+## Példa (Cooper-teszt)
+
+```{r}
+t0 <- c(2.3, 2.5, 2, 1.7, 1.7, 2.9, 2.7, 2.3, 2, 1.7)
+t1 <- c(2.7, 2.8, 2.4, 1.9, 1.5, 2.8, 3.2, 2.6, 2.3, 1.6)
+
+dif <- t1-t0
+d.mean <- mean(dif)
+d.sd <- round(sd(dif), 2)
+tab <- rbind(t0, t1, dif)
+rownames(tab) <- c("Előtte", "Utána", "Különbség (d)")
+cmplt_table <- tab %>% 
+  as_hux(add_rownames = TRUE) %>%
+  set_all_borders(0.5) %>%
+  set_font(everywhere, everywhere, "Palatino Linotype") %>%
+  set_font_size(everywhere, everywhere, 16)
+
+cmplt_table[1:2, ]
+```
+
+**1. feladat:** Számítsák ki az eredmény különbségét minden személyre!
+
+## Példa (Cooper-teszt)
+
+```{r}
+cmplt_table
+```
+
+**Kérdés:** Mi kell a t-próbához?
+
+## A t-próba képlete
+
+$$t = \frac{\overline{X}-m}{\frac{s^\ast}{\sqrt{N}}}$$
+  
+
+1. Mi lesz $\overline{X}$?
+2. Mi lesz $m$?
+3. Mi lesz $s^\ast$?
+
+## A t-próba képlete
+
+$$t = \frac{\overline{X}-m}{\frac{s^\ast}{\sqrt{N}}}$$
+  
+
+1. Mi lesz $\overline{X}$? &rArr; $\overline{d}$
+2. Mi lesz $m$?
+3. Mi lesz $s^\ast$?
+
+## A t-próba képlete
+
+$$t = \frac{\overline{X}-m}{\frac{s^\ast}{\sqrt{N}}}$$
+  
+
+1. Mi lesz $\overline{X}$? &rArr; $\overline{d}$
+2. Mi lesz $m$? &rArr; 0
+3. Mi lesz $s^\ast$?
+
+## A t-próba képlete
+
+$$t = \frac{\overline{X}-m}{\frac{s^\ast}{\sqrt{N}}}$$
+  
+
+1. Mi lesz $\overline{X}$? &rArr; $\overline{d}$
+2. Mi lesz $m$? &rArr; 0
+3. Mi lesz $s^\ast$? &rArr; $s_d^\ast$
+
+## A módosított képlet
+
+$$t = \frac{\overline{d}-0}{\frac{s_d^\ast}{\sqrt{N}}}$$
+
+
+## A módosított képlet
+
+$$t = \frac{\overline{d}}{\frac{s_d^\ast}{\sqrt{N}}}$$
+
+## Példa (Cooper-teszt)
+
+```{r}
+cmplt_table
+```
+
+**2. feladat:** Számítsák ki az eltérések átlagát és szórását!
+
+## Példa (Cooper-teszt)
+
+```{r}
+cmplt_table
+compute_mean <- "$$\\overline{d}=\\frac{%s}{%d}=%.1f$$\n"
+ob <- NA
+cb <- NA
+brackets <- dif < 0
+ob[brackets] <- "\\left("
+ob[!brackets] <- ""
+cb[brackets] <- "\\right)"
+cb[!brackets] <- ""
+sum_expression <- paste0(ob[1:6], dif[1:6] %>% round2(1), cb[1:6], collapse = " + ") %>% paste0("+...")
+```
+<div class="smaller">
+`r sprintf(compute_mean, sum_expression, length(dif), mean(dif))``
+</div>
+
+## Példa (Cooper-teszt)
+
+```{r}
+cmplt_table
+compute_sd <- "$$s_d^\\ast=\\sqrt{\\frac{%s}{%d-1}}=%.2f$$\n"
+ssq_block <- sprintf("\\left(%.1f - %.1f\\right)^2", dif, mean(dif))
+ssq_sum <- paste0(ssq_block[1:3], collapse = " + ") %>% paste("+ ...")
+```
+
+$$\overline{d}=`r mean(dif)`$$
+`r sprintf(compute_sd, ssq_sum, length(dif), sd(dif))`
+
+**3. feladat:** Számítsák ki a páros t-próba értékét!
+
+## A t-próba értéke
+
+```{r, results = "asis"}
+t_exp <- "$$t = \\frac{%.1f}{\\frac{%.2f}{\\sqrt{%d}}}=%.2f$$\n"
+paired_t <- d.mean / (d.sd / sqrt(length(dif)))
+cat(sprintf(t_exp, mean(dif), sd(dif), length(dif), paired_t))
+```
+
+**4. feladat:** Értelmezzék a próba értékét!
+
+## A t-próba értéke
+
+```{r, results = "asis"}
+cat(sprintf(t_exp, mean(dif), sd(dif), length(dif), paired_t))
+cat("\n")
+alpha <- 0.05
+cat(sprintf("$$\\pm t_{%.3f;%d}=\\pm %.2f$$\n", 
+            1-alpha/2, length(dif)-1, qt(1-alpha/2, length(dif)-1)))
+```
+
+**4. feladat:** Értelmezzék a próba értékét!
+
+## A t-próba értéke
+
+```{r, results = "asis"}
+cat(sprintf(t_exp, mean(dif), sd(dif), length(dif), paired_t))
+cat("\n")
+alpha <- 0.05
+crit <- qt(1-alpha/2, length(dif)-1)
+cat(sprintf("$$\\pm t_{%.3f;%d}=\\pm %.2f$$\n", 
+            1-alpha/2, length(dif)-1, crit))
+cat("\n")
+cat(sprintf("A próba $\\alpha=%.2f$ szignifikanciaszint mellett %s, %s",
+            alpha, ifelse(abs(paired_t) > crit, "szignifikáns", "nem szignifikáns"),
+            ifelse(abs(paired_t) > crit, 
+                   "a különbség várható értéke a populációban is nagy valószínűséggel eltér 0-tól.",
+                   "nem állítható, hogy a különbség a populációban eltér 0-tól.\n")))
+
+cat("\n")
+cat(sprintf("*(SPSS: %.3f)*", 2* pt(paired_t, length(dif) - 1, lower.tail = FALSE)))
+```
+
+# A félév összegzése
+
+## A következő témákat néztük
+  
+
+1. Leíró statisztika (átlag, szórás, medián)
+2. Becsléselmélet (intervallumbecslés átlagra, arányra)
+3. Egymintás próbák (u és t)
+4. Független mintás próbák (t és Welch) + F-próba
+5. Páros t-próba
+
+## Ellenőrző kérdések
+
+1. Hogyan kell kiszámítani az egyes statisztikákat?
+2. Hogyan értelmezhetőek ezek?
+    a. Konfidenciaintervallumok 
+    b. Hipotézisek 
+    c. Határértékek és tesztértékek
+    d. Szignifikáns eredmény
+    
+## Ismétlésképp
+
+1. Konfidenciaintervallumok: általunk (na jó, általam) meghatározott valószínűséggel tartalmazzák a becsülni kívánt paramétert.
+2. Hipotézisek: a nullhipotézis mindig arról szólt, hogy nincs különbség (a referenciaértékhez képest vagy a két érték között)
+3. Határértékek: standard normális, t-eloszlás, F-eloszlás - táblázatos valószínűség és szabadságfok!
+4. Ha a próba a határértékek közé esik, nem szignifikáns, megtartjuk a nullhipotézist - ha nem esik a határértékek közé, akkor szignifikáns, elvetjük a nullhipotézist
+
+# Jó készülést!

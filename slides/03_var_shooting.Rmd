@@ -1,0 +1,318 @@
+---
+title: "Céllövészet"
+subtitle: "Statisztika 1. szeminárium"
+author: "Morauszki András"
+university: "PPKE-BTK"
+output: 
+  ioslides_presentation:
+    logo: ppke.jpg
+    widescreen: true
+    css: mystyle.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(dplyr)
+library(huxtable)
+library(ggplot2)
+
+prob_a <- 0.6
+prob_b <- 0.5
+
+values <- 0:2
+probs <- c((1 - prob_a)*(1 - prob_b), 
+           prob_a*(1 - prob_b) + (1 - prob_a)*prob_b,
+           prob_a*prob_b)
+
+comp <- function(prob) {
+  output <- paste0("(1 - ", prob, ")")
+  return(output)
+}
+
+color_text <- function(text, color) {
+  color <- paste0('<span style="color:', color, ';">')
+  end <- '</span>'
+  output <- paste0(color, text, end)
+  return(output)
+}
+
+
+prob_compute <- c(
+  paste0(color_text(comp(prob_a), "red"), "*", color_text(comp(prob_b), "red")),
+  paste0(color_text(prob_a, "green"), " * ", color_text(comp(prob_b), "red"), " + ", 
+         color_text(comp(prob_a), "red"), " * ", color_text(prob_b, "green")),
+  paste0(color_text(prob_a, "green"), "*", color_text(prob_b, "green"))
+)
+```
+
+## Feladat {.fewlines}
+
+<div style="width:90%; margin-left:5%;">
+Ketten lőnek célba. Először A lő, és a találatának valószínűsége 60%. 
+Ezután lő B, és (A találatától függetlenül) 50%-os valószínűséggel eltalálja a céltáblát.  
+  
+Jelentse &xi; a találatok számát!  
+  
+Adják meg &xi;  
+
+- lehetséges értékeit, 
+- valószínűségeloszlását, 
+- várható értékét 
+- és szórását!
+</div>
+
+# Lehetséges értékek?
+
+## Értékek (x~i~)
+
+<div style="width:40%; float:left;">
+```{r values, fig.align='left'}
+full_table <- data.frame(
+  values = values,
+  probs = probs,
+  prob_compute = prob_compute
+)
+
+out_table <- full_table %>%
+  select(values, probs) %>%
+  as_huxtable(add_colnames = TRUE) %>%
+  set_markdown_contents(1, everywhere, c("x<sub>i</sub>", "p<sub>i</sub>")) %>%
+  set_markdown_contents(2:4, 2, rep("?", 3)) %>%
+  set_all_borders(1) %>%
+  set_bottom_border(1, everywhere, 1.5) %>%
+  set_bold(1, everywhere) %>%
+  set_col_width(c(0.3, 0.3)) %>%
+  set_row_height("20px") %>%
+  set_align(everywhere, everywhere, "center") %>%
+  set_valign(everywhere, everywhere, "top") %>%
+  set_font(everywhere, everywhere, "Palatino Linotype") %>%
+  set_font_size(everywhere, everywhere, 18) %>%
+  set_all_padding(0) %>%
+  set_lr_padding(20)
+
+out_table
+```
+</div>
+<div style="width:50%; float:right; margin-top: 50px;">
+Lehetséges, hogy  
+
+- egyik sem talál (&xi; = 0)   
+- csak az egyik talál (&xi; = 1)
+- mindkettő talál (&xi; = 2)
+
+</div>
+
+# Valószínűségek?
+
+## Valószínűségek
+
+<div style="width:40%; float:left;">
+```{r, fig.align='left'}
+out_table <- out_table %>%
+  set_col_width(c(0.3, 0.7))
+
+out_table
+```
+</div>
+
+
+## Valószínűségek
+
+<div style="width:40%; float:left;">
+```{r, fig.align='left'}
+out_table <- out_table %>%
+  set_markdown_contents(2, 2, prob_compute[1]) %>%
+  set_lr_padding(everywhere, 2, 0)
+
+out_table
+```
+</div>
+<div style="width:50%; float:right; margin-top: 50px;">
+Független események:  
+
+- A nem talál: $P(\overline{A})=1-0,6$  
+- B nem talál: $P(\overline{B})=1-0,5$
+- Mivel független: $P(\overline{A}*\overline{B})=P(\overline{A})*P(\overline{B})$
+
+</div>
+
+## Valószínűségek
+
+<div style="width:40%; float:left;">
+```{r, fig.align='left'}
+out_table <- out_table %>%
+  set_markdown_contents(2, 2, probs[1])
+
+out_table
+```
+</div>
+
+
+## Valószínűségek
+
+<div style="width:40%; float:left;">
+```{r, fig.align='left'}
+out_table <- out_table %>%
+  set_markdown_contents(3, 2, prob_compute[2])
+
+out_table
+```
+</div>
+<div style="width:50%; float:right; margin-top: 50px;">
+Független események:  
+
+- A talál és B nem talál: $P(A*\overline{B})=P(A)*P(\overline{B})$  
+- A nem talál és B talál: $P(\overline{A}*B)=P(\overline{A})*P(B)$
+- Ezek egymást kölcsönösen kizáró alternatívák: összeadódnak
+</div>
+
+## Valószínűségek
+
+<div style="width:40%; float:left;">
+```{r, fig.align='left'}
+out_table <- out_table %>%
+  set_markdown_contents(3, 2, probs[2])
+
+out_table
+```
+</div>
+
+## Valószínűségek
+
+<div style="width:40%; float:left;">
+```{r, fig.align='left'}
+out_table <- out_table %>%
+  set_markdown_contents(4, 2, prob_compute[3])
+
+out_table
+```
+</div>
+<div style="width:50%; float:right; margin-top: 50px;">
+Független események:  
+
+- A talál és B talál: $P(A*B)=P(A)*P(B)$  
+
+</div>
+
+## Valószínűségek
+
+<div style="width:40%; float:left;">
+```{r, fig.align='left'}
+out_table <- out_table %>%
+  set_markdown_contents(4, 2, probs[3])
+
+out_table
+```
+</div>
+
+</div>
+<div style="width:50%; float:right; margin-top: 50px;">
+Figyeljék meg, hogy az összegük ebben az esetben is 1!
+
+</div>
+
+# Várható érték?
+
+## Várható érték
+
+```{r}
+out_table %>% t()
+```
+
+$$E(\xi)=\sum_{i=1}^{n}x_i*p_i$$
+
+
+## Várható érték
+
+```{r}
+out_table %>% t()
+```
+
+$$E(\xi)=0*0,2+1*0,5+2*0,3$$
+
+## Várható érték
+
+```{r}
+out_table %>% t()
+```
+
+$$E(\xi)=0+0,5+0,6=1,1$$
+
+# Szórás?
+
+## Szórás
+
+```{r}
+out_table %>% t()
+```
+
+Első lépés &xi; második momentumának kiszámítása:
+$$E(\xi^2)=\sum_{i=1}^{n}x_i^2*p_i$$
+
+
+## Szórás
+
+```{r}
+out_table %>% t()
+```
+
+Első lépés &xi; második momentumának kiszámítása:
+$$E(\xi^2)=0^2*0,2+1^2*0,5+2^2*0,3$$
+
+## Szórás
+
+```{r}
+out_table %>% t()
+```
+
+Első lépés &xi; második momentumának kiszámítása:
+$$E(\xi^2)=0+0,5+1,2=1,7$$
+
+## Szórás
+
+Ezután jöhet a szórás kiszámítása:
+$$D(\xi)=\sqrt{E(\xi^2)-E^2(\xi)}$$
+
+## Szórás
+
+Ezután jöhet a szórás kiszámítása:
+$$D(\xi)=\sqrt{1,7-1,1^2}$$
+
+## Szórás
+
+Ezután jöhet a szórás kiszámítása:
+$$D(\xi)=\sqrt{1,7-1,21}=\sqrt{0,49}=0,7$$
+
+[Katt!](https://morauszkia.shinyapps.io/variables/)
+
+# Ábrázolás
+
+## Hisztogram
+```{r data, fig.height=4}
+plot_data <- data.frame(
+  hits <- c(rep(0, 200), rep(1, 500), rep(2, 300))
+)
+hits_plot <- ggplot(plot_data, aes(x = hits)) +
+  geom_histogram(aes(y = ..count../sum(..count..)),
+                 binwidth = 1, color = "dodgerblue", fill = "dodgerblue", alpha = 0.8) +
+  scale_x_continuous(breaks = 0:2) +
+  xlab("Találatok száma") +
+  ylab("Valószínűség") +
+  theme_classic() +
+  geom_vline(xintercept = mean(hits), linetype = "dashed", size = 1.2)
+
+hits_plot
+```
+  
+(A szaggatott vonal csak az illusztráció kedvéért van ott, nem kötelező része a hisztogramnak)
+
+## Eloszlásfüggvény
+
+```{r cdf}
+fn <- ecdf(hits)
+plot(fn, do.points = FALSE, ylab = 'Fn(x)',
+     xlab = "Találatok száma", 
+     main = "")
+   points(unique(hits), unique(c(0, fn(hits)))[1:length(unique(hits))], pch = 19)
+   points(unique(hits), unique(fn(hits)), pch = 21)
+```

@@ -1,0 +1,785 @@
+---
+title: "Valószínűségszámítás: műveletek"
+subtitle: "Statisztika 1. szeminárium"
+author: "Morauszki András"
+university: "PPKE-BTK"
+output: 
+  ioslides_presentation:
+    logo: ppke.jpg
+    widescreen: true
+    css: mystyle.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, results = 'asis')
+options(OutDec = ",", digits = 2, scipen = 999)
+
+round2 = function(x, n) {
+  posneg = sign(x)
+  z = abs(x)*10^n
+  z = z + 0.5 + sqrt(.Machine$double.eps)
+  z = trunc(z)
+  z = z/10^n
+  z*posneg
+}
+```
+
+## Kísérletek, események, valószínűségek {.build}
+
+- Kísérleteknek fogjuk nevezni, amivel foglalkozunk - pl. dobunk dobókockával, megnézzük, milyen kint az időjárás, megkérdezünk valakit, beszél-e angolul, stb.
+- Esemény, ami ténylegesen megtörténik - pl. 3-ast dobunk, esik az eső és fúj a szél, a megkérdezett beszél angolul
+- Ezekhez az eseményekhez valószínűségeket rendelünk - ha ismételten megfigyelést végeznénk, az esetek várhatóan hány százalékában következne be az esemény - 0 és 1 (= 0 és 100%) közötti értékek
+    + Biztos esemény: valószínűsége 100%
+    + Lehetetlen esemény: valószínűsége 0%
+    + Elemi események: tovább nem bonthatók - pl. 3-ast dobtunk
+    + Összetett események: felbonthatók - pl. páros számot dobtunk
+    + Klasszikus valószínűségi mező: az elemi események valószínűsége egyenlő
+
+## Nézzünk is rögtön példát: magyar kártya pakliból húzunk
+
+Mennyi annak a valószínűsége, hogy  
+
+- zöldet húzunk? $P(Z)=?$
+
+## Nézzünk is rögtön példát: magyar kártya pakliból húzunk
+
+Mennyi annak a valószínűsége, hogy  
+
+- zöldet húzunk? $P(Z)=?$
+
+$$P(A) = \frac{\textit{kedvező elemi események}}{\textit{összes elemi esemény}}$$
+
+## Nézzünk is rögtön példát: magyar kártya pakliból húzunk
+
+Mennyi annak a valószínűsége, hogy  
+
+- zöldet húzunk? $P(Z)=\frac{8}{32}=\frac{1}{4}=0,25=25\%$
+
+## Nézzünk is rögtön példát: magyar kártya pakliból húzunk
+
+Mennyi annak a valószínűsége, hogy  
+
+- zöldet húzunk? $P(Z)=0,25$
+- pirosat húzunk? $P(P)=?$
+
+## Nézzünk is rögtön példát: magyar kártya pakliból húzunk
+
+Mennyi annak a valószínűsége, hogy  
+
+- zöldet húzunk? $P(Z)=0,25$
+- pirosat húzunk? $P(P)=0,25$
+
+## Nézzünk is rögtön példát: magyar kártya pakliból húzunk
+
+Mennyi annak a valószínűsége, hogy  
+
+- zöldet húzunk? $P(Z)=0,25$
+- pirosat húzunk? $P(P)=0,25$
+- figurás lapot húzunk? $P(F)=?$
+
+## Nézzünk is rögtön példát: magyar kártya pakliból húzunk
+
+Mennyi annak a valószínűsége, hogy  
+
+- zöldet húzunk? $P(Z)=0,25$
+- pirosat húzunk? $P(P)=0,25$
+- figurás lapot húzunk? $P(F)=0,5$
+
+## Nézzünk is rögtön példát: magyar kártya pakliból húzunk
+
+Mennyi annak a valószínűsége, hogy  
+
+- zöldet húzunk? $P(Z)=0,25$
+- pirosat húzunk? $P(P)=0,25$
+- figurás lapot húzunk? $P(F)=0,5$
+<br>  
+
+- NEM zöldet húzunk? $P(\bar{Z})=?$
+
+## Nézzünk is rögtön példát: magyar kártya pakliból húzunk
+
+Mennyi annak a valószínűsége, hogy  
+
+- zöldet húzunk? $P(Z)=0,25$
+- pirosat húzunk? $P(P)=0,25$
+- figurás lapot húzunk? $P(F)=0,5$
+<br>  
+
+- NEM zöldet húzunk? $P(\bar{Z})=0,75$
+
+## Nézzünk is rögtön példát: magyar kártya pakliból húzunk
+
+Mennyi annak a valószínűsége, hogy  
+
+- zöldet húzunk? $P(Z)=0,25$
+- pirosat húzunk? $P(P)=0,25$
+- figurás lapot húzunk? $P(F)=0,5$
+<br>  
+
+- NEM zöldet húzunk? $P(\bar{Z})=0,75$
+
+Komplementer:
+$$P(\bar{A})=1-P(A)$$
+$$P(\bar{\bar{A}})=P(A)$$
+
+## Nézzünk is rögtön példát: magyar kártya pakliból húzunk
+
+Mennyi annak a valószínűsége, hogy  
+
+- zöldet húzunk? $P(Z)=0,25$
+- pirosat húzunk? $P(P)=0,25$
+- figurás lapot húzunk? $P(F)=0,5$
+<br>  
+
+- zöldet ÉS pirosat húzunk? $P(Z*P)=?$
+
+## Nézzünk is rögtön példát: magyar kártya pakliból húzunk
+
+Mennyi annak a valószínűsége, hogy  
+
+- zöldet húzunk? $P(Z)=0,25$
+- pirosat húzunk? $P(P)=0,25$
+- figurás lapot húzunk? $P(F)=0,5$
+<br>  
+
+- zöldet ÉS pirosat húzunk? $P(Z*P)=0$
+
+## Nézzünk is rögtön példát: magyar kártya pakliból húzunk
+
+Mennyi annak a valószínűsége, hogy  
+
+- zöldet húzunk? $P(Z)=0,25$
+- pirosat húzunk? $P(P)=0,25$
+- figurás lapot húzunk? $P(F)=0,5$
+<br>  
+
+- zöldet ÉS pirosat húzunk? $P(Z*P)=0$
+
+Ha diszjunkt események:
+$$P(A*B)=0$$
+
+## Nézzünk is rögtön példát: magyar kártya pakliból húzunk
+
+Mennyi annak a valószínűsége, hogy  
+
+- zöldet húzunk? $P(Z)=0,25$
+- pirosat húzunk? $P(P)=0,25$
+- figurás lapot húzunk? $P(F)=0,5$
+<br>  
+
+- zöldet VAGY pirosat húzunk? $P(Z+P)=?$
+
+## Nézzünk is rögtön példát: magyar kártya pakliból húzunk
+
+Mennyi annak a valószínűsége, hogy  
+
+- zöldet húzunk? $P(Z)=0,25$
+- pirosat húzunk? $P(P)=0,25$
+- figurás lapot húzunk? $P(F)=0,5$
+<br>  
+
+- zöldet VAGY pirosat húzunk? $P(Z+P)=0,5$
+
+Ha diszjunkt események:
+$$P(A+B)=P(A)+P(B)$$
+
+## Nézzünk is rögtön példát: magyar kártya pakliból húzunk
+
+Mennyi annak a valószínűsége, hogy  
+
+- zöldet húzunk? $P(Z)=0,25$
+- pirosat húzunk? $P(P)=0,25$
+- figurás lapot húzunk? $P(F)=0,5$
+<br>  
+
+- zöldet ÉS figurás lapot húzunk? <span style="color:red;">Hogy jelöljük?</span>
+
+## Nézzünk is rögtön példát: magyar kártya pakliból húzunk
+
+Mennyi annak a valószínűsége, hogy  
+
+- zöldet húzunk? $P(Z)=0,25$
+- pirosat húzunk? $P(P)=0,25$
+- figurás lapot húzunk? $P(F)=0,5$
+<br>  
+
+- zöldet ÉS figurás lapot húzunk? $P(Z*F)=?$
+
+## Nézzünk is rögtön példát: magyar kártya pakliból húzunk
+
+Mennyi annak a valószínűsége, hogy  
+
+- zöldet húzunk? $P(Z)=0,25$
+- pirosat húzunk? $P(P)=0,25$
+- figurás lapot húzunk? $P(F)=0,5$
+<br>  
+
+- zöldet ÉS figurás lapot húzunk? $P(Z*F)=\frac{1}{8}$
+
+## Nézzünk is rögtön példát: magyar kártya pakliból húzunk
+
+Mennyi annak a valószínűsége, hogy  
+
+- zöldet húzunk? $P(Z)=0,25$
+- figurás lapot húzunk? $P(F)=0,5$
+- zöldet és figurás lapot húzunk? $P(Z*F)=0,125$
+<br>  
+
+- zöldet VAGY figurás lapot húzunk? <span style="color:red;">Hogy jelöljük?</span>
+
+## Nézzünk is rögtön példát: magyar kártya pakliból húzunk
+
+Mennyi annak a valószínűsége, hogy  
+
+- zöldet húzunk? $P(Z)=0,25$
+- figurás lapot húzunk? $P(F)=0,5$
+- zöldet és figurás lapot húzunk? $P(Z*F)=0,125$
+<br>  
+
+- zöldet VAGY figurás lapot húzunk? $P(Z+F)=?$
+
+## Nézzünk is rögtön példát: magyar kártya pakliból húzunk
+
+Mennyi annak a valószínűsége, hogy  
+
+- zöldet húzunk? $P(Z)=0,25$
+- figurás lapot húzunk? $P(F)=0,5$
+- zöldet és figurás lapot húzunk? $P(Z*F)=0,125$
+<br>  
+
+- zöldet VAGY figurás lapot húzunk? $P(Z+F)=\frac{8+3*4}{32}=\frac{20}{32}=\frac{5}{8}=0,625$
+
+
+## Nézzünk is rögtön példát: magyar kártya pakliból húzunk
+
+Mennyi annak a valószínűsége, hogy  
+
+- zöldet húzunk? $P(Z)=0,25$
+- figurás lapot húzunk? $P(F)=0,5$
+- zöldet és figurás lapot húzunk? $P(Z*F)=0,125$
+<br>  
+
+- zöldet VAGY figurás lapot húzunk? $P(Z+F)=\frac{8+3*4}{32}=\frac{20}{32}=\frac{5}{8}=0,625$
+
+Miért nem igaz, hogy
+$$P(A+B)=P(A)+P(B)?$$
+
+## Nézzünk is rögtön példát: magyar kártya pakliból húzunk
+
+Mennyi annak a valószínűsége, hogy  
+
+- zöldet húzunk? $P(Z)=0,25$
+- figurás lapot húzunk? $P(F)=0,5$
+- zöldet és figurás lapot húzunk? $P(Z*F)=0,125$
+<br>  
+
+- zöldet VAGY figurás lapot húzunk? $P(Z+F)=\frac{8+3*4}{32}=\frac{20}{32}=\frac{5}{8}=0,625$
+
+Általános esetben
+$$P(A+B)=P(A)+P(B)-P(A*B)$$
+
+## Nézzünk is rögtön példát: magyar kártya pakliból húzunk
+
+Mennyi annak a valószínűsége, hogy  
+
+- zöldet húzunk? $P(Z)=0,25$
+- figurás lapot húzunk? $P(F)=0,5$
+- zöldet és figurás lapot húzunk? $P(Z*F)=0,125$
+<br>  
+
+- zöldet DE NEM figurás lapot húzunk? $P(Z\setminus F)=?$
+
+## Nézzünk is rögtön példát: magyar kártya pakliból húzunk
+
+Mennyi annak a valószínűsége, hogy  
+
+- zöldet húzunk? $P(Z)=0,25$
+- figurás lapot húzunk? $P(F)=0,5$
+- zöldet és figurás lapot húzunk? $P(Z*F)=0,125$
+<br>  
+
+- zöldet DE NEM figurás lapot húzunk? $P(Z\setminus F)=\frac{4}{32}=0,125$
+
+## Nézzünk is rögtön példát: magyar kártya pakliból húzunk
+
+Mennyi annak a valószínűsége, hogy  
+
+- zöldet húzunk? $P(Z)=0,25$
+- figurás lapot húzunk? $P(F)=0,5$
+- zöldet és figurás lapot húzunk? $P(Z*F)=0,125$
+<br>  
+
+- zöldet DE NEM figurás lapot húzunk? $P(Z\setminus F)=0,125$
+
+Általánosan:
+$$P(A \setminus B)=P(A)-P(A*B)$$
+
+## Nézzünk is rögtön példát: magyar kártya pakliból húzunk
+
+Mennyi annak a valószínűsége, hogy  
+
+- zöldet húzunk? $P(Z)=0,25$
+- figurás lapot húzunk? $P(F)=0,5$
+- zöldet és figurás lapot húzunk? $P(Z*F)=0,125$
+<br>  
+
+- figurás DE NEM zöld lapot húzunk? $P(F \setminus Z) =?$
+
+Általánosan:
+$$P(A \setminus B)=P(A)-P(A*B)$$
+
+## Nézzünk is rögtön példát: magyar kártya pakliból húzunk
+
+Mennyi annak a valószínűsége, hogy  
+
+- zöldet húzunk? $P(Z)=0,25$
+- figurás lapot húzunk? $P(F)=0,5$
+- zöldet és figurás lapot húzunk? $P(Z*F)=0,125$
+<br>  
+
+- figurás DE NEM zöld lapot húzunk? $P(F \setminus Z) =0,5-0,125=0,375$
+
+Általánosan:
+$$P(A \setminus B)=P(A)-P(A*B)$$
+
+## Másik feladat: angolul és franciául beszélők
+
+Legyen $P(A)$ annak a valószínűsége, hogy egy társaságban valaki beszél angolul!
+Legyen $P(F)$ annak a valószínűsége, hogy valaki beszél franciául!
+
+Hogyan jelölnék annak valószínűségét, hogy valaki  
+
+- nem beszél angolul?
+- nem beszél franciául?
+- mindkét nyelven beszél?
+- legalább egyik nyelven beszél?
+- csak angolul beszél?
+- csak franciául beszél?
+
+## Másik feladat: angolul és franciául beszélők
+
+Legyen $P(A)$ annak a valószínűsége, hogy egy társaságban valaki beszél angolul!
+Legyen $P(F)$ annak a valószínűsége, hogy valaki beszél franciául!
+
+Hogyan jelölnék annak valószínűségét, hogy valaki  
+
+- $P(\bar{A})$
+- nem beszél franciául?
+- mindkét nyelven beszél?
+- legalább egyik nyelven beszél?
+- csak angolul beszél?
+- csak franciául beszél?
+
+## Másik feladat: angolul és franciául beszélők
+
+Legyen $P(A)$ annak a valószínűsége, hogy egy társaságban valaki beszél angolul!
+Legyen $P(F)$ annak a valószínűsége, hogy valaki beszél franciául!
+
+Hogyan jelölnék annak valószínűségét, hogy valaki  
+
+- $P(\bar{A})$
+- $P(\bar{F})$
+- mindkét nyelven beszél?
+- legalább egyik nyelven beszél?
+- csak angolul beszél?
+- csak franciául beszél?
+
+## Másik feladat: angolul és franciául beszélők
+
+Legyen $P(A)$ annak a valószínűsége, hogy egy társaságban valaki beszél angolul!
+Legyen $P(F)$ annak a valószínűsége, hogy valaki beszél franciául!
+
+Hogyan jelölnék annak valószínűségét, hogy valaki  
+
+- $P(\bar{A})$
+- $P(\bar{F})$
+- $P(A*F)$
+- legalább egyik nyelven beszél?
+- csak angolul beszél?
+- csak franciául beszél?
+
+## Másik feladat: angolul és franciául beszélők
+
+Legyen $P(A)$ annak a valószínűsége, hogy egy társaságban valaki beszél angolul!
+Legyen $P(F)$ annak a valószínűsége, hogy valaki beszél franciául!
+
+Hogyan jelölnék annak valószínűségét, hogy valaki  
+
+- $P(\bar{A})$
+- $P(\bar{F})$
+- $P(A*F)$
+- $P(A+F)$
+- csak angolul beszél?
+- csak franciául beszél?
+
+## Másik feladat: angolul és franciául beszélők
+
+Legyen $P(A)$ annak a valószínűsége, hogy egy társaságban valaki beszél angolul!
+Legyen $P(F)$ annak a valószínűsége, hogy valaki beszél franciául!
+
+Hogyan jelölnék annak valószínűségét, hogy valaki  
+
+- $P(\bar{A})$
+- $P(\bar{F})$
+- $P(A*F)$
+- $P(A+F)$
+- $P(A\setminus F)$
+- csak franciául beszél?
+
+## Másik feladat: angolul és franciául beszélők
+
+Legyen $P(A)$ annak a valószínűsége, hogy egy társaságban valaki beszél angolul!
+Legyen $P(F)$ annak a valószínűsége, hogy valaki beszél franciául!
+
+Hogyan jelölnék annak valószínűségét, hogy valaki  
+
+- $P(\bar{A})$
+- $P(\bar{F})$
+- $P(A*F)$
+- $P(A+F)$
+- $P(A\setminus F)$
+- $P(F\setminus A)$
+
+## Másik feladat: angolul és franciául beszélők
+
+$P(A) = 0,8$  
+
+$P(F) = 0,5$
+
+$$P(\bar{A})=?$$
+
+## Másik feladat: angolul és franciául beszélők
+
+$P(A) = 0,8$  
+
+$P(F) = 0,5$
+
+$$P(\bar{A})=1-P(A)$$
+
+## Másik feladat: angolul és franciául beszélők
+
+$P(A) = 0,8$  
+
+$P(F) = 0,5$
+
+$$P(\bar{A})=1-0,8=0,2$$
+
+## Másik feladat: angolul és franciául beszélők
+
+$P(A) = 0,8$  
+
+$P(F) = 0,5$
+
+$$P(\bar{F})=?$$
+
+## Másik feladat: angolul és franciául beszélők
+
+$P(A) = 0,8$  
+
+$P(F) = 0,5$
+
+$$P(\bar{F})=0,5$$
+
+## Másik feladat: angolul és franciául beszélők
+
+$P(A) = 0,8$  
+
+$P(F) = 0,5$
+
+$$P(A*F)=?$$
+$$P(A+F)=?$$
+
+## Másik feladat: angolul és franciául beszélők
+
+$P(A) = 0,8$  
+
+$P(F) = 0,5$
+
+$$? \le P(A*F) \le ?$$
+$$? \le P(A+F) \le ?$$
+
+## Másik feladat: angolul és franciául beszélők
+
+$P(A) = 0,8$  
+
+$P(F) = 0,5$
+
+$$0,3 \le P(A*F) \le ?$$
+$$? \le P(A+F) \le ?$$
+
+## Másik feladat: angolul és franciául beszélők
+
+$P(A) = 0,8$  
+
+$P(F) = 0,5$
+
+$$0,3 \le P(A*F) \le 0,5$$
+$$? \le P(A+F) \le ?$$
+
+## Másik feladat: angolul és franciául beszélők
+
+$P(A) = 0,8$  
+
+$P(F) = 0,5$
+
+$$0,3 \le P(A*F) \le 0,5$$
+$$0,8 \le P(A+F) \le ?$$
+
+## Másik feladat: angolul és franciául beszélők
+
+$P(A) = 0,8$  
+
+$P(F) = 0,5$
+
+$$0,3 \le P(A*F) \le 0,5$$
+$$0,8 \le P(A+F) \le 1$$
+
+## Egy kis kitérő
+
+$P(A)=0,3$  
+
+$P(B)=0,5$
+
+$$? \le P(A*B) \le ?$$
+$$? \le P(A+B) \le ?$$
+
+## Egy kis kitérő
+
+$P(A)=0,3$  
+
+$P(B)=0,5$
+
+$$0 \le P(A*B) \le ?$$
+$$? \le P(A+B) \le ?$$
+
+## Egy kis kitérő
+
+$P(A)=0,3$  
+
+$P(B)=0,5$
+
+$$0 \le P(A*B) \le 0,3$$
+$$? \le P(A+B) \le ?$$
+
+## Egy kis kitérő
+
+$P(A)=0,3$  
+
+$P(B)=0,5$
+
+$$0 \le P(A*B) \le 0,3$$
+$$0,5 \le P(A+B) \le ?$$
+
+## Egy kis kitérő
+
+$P(A)=0,3$  
+
+$P(B)=0,5$
+
+$$0 \le P(A*B) \le 0,3$$
+$$0,5 \le P(A+B) \le 0,8$$
+
+## Vissza a példához!
+
+$P(A) = 0,8$  
+
+$P(F) = 0,5$  
+
+$P(A*F) = 0,3$
+
+$$P(A+F) = ?$$
+
+## Vissza a példához!
+
+$P(A) = 0,8$  
+
+$P(F) = 0,5$  
+
+$P(A*F) = 0,3$
+
+$$P(A+F) = P(A)+P(F)-P(A*F)$$
+
+## Vissza a példához!
+
+$P(A) = 0,8$  
+
+$P(F) = 0,5$  
+
+$P(A*F) = 0,3$
+
+$$P(A+F) = 0,8+0,5-0,3=1$$
+
+## Vissza a példához!
+
+$P(A) = 0,8$  
+
+$P(F) = 0,5$  
+
+$P(A*F) = 0,3$
+
+$$P(A \setminus F) = ?$$
+
+## Vissza a példához!
+
+$P(A) = 0,8$  
+
+$P(F) = 0,5$  
+
+$P(A*F) = 0,3$
+
+$$P(A \setminus F) = P(A)-P(A*F)$$
+
+## Vissza a példához!
+
+$P(A) = 0,8$  
+
+$P(F) = 0,5$  
+
+$P(A*F) = 0,3$
+
+$$P(A \setminus F) = 0,8-0,3=0,5$$
+
+## Vissza a példához!
+
+$P(A) = 0,8$  
+
+$P(F) = 0,5$  
+
+$P(A*F) = 0,3$
+
+$$P(F \setminus A) = ?$$
+
+## Vissza a példához!
+
+$P(A) = 0,8$  
+
+$P(F) = 0,5$  
+
+$P(A*F) = 0,3$
+
+$$P(F \setminus A) = P(F)-P(A*F)$$
+
+## Vissza a példához!
+
+$P(A) = 0,8$  
+
+$P(F) = 0,5$  
+
+$P(A*F) = 0,3$
+
+$$P(F \setminus A) = 0,5-0,3 = 0,2$$
+
+## Jöjjön néhány nehezebb valószínűség {.build}
+
+Hogyan jelölné annak valószínűségét, hogy valaki  
+
+- egyik nyelven sem beszél
+- legfeljebb az egyik nyelven beszél
+- legalább az egyik nyelven nem beszél
+- nem igaz, hogy beszél angolul vagy franciául
+
+## Jöjjön néhány nehezebb valószínűség
+
+Hogyan jelölné annak valószínűségét, hogy valaki  
+
+- $P(\bar{A}*\bar{F})$
+- legfeljebb az egyik nyelven beszél
+- legalább az egyik nyelven nem beszél
+- nem igaz, hogy beszél angolul vagy franciául
+
+## Jöjjön néhány nehezebb valószínűség
+
+Hogyan jelölné annak valószínűségét, hogy valaki  
+
+- $P(\bar{A}*\bar{F})$
+- $P(\overline{A*F})$
+- legalább az egyik nyelven nem beszél
+- nem igaz, hogy beszél angolul vagy franciául
+
+## Jöjjön néhány nehezebb valószínűség
+
+Hogyan jelölné annak valószínűségét, hogy valaki  
+
+- $P(\bar{A}*\bar{F})$
+- $P(\overline{A*F})$
+- $P(\bar{A}+\bar{F})$
+- nem igaz, hogy beszél angolul vagy franciául
+
+## Jöjjön néhány nehezebb valószínűség
+
+Hogyan jelölné annak valószínűségét, hogy valaki  
+
+- $P(\bar{A}*\bar{F})$
+- $P(\overline{A*F})$
+- $P(\bar{A}+\bar{F})$
+- $P(\overline{A+F})$
+
+## Jöjjön néhány nehezebb valószínűség
+
+Hogyan jelölné annak valószínűségét, hogy valaki  
+
+- $P(\bar{A}*\bar{F})$
+- $P(\overline{A*F})$
+- $P(\bar{A}+\bar{F})$
+- $P(\overline{A+F})$
+
+A fentiek közül 2-2 ugyanazt az esetet jelöli. Melyek a párok?
+
+## Jöjjön néhány nehezebb valószínűség
+
+A párok:  
+
+$$P(\overline{A*F}) = P(\bar{A}+\bar{F})$$
+$$P(\overline{A+F}) = P(\bar{A}*\bar{F})$$
+
+Ezek az ún. de Morgan-szabályok. És nagyon hasznosak.
+
+## Valószínűségek kiszámítása
+
+$$P(\overline{A*F})=?$$
+
+
+## Valószínűségek kiszámítása
+
+$$P(\overline{A*F})=1-P(A*F)$$
+
+Figyelem:
+$$P(\bar{A}*\bar{F}) \ne 1-P(A*F)$$
+
+## Valószínűségek kiszámítása
+
+$$P(\overline{A*F})=1-P(A*F)$$
+
+Figyelem:
+$$P(\bar{A}*\bar{F}) = P(\overline{A+F})$$
+
+## Valószínűségek kiszámítása
+
+$$P(\overline{A*F})=1-0,3 = 0,7$$
+
+## Valószínűségek kiszámítása
+
+$$P(\overline{A*F})=0,7$$
+$$P(\overline{A+F})=?$$
+
+## Valószínűségek kiszámítása
+
+$$P(\overline{A*F})= 0,7$$
+$$P(\overline{A+F})=1-P(A+F)$$
+
+## Valószínűségek kiszámítása
+
+$$P(\overline{A*F})=1-0,3 = 0,7$$
+$$P(\overline{A+F})=1-1 = 0$$
+
+## Még egy feladat: induljunk kicsit máshonnan
+
+$$P(A) = 0,6 \quad P(A*B) = 0,4 \quad P(A+B) = 0,8$$
+  
+  
+<hr>
+
+$$P(B) = ? \quad P(\overline{A})=? \quad P(\overline{B})=?$$
+$$P(A \setminus B)=? \quad P(B \setminus A) = ?$$
+$$P(\overline{A}+\overline{B})=? \quad P(\overline{A}*\overline{B})=?$$
+$$P(\overline{A+B})=? \quad P(\overline{A*B})=?$$

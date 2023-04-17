@@ -37,7 +37,7 @@ navbar:
         - text: "Valószínűségi változós feladatok"
           href: slides/03_var_shooting.html
         - text: "Nevezetes eloszlások"
-          href: slides/04_val_valtozok_2.html
+          href: slides/04_nevezetes.html
         - text: "Leíró statisztikák"
           href: slides/05_leiro_stat.html
         - text: "Becsléselmélet"

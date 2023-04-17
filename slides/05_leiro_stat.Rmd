@@ -1,0 +1,533 @@
+---
+title: "Leíró statisztikák"
+subtitle: "Statisztika 1. szeminárium"
+author: "Morauszki András"
+university: "PPKE-BTK"
+output: 
+  ioslides_presentation:
+    logo: ppke.jpg
+    widescreen: true
+    css: mystyle.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(ggplot2)
+library(dplyr)
+```
+
+## Ami eddig volt
+
+- Valószínűségi változókkal foglalkoztunk.
+- A valószínűségi változók egy-egy kísérlet lehetséges kimeneteleit foglalták össze.
+- Értékük a véletlentől függött. 
+- A lehetséges kimenetelekhez **valószínűségeket tudtunk rendelni**
+- **Ki tudtuk számolni**, hogy az egyes egyedi kimeneteleknek milyen a valószínűsége, mennyi a várható érték, szórás.
+
+## Ezentúl:
+
+- A statisztikában a kulcsfogalmunk a **változó** lesz.
+- A változó az elemzési egységeink valamilyen tulajdonsága
+- **Elemzési egység** lehet személy, csoport, tárgy, jelenség, stb.
+- A változók többféle értéket vehet fel bizonyos valószínűséggel.
+- Ezeket a valószínűségeket azonban nem ismerjük, hanem a **megfigyeléseink alapján próbáljuk majd becsülni**.
+- A **mintára vonatkozó** megfigyeléseink alapján vonunk majd le **következtetéseket egy populációra**, amelyet nem tudunk megfigyelni.
+
+## A jól definiált változók...
+
+* ... mindenképpen rendelkeznek két tulajdonsággal:
+1. ?
+2. ?
+
+
+## A jól definiált változók...
+
+* ... mindenképpen rendelkeznek két tulajdonsággal:
+1. Értékeik **kimerítőek**: minden személyt/tárgyat/stb. be tudunk sorolni
+2. Értékeik **kölcsönösen kizáróak**: mindent csak egy értékhez tudunk besorolni
+
+* Vannak azonban olyan változók, amelyek ennél többet "tudnak"
+* Ez alapján négy **mérési szintet** különböztetünk meg.
+
+# Mérési szintek - Melyek is ezek?
+
+## Melyek is ezek?
+
+1. Nominális
+2. Ordinális
+3. Intervallumskála
+4. Arányskála
+
+Mi különbözteti meg ezeket?
+
+## Nominális változók
+
+* Ezek valóban csak az alapokat tudják: értékeik **kimerítőek** és **kölcsönösen kizáróak**
+* Ugyan számokkal jelöljük az értékeket, de ez önkényes
+* Példák?
+
+## Nominális változók
+
+* Ezek valóban csak az alapokat tudják: értékeik **kimerítőek** és **kölcsönösen kizáróak**
+* Ugyan számokkal jelöljük az értékeket, de ez önkényes
+* Példák: nem, felekezet, pártszimpátia, anyanyelv, szemszín, lakóhely települése
+
+## Ordinális változók
+
+* Ezek értékei már **sorbarendezhetők**
+* A hozzájuk rendelt számok ezt a sorrendet tükrözik
+* Példák?
+
+## Ordinális változók
+
+* Ezek értékei már **sorbarendezhetők**
+* A hozzájuk rendelt számok ezt a sorrendet tükrözik
+* Példák: településtípus, legmagasabb iskolai végzettség
+
+## Intervallumskála
+
+* Szomszéd **értékek távolsága** ismert és számszerűsíthető
+* Van valamilyen alapegység, amelyben kifejezhető
+* A zérus (0 érték) viszont esetleges, ezért két érték aránya nem értelmes
+* Példák?
+
+## Intervallumskála
+
+* Szomszéd **értékek távolsága** ismert és számszerűsíthető
+* Van valamilyen alapegység, amelyben kifejezhető
+* A zérus (0 érték) viszont esetleges, ezért két érték aránya nem értelmes
+* Példák: Celsius-fok, IQ-pont
+
+## Arányskála
+
+* A **zérus értéke nem esetleges**, ezért az arányok is értelmezhetők
+* Megjegyzés: nem mindig könnyű eldönteni, hogy valami intervallum- vagy arányskála
+* Megjegyzés~2~: de nem is feltétlenül létszükséglet - az SPSS pl. meg sem különbözteti e kettőt
+* Példák?
+
+## Arányskála
+
+* A **zérus értéke nem esetleges**, ezért az arányok is értelmezhetők
+* Megjegyzés: nem mindig könnyű eldönteni, hogy valami intervallum- vagy arányskála
+* Megjegyzés~2~: de nem is feltétlenül létszükséglet - az SPSS pl. meg sem különbözteti e kettőt
+* Példák: testsúly, életkor, valaminek a darabszáma
+
+# Leíró statisztikák
+
+## Leíró statisztika
+
+* Célja, hogy megfelelően megválasztott statisztikai mutatókkal az egyes változók szempontjából bemutassuk...
+* ...ha mintából dolgozunk, akkor a mintát, ha a populációra vonatkozóan vannak adataink, a populációt.
+* Miért fontos, hogy megkülönböztessük a mérési szinteket?
+* Mert bizonyos matematikai/statisztikai műveletek csak bizonyos szinteken értelmezhetőek.
+
+## Nominális szinten
+
+- Hogyan jellemeznének egy mintát/populációt nemi szempontból?
+- ... felekezeti szempontból?
+- ... nemzetiségi szempontból?
+
+## Ordinális szinten
+
+- Hogyan jellemeznék a mintát/populációt iskolai végzettség szempontjából?
+- ... településtípus szempontjából?
+
+## Intervallum-/arányskála szinten
+
+- Hogyan jellemezné a mintát/populációt jövedelmi szempontból?
+- ... életkori megoszlás szempontjából?
+
+## Gyakorisági eloszlás
+
+* Nominális változóknál a fő leíró statisztikai módszer
+* Ordinálisoknál is jól alkalmazható 
+* Intervallum- és arányskála változóknál általában túl sok érték (megoldás: átkódolás intervallumokba)
+* Az egyes értékeket hány esetben / az (valid) esetek hány százalékában veszi fel a változó
+* Kiegészíthető a kumulált gyakorisággal (ld. SPSS Frequencies outputja)  
+
+## Gyakorisági eloszlás
+
+```{r, echo = FALSE}
+rel <- sample(c("katolikus", "felekezeten kívüli", "református", "evangélikus", "egyéb", "nem válaszolt"), 1000, prob = c(0.4, 0.2, 0.15, 0.05, 0.05, 0.2), replace = TRUE)
+rel <- factor(rel, levels = c("katolikus", "református", "evangélikus", "egyéb", 
+                              "felekezeten kívüli", "nem válaszolt"))
+col1 <- c(table(rel), sum(table(rel)))
+col2 <- c(paste0(round(table(rel)/sum(table(rel))*100, 1), "%"), "100%")
+col3 <- c(paste0(round(table(rel)[1:5]/sum(table(rel)[1:5])*100, 1), "%"), "", "100%")
+out <- cbind(col1, col2, col3)
+colnames(out) <- c("Gyakoriság", "Arány (%)", "Arány (%, NV nélkül)")
+rownames(out)[7] <- "Összesen"
+knitr::kable(out)
+```
+
+# Középértékek
+
+## Középértékek
+
+* Egy számmal jellemzik a változót: a jellemző értéket adják  
+  
+A legfontosabbak:  
+
+* Módusz ($M_0$)
+* Medián ($Me$)
+* Számtani átlag ($\overline{X}$)
+
+## A módusz (diszkrét változó)
+
+```{r, echo = FALSE}
+knitr::kable(summary(rel), col.names = "Gyakoriság")
+
+```
+  
+
+## A módusz (diszkrét változó)
+
+```{r, echo = FALSE}
+knitr::kable(summary(rel), col.names = "Gyakoriság")
+
+```
+  
+
+Az eloszlás módusza a leggyakoribb elem: `r names(summary(rel))[1]`  
+
+## A módusz (folytonos)
+  
+```{r, echo = FALSE, fig.height=3, fig.align='center'}
+rand1 <- as.data.frame(rnorm(500, 100, 10))
+names(rand1) <- "Variable"
+mloc <- density(rand1$Variable)$x[which(density(rand1$Variable)$y == max(density(rand1$Variable)$y))]
+
+plot <- ggplot(rand1, aes(Variable)) 
+plot + geom_density(fill = "lightblue", alpha = 0.7) +
+  geom_vline(xintercept = mloc, col = "black", lty = "dashed") +
+  ylab("") + xlab("") + theme_classic()
+```
+
+A módusz értéke: `r round(mloc, 2)`
+
+## Több módusz
+
+* Bizonyos esetekben több is lehet belőle (bimodális, trimodális, multimodális eloszlások):  
+
+```{r, echo = FALSE, fig.height=3, fig.align='center'}
+rand2 <- as.data.frame(rnorm(300, 150, 5)) %>% filter(`rnorm(300, 150, 5)` >= 125)
+rand1 <- rand1 %>% filter(Variable < 125)
+names(rand2) <- "Variable"
+rand <- rbind(rand1, rand2)
+mloc2 <- density(rand2$Variable)$x[which(density(rand2$Variable)$y == max(density(rand2$Variable)$y))]
+
+plot <- ggplot(rand, aes(Variable)) 
+plot + geom_density(adjust = 2, fill = "lightgreen", alpha = 0.6) +
+  geom_vline(xintercept = mloc, col = "black", lty = "dashed") +
+  geom_vline(xintercept = mloc2, col = "black", lty = "dashed") +
+  ylab("") + xlab("") + theme_classic()
+
+```
+  
+A móduszok értéke: `r paste(round(mloc, 2), round(mloc2, 2), sep = ", ")`
+
+## A medián
+
+* A nagyság szerint rendezett elemek közül a középső
+* Az elemek fele kisebb, a másik fele pedig nagyobb a mediánnál.
+  
+
+```{r, echo = FALSE}
+height <- round(rnorm(15, 170, 7), digits = 0)
+iq <- round(rnorm(12, 100, 10), digits = 0)
+iq <- iq[order(iq)]
+```
+
+Elemek: `r paste(height, collapse = ", ")`  
+  
+Sorbarendezve: `r paste(height[order(height)], collapse = ", ")` 
+
+## A medián
+
+* A nagyság szerint rendezett elemek közül a középső
+* Az elemek fele kisebb, a másik fele pedig nagyobb a mediánnál.
+  
+
+Elemek: `r paste(height, collapse = ", ")`  
+  
+Sorbarendezve: `r paste(height[order(height)], collapse = ", ")` 
+  
+A középső elem a 8.: `r median(height)`  
+  
+## A medián
+
+* Páros számú elem esetén a középső két elem átlaga
+  
+* Ennek a tizenkét elemnek a mediánja: 
+  
+  
+Elemek: `r paste(sample(iq), collapse = ", ")` 
+  
+Sorbarendezve: `r paste(iq, collapse = ", ")` 
+
+## A medián
+
+* Páros számú elem esetén a középső két elem átlaga
+  
+* Ennek a tizenkét elemnek a mediánja: 
+  
+  
+Elemek: `r paste(sample(iq), collapse = ", ")` 
+  
+Sorbarendezve: `r paste(iq, collapse = ", ")` 
+  
+A két középső elem a 6. és a 7.: `r paste(iq[6], "és", iq[7])`  
+
+Átlaguk: 
+$$\frac{`r iq[6]`+`r iq[7]`}{2} = `r median(iq)`$$  
+
+## A medián
+
+* A változó sorba rendezhető: legalább **ordinális**
+* Ordinális esetben páros számú elemnél problémás lehet
+* Ha nagy a minta (ez az optimális eset, úgyhogy erre törekszünk): a gyakorisági táblában (ha a kategóriák, értékek nagyság szerint sorba vannak rendezve) a kumulált gyakoriság alapján. 
+
+## A medián (sok eset)
+
+```{r, echo = FALSE}
+children <- rpois(500, 1.4)
+med <- median(children)
+children[which(children > 4)] <- "5 vagy több"
+col1 <- table(children)
+col2 <- paste0(round(col1/sum(col1)*100, digits = 1), "%")
+col3 <- NULL
+for (i in 1:length(col1)) {
+  col3[i] <- paste0(round(sum(col1[1:i])/sum(col1)*100, digits = 1), "%")
+}
+lrow <- c(sum(col1), "100%", " ")
+table <- rbind(cbind(col1, col2, col3), lrow)
+colnames(table) <- c("Gyakoriság", "Arány (%)", "Kumulált (%)")
+rownames(table)[7] <- "Összesen"
+knitr::kable(table, format = "markdown")
+```
+  
+Ebben a példában a medián értéke: `r med`  
+
+## Az átlag
+
+```{r, echo = FALSE}
+newheight <- round(rnorm(10, 175, 7), digits = 0)
+```
+
+* **Intervallum- vagy arányskála** mérési szinten értelmezhető.
+* A mintaátlag várható értéke a változó várható értékével egyenlő
+* Képlete:
+$$\overline{X} = \frac{\sum_{i = 1}^{n} x_i}{N}$$
+
+## Az átlag 
+
+* Mennyi az alábbi 10 testmagasságnak az átlaga?  
+Értékek: `r paste(newheight, collapse = ", ")`  
+
+## Az átlag 
+
+* Mennyi az alábbi 10 testmagasságnak az átlaga?  
+Értékek: `r paste(newheight, collapse = ", ")`  
+Összegük: `r sum(newheight)`  
+Átlaguk:
+$$\overline{X} = \frac{`r sum(newheight)`}{10} = `r round(mean(newheight), digits = 2)`$$
+
+## Az átlag gyenge pontja
+
+* Érzékeny a kiugró (szélső/extrém) értékekre, ezért bizonyos esetekben nem használható jól.
+* Ilyen esetekben célszerű az átlag helyett a mediánt használni (ld. medián jövedelem). 
+* [Az emberek többsége az áltagnál kevesebbet keres](https://azonnali.hu/cikk/20210225_a-magyarok-fele-sem-keresi-meg-az-atlagbert)
+* Ezért érdemes a középérték kiválasztásánál figyelembe venni az eloszlás ferdeségét (_skewness_). 
+
+## Súlyozott átlag
+
+```{r echo = FALSE}
+child <- sample(0:5, 200, prob = c(0.3, 0.4, 0.2, 0.05, 0.03, 0.01), replace = TRUE)
+
+out2 <- as.data.frame(table(child))
+out2$child <- as.numeric(out2$child)
+out2 <- out2 %>%
+  mutate(chno = child*Freq)
+names(out2) <- c("Gyerekek száma (x~i~)", "Gyakoriság (f~i~)", "Gyerekek száma a kategóriában")
+
+row <- NULL
+for (i in 1:nrow(out2)) {
+  row[i] <- paste(out2[i,2], out2[i,1], sep = "*")
+}
+
+knitr::kable(rbind(out2, c("Összesen", sum(out2[,2]), sum(out2[,3]))))
+```
+  
+## Súlyozott átlag
+
+Az átlagos gyerekszámot a mintában megkapjuk: 
+$$\overline{X} = \frac{\sum_{i=1}^{k} f_i * x_i}{\sum_{i=1}^{k} f_i} =
+\frac {`r paste(row, collapse = "+")`}{`r paste(out2[,2], collapse = "+")`}$$  
+
+## Súlyozott átlag
+
+Az átlagos gyerekszámot a mintában megkapjuk: 
+$$\overline{X} = \frac{\sum_{i=1}^{k} f_i * x_i}{\sum_{i=1}^{k} f_i} = \frac{`r sum(out2[,3])`}{`r sum(out2[,2])`} = `r mean(child)`$$  
+
+## Melyiket válasszuk?
+
+Az, hogy melyiket választjuk, függ:  
+
+* Változó mérési szintjétől
+* A célunktól: jellemző vagy középső érték?
+* Eloszlás alakjától (szimmetrikus-e, vannak-e extrém értékek)
+
+## Megfelelő középérték kiválasztása:
+  
+- Nominális: csak **módusz** használható - megadja a legjellemzőbb értéket
+- Ordinális: használható a **módusz** és a **medián**
+    + cél: legjellemzőbb érték megtalálása - **módusz**
+    + cél: középső érték megtalálása - **medián**
+- Intervallum/arányskála: mind használható
+    + szimmetrikus és egymóduszú: mindhárom kb. azonos értékű lesz
+    + többmóduszú szimmetrikus: az **átlag** és a **medián** kb. azonos, a **módusz** megadja a legjellemzőbb értékeket
+    + ferde: a **mediánt** célszerű használni, illetve a **módusz**.
+    
+# Szóródási mutatók
+
+## Szóródási  mutatók
+
+* A jellemző értéktől való jellemző eltéréseket számszerűsítik  
+  
+A legfontosabbak:  
+
+* (Korrigált) tapasztalati szórás
+* Relatív szórás
+* Mintaterjedelem
+* Interkvartilis terjedelem  
+
+## A mintaterjedelem
+  
+* A legnagyobb és a legkisebb elem közötti különbség.
+* Intervallum- vagy arányskála esetén használják.
+* A testmagasságoknál maradva:   
+  
+Értékek: `r paste(newheight, collapse = ", ")`  
+  
+Legkisebb: `r min(newheight)`; Legnagyobb: `r max(newheight)`  
+  
+A kettő különbsége a mintaterjedelem: `r max(newheight)-min(newheight)`
+  
+* Nem annyira jó mutató, mert nagyon érzékeny a szélsőértékekre.
+
+## Kvantilisek
+  
+* Mielőtt megnéznénk a terjedelem kicsit kevésbé érzékeny alternatíváját...
+* Nézzük, mik a kvantilisek!
+* Ezek is **legalább ordinális** mérési szintet igényelnek.  
+* A változó értékeit nagyság szerint sorbarakva fel tudjuk osztani a mintát egyenlő részekre.
+* Ezt teszi a medián is: kétfelé osztja a mintát
+* Osszuk fel a mintát háromfelé! Ehhez két vágópontra lesz szükségünk. Ezek lesznek a **tercilisek**
+  
+Értékek: `r height[order(height)]`  
+  
+Tercilisek: `r round(quantile(height, probs = seq(0, 1, 1/3), type = 6)[2:3], 2)`
+
+## További kvantilisek 
+
+* Ugyanígy a minta felosztható:  
+
+  + 4 részre - 3 osztóponttal - ezek a **kvartilisek**
+  + 5 részre - 4 osztóponttal - ezek a **kvintilisek**
+  + 10 részre - 9 osztóponttal - ezek a **decilisek** (ld. legfelső jövedelmi decilis = a minta legmagasabb jövedelmű 10%-a)
+  + 100 részre - 99 osztóponttal - ezek a **percentilisek**  
+    
+* Összefoglalóan: ezeket hívjuk kvantiliseknek
+* Ha n részre szeretnénk osztani a mintát, ahhoz (n-1) vágópontra lesz szükségünk, amelyek a mintát 1/n arányú csoportokra osztják
+
+## Interkvartilis terjedelem
+  
+* Még egyszer: a kvartilisek **négyfelé** osztják a mintát
+* **Három van** belőlük: alsó, középső (= medián) és felső  
+  
+  
+* Nézzük ismét a magasságokat!
+  
+Értékek: `r height[order(height)]`  
+Kvartilisek: `r quantile(height, probs = seq(0, 1, 0.25), type = 6)[2:4]`
+  
+* Az interkvartilis terjedelem a felső és az alsó kvartilis különbsége:
+$$IQR = Q_3 - Q_1 = `r quantile(height, 0.75, type = 6)` - `r quantile(height, 0.25, type = 6)` = `r IQR(height)`$$
+
+## Szórás
+
+* A szórás az átlagtól való eltéréseket számszerűsíti.
+* Másképp számolják populációból és mintából - mi ez utóbbit nézzük, ez a **korrigált tapasztalati (empirikus) szórás** (többihez ld. előadás diái).
+
+$$s^{*}=\sqrt{\frac{\sum_{i=1}^{n} (x_i - \overline{X})^{2}}{N-1}}$$  
+
+* Értéke csak pozitív lehet. Minél nagyobb az értéke, annál nagyobbak az átlagos négyzetes eltérések az átlagtól.
+* **átlagos abszolút eltérés** (MAD) vs. **négyzetes eltérés**
+* A szórás négyzetét nevezik **varianciának**.
+
+## Kiszámítása
+
+Értékek: `r paste(newheight, collapse = ", ")`  
+
+## Kiszámítása
+
+Értékek: `r paste(newheight, collapse = ", ")`  
+Átlaguk: `r round(mean(newheight), digits = 2)`  
+Eltérés az átlagtól:`r round(newheight - mean(newheight) , 2)`  
+Ezek a négyzeten: `r round(newheight - mean(newheight) , 2)^2`  
+A négyzetes eltérések összege: `r sum(round(newheight - mean(newheight) , 2)^2)`  
+A szórás:  
+$$s^{*}=\sqrt{\frac{\sum_{i=1}^{n} (x_i - \overline{X})^{2}}{N-1}} = 
+\sqrt{\frac{`r sum(round(newheight - mean(newheight) , 2)^2)`}{`r length(newheight)-1`}} = 
+`r round(sd(newheight),2)`$$
+  
+## Relatív szórás
+  
+* Mekkora a szórás az átlaghoz viszonyítva.
+* Használható pl. különböző mértékegységű változók szórásának összehasonlítására.
+* Képlete:
+$$CV = \frac{s^{*}}{\overline{X}} $$  
+
+Vagyis, ha a szórás az előző esetben `r round(sd(newheight),2)` volt, 
+az átlag pedig `r round(mean(newheight), digits = 2)`, akkor 
+$$CV = \frac{`r round(sd(newheight),2)`}{`r round(mean(newheight), digits = 2)`} = 
+`r round(round(sd(newheight),2)/round(mean(newheight), 2)*100,2)`\%$$  
+
+## Egyéb szóródási mutatók
+
+### Nominális szinten:
+
+* Ilyenek is vannak, [nem is kevés](https://en.wikipedia.org/wiki/Qualitative_variation)
+* Ezekkel viszont most nem foglalkozunk részletesebben.  
+
+### Speciális szóródási mutatók:
+  
+* [Decilis-hányados](https://regi.tankonyvtar.hu/hu/tartalom/tamop425/0010_2A_21_Nemeth_Renata-Simon_David_Tarsadalomstatisztika_magyar_es_angol_nyelven/ch06s04.html)
+* [Gini együttható](https://regi.tankonyvtar.hu/hu/tartalom/tamop425/0010_2A_21_Nemeth_Renata-Simon_David_Tarsadalomstatisztika_magyar_es_angol_nyelven/ch06s05.html)  
+
+## Szóródási mutató kiválasztása:
+  
+* Alapvetően intervallum/arányskála szinten használható a **terjedelem**, **interkvartilis terjedelem (IQR)** és a **szórás** is.  
+  + Ha az eloszlás nagyon ferde, **terjedelem** és főleg **IQR** használandó.  
+  + Inkább szimmetrikus eloszlás esetén használható a **szórás** is.
+* Ordinális szinten esetleg az alsó és felső kvartilis értéke megadható, a köztük való különbség viszont nem értelmezhető.  
+* Nominális szinten a linkelt mutatók használhatók.
+
+# Ráadás
+
+## Ferdeség
+  
+```{r, echo = FALSE, fig.height=3, message=FALSE, fig.align='center'}
+skew1 <- fGarch::rsnorm(10000, 0, 1, -10)
+skew2 <- fGarch::rsnorm(10000, 0, 1, +10)
+sk_data1 <- data.frame(x = skew1,
+                       grp = "negatív")
+sk_data2 <- data.frame(x = skew2,
+                       grp = "pozitív")
+sk_data <- rbind(sk_data1, sk_data2)
+sk_plot <- ggplot(sk_data, aes(x = x, fill = grp))
+sk_plot + geom_density(alpha = 0.3, adjust = 2) +
+  scale_fill_manual(name = "Ferdeség (Skewness)", values = c("red", "green")) +
+  theme_classic() + xlab("") + ylab("")
+```
+  

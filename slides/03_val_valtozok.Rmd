@@ -1,0 +1,367 @@
+---
+title: "Valószínűségi változók"
+subtitle: "Statisztika 1. szeminárium"
+author: "Morauszki András"
+university: "PPKE-BTK"
+output: 
+  ioslides_presentation:
+    logo: ppke.jpg
+    widescreen: true
+    css: mystyle.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(huxtable)
+library(dplyr)
+library(ggplot2)
+```
+
+## A valószínűségi változó
+
+- Egy kísérlet minden kimeneteléhez valós számot rendelünk
+- Ezt a függényt nevezzük valószínűségi változónak
+- Számszerűsített kimenetelek: pl. kockadobás, péznyeremény, darabszám
+- Jelölés:
+<span style="font-size:60px;">$$\xi$$</span>
+
+## A valószínűségi változók fajtái
+
+- **Diszkrét**
+    + *Véges sok* eleme van: pl. kockadobás, fejek száma 5 dobásból
+    + *Megszámlálhatóan végtelen sok* eleme van: pl. balesetek száma egy úton egy adott évben 
+
+<div>
+- **Folytonos**
+    + *Megszámlálhatatlanul végtelen sok* eleme van: pl. dobás hossza, ponttól mért távolság, eltelt idő
+</div>
+
+## A valószínűségi változók fajtái
+
+- **Diszkrét**
+    + *Véges sok* eleme van: pl. kockadobás, fejek száma 5 dobásból
+    + <span style="color:#D5D5D5">*Megszámlálhatóan végtelen sok* eleme van: pl. balesetek száma egy úton egy adott évben</span> 
+
+<div style="color:#D5D5D5">
+- **Folytonos**
+    + *Megszámlálhatatlanul végtelen sok* eleme van: pl. dobás hossza, ponttól mért távolság, eltelt idő
+</div>
+
+## Példa diszkrét változóra {.fewlines}
+
+Szabályos dobókockával dobunk, amely lapjain az 1-6 számok szerepelnek.  
+Jelölje $\xi$ a dobott számot!  
+  
+Melyek $\xi$ *lehetséges értékei*?
+
+
+## Példa diszkrét változóra {.fewlines}
+
+Szabályos dobókockával dobunk, amely lapjain az 1-6 számok szerepelnek.  
+Jelölje $\xi$ a dobott számot!  
+  
+Melyek $\xi$ *lehetséges értékei*?  
+  
+Ezek az értékek: 1, 2, 3, 4, 5 és 6  
+
+Ezeket $x_i$-vel fogjuk jelölni: pl. $x_1=1$
+
+## A változó valószínűségeloszlása
+
+Az egyes értékekhez valószínűségeket tudunk rendelni.  
+  
+Ezeket $P(\xi = x_i)$ formában fogjuk jelölni, vagy időnként rövidítve $p_i$ formában.  
+  
+Az egyes értékekhez tartozó valószínűségeket nevezzük a változó *valószínűségeloszlásának*.  
+  
+Milyen valószínűségek tartoznak az alábbi $x_i$ értékekhez?
+
+```{r probabs}
+values <- 1:6
+probs <- rep("?", 6)
+
+out_table <- rbind(values, probs) %>%
+  as_huxtable(add_rownames = TRUE) %>%
+  set_markdown_contents(everywhere, 1, c("érték", "valószínűség")) %>%
+  set_all_borders(0.5) %>%
+  set_col_width(1, .3) %>%
+  set_col_width(2:7, .7/6) %>%
+  set_font_size(everywhere, everywhere, 16) %>%
+  set_font(everywhere, everywhere, "Palatino Linotype")
+
+out_table
+```
+
+
+## A változó valószínűségeloszlása
+
+Az egyes értékekhez valószínűségeket tudunk rendelni.  
+  
+Ezeket $P(\xi = x_i)$ formában fogjuk jelölni, vagy időnként rövidítve $p_i$ formában.  
+  
+Az egyes értékekhez tartozó valószínűségeket nevezzük a változó *valószínűségeloszlásának*.  
+  
+Milyen valószínűségek tartoznak az alábbi $x_i$ értékekhez?
+
+```{r probabs2}
+out_table <- out_table %>%
+  set_markdown_contents(2, 2:7, rep("1/6", 6))
+  
+out_table
+```
+
+*Teljes eseményrendszert* alkotnak, ezért a valószínűségek összege 1.
+
+# Ábrázolás
+
+## Ábrázolás
+
+Hisztogram  
+
+(Igen, ebben az esetben ez most nem különösebben izgalmas)
+
+```{r hist, fig.height=4}
+x_values <- data.frame(x = 1:6)
+dice_hplot <- ggplot(x_values, aes(x = x)) +
+  geom_histogram(aes(y = ..count../sum(..count..)),
+                 binwidth = 1, color = "dodgerblue", fill = "dodgerblue", alpha = 0.8) +
+  scale_x_continuous(breaks = 1:6) +
+  xlab("Érték") +
+  ylab("Valószínűség") +
+  theme_classic()
+
+dice_hplot
+```
+
+## Ábrázolás
+
+Eloszlásfüggvény
+$$F(x)=P(\xi<x_i)$$
+
+```{r cdf}
+# ggplot(x_values, aes(x = x)) + stat_ecdf(geom = "step")
+
+fn <- ecdf(x_values$x)
+plot(fn, do.points = FALSE, ylab = 'Fn(x)',
+     xlab = "Értékek", 
+     main = "")
+   points(unique(x_values$x), unique(c(0, fn(x_values$x)))[1:length(unique(x_values$x))], pch = 19)
+   points(unique(x_values$x), unique(fn(x_values$x)), pch = 21)
+```
+
+# Várható érték
+
+## Várható érték
+
+Ha a kísérletet ismételten elvégezzük, a kapott értékek egy meghatározott érték körül ingadoznak.  
+  
+Ezt nevezzük a változó *várható értékének*  
+Jelölése:
+<span style="font-size:60px;">$$E(\xi)$$</span>
+<br>
+<div class="centered">
+[Katt!](https://seeing-theory.brown.edu/basic-probability/index.html#section2)
+</div>
+
+## Kiszámítása
+
+<br><br><br>
+$$E(\xi)=\sum_{i=1}^{n}x_i*P(\xi=x_i)$$
+
+## Kiszámítása
+
+```{r expect}
+out_table %>%
+  set_markdown_contents(everywhere, 1, c("x<sub>i</sub>", "P(&xi;=x<sub>i</sub>)")) %>%
+  set_escape_contents(FALSE) %>%
+  set_background_color(everywhere, 2, "orange")
+```
+  
+$E(\xi)=1*\frac{1}{6}+$
+
+## Kiszámítása
+
+```{r expect2}
+out_table %>%
+  set_markdown_contents(everywhere, 1, c("x<sub>i</sub>", "P(&xi;=x<sub>i</sub>)")) %>%
+  set_escape_contents(FALSE) %>%
+  set_background_color(everywhere, 3, "orange")
+```
+  
+$E(\xi)=1*\frac{1}{6}+2*\frac{1}{6}+$
+
+## Kiszámítása
+
+```{r expect3}
+out_table %>%
+  set_markdown_contents(everywhere, 1, c("x<sub>i</sub>", "P(&xi;=x<sub>i</sub>)")) %>%
+  set_escape_contents(FALSE) %>%
+  set_background_color(everywhere, 4, "orange")
+```
+  
+$E(\xi)=1*\frac{1}{6}+2*\frac{1}{6}+3*\frac{1}{6}+$
+
+## Kiszámítása
+
+```{r expect4}
+out_table %>%
+  set_markdown_contents(everywhere, 1, c("x<sub>i</sub>", "P(&xi;=x<sub>i</sub>)")) %>%
+  set_escape_contents(FALSE) %>%
+  set_background_color(everywhere, 5, "orange")
+```
+  
+$E(\xi)=1*\frac{1}{6}+2*\frac{1}{6}+3*\frac{1}{6}+4*\frac{1}{6}+$
+
+## Kiszámítása
+
+```{r expect5}
+out_table %>%
+  set_markdown_contents(everywhere, 1, c("x<sub>i</sub>", "P(&xi;=x<sub>i</sub>)")) %>%
+  set_escape_contents(FALSE) %>%
+  set_background_color(everywhere, 6, "orange")
+```
+  
+$E(\xi)=1*\frac{1}{6}+2*\frac{1}{6}+3*\frac{1}{6}+4*\frac{1}{6}+5*\frac{1}{6}+$
+
+## Kiszámítása
+
+```{r expect6}
+out_table %>%
+  set_markdown_contents(everywhere, 1, c("x<sub>i</sub>", "P(&xi;=x<sub>i</sub>)")) %>%
+  set_escape_contents(FALSE) %>%
+  set_background_color(everywhere, 7, "orange")
+```
+  
+$E(\xi)=1*\frac{1}{6}+2*\frac{1}{6}+3*\frac{1}{6}+4*\frac{1}{6}+5*\frac{1}{6}+6*\frac{1}{6}$
+
+## Kiszámítása
+
+```{r expect_final}
+out_table %>%
+  set_markdown_contents(everywhere, 1, c("x<sub>i</sub>", "P(&xi;=x<sub>i</sub>)")) %>%
+  set_escape_contents(FALSE)
+```
+  
+$E(\xi)=1*\frac{1}{6}+2*\frac{1}{6}+3*\frac{1}{6}+4*\frac{1}{6}+5*\frac{1}{6}+6*\frac{1}{6}=3,5$
+
+Ez felfogható, mint az egyes értékeknek a valószínűségekkel súlyozott átlaga.  
+Vagy másképpen: ez az értékek súlypontja.
+
+## A várható érték
+
+```{r hplot_with_exp}
+dice_hplot + 
+  geom_vline(xintercept = 3.5, linetype = "dashed", size = 1.5)
+```
+
+# Szórás
+
+## Szórás
+
+Ugyanaz a várható érték többféleképpen is kijöhet. Ezért a változók jellemzésére a várható érték mellett egy másik mutatót is használunk.
+
+<div class="centered">
+[Katt!](https://seeing-theory.brown.edu/basic-probability/index.html#section3)
+</div>
+
+A *variancia* (szórásnégyzet) a várható értéktől való eltérések négyzeteinek várható értéke (átlaga).  
+A *szórás* ennek a négyzetgyöke.  
+Jelölése:
+<span style="font-size:60px;">$$D(\xi)$$</span>
+
+## Kiszámítása
+
+$$D(\xi)=\sqrt{E(\xi^2)-E^2(\xi)}$$
+ahol
+$$E(\xi^2)=\sum_{i=1}^{n}x_i^2*P(\xi=x_i)$$
+
+## Kiszámítása
+
+```{r exi2}
+out_table %>%
+  set_markdown_contents(everywhere, 1, c("x<sub>i</sub>", "P(&xi;=x<sub>i</sub>)")) %>%
+  set_escape_contents(FALSE) %>%
+  set_background_color(everywhere, 2, "orange")
+```
+  
+$E(\xi^2)=1^2*\frac{1}{6}+$
+
+## Kiszámítása
+
+```{r exi2_2}
+out_table %>%
+  set_markdown_contents(everywhere, 1, c("x<sub>i</sub>", "P(&xi;=x<sub>i</sub>)")) %>%
+  set_escape_contents(FALSE) %>%
+  set_background_color(everywhere, 3, "orange")
+```
+  
+$E(\xi^2)=1^2*\frac{1}{6}+2^2*\frac{1}{6}+$
+
+## Kiszámítása
+
+```{r exi2_3}
+out_table %>%
+  set_markdown_contents(everywhere, 1, c("x<sub>i</sub>", "P(&xi;=x<sub>i</sub>)")) %>%
+  set_escape_contents(FALSE) %>%
+  set_background_color(everywhere, 4, "orange")
+```
+  
+$E(\xi^2)=1^2*\frac{1}{6}+2^2*\frac{1}{6}+3^2*\frac{1}{6}+$
+
+## Kiszámítása
+
+```{r exi2_4}
+out_table %>%
+  set_markdown_contents(everywhere, 1, c("x<sub>i</sub>", "P(&xi;=x<sub>i</sub>)")) %>%
+  set_escape_contents(FALSE) %>%
+  set_background_color(everywhere, 5, "orange")
+```
+  
+$E(\xi^2)=1^2*\frac{1}{6}+2^2*\frac{1}{6}+3^2*\frac{1}{6}+4^2*\frac{1}{6}+$
+
+## Kiszámítása
+
+```{r exi2_5}
+out_table %>%
+  set_markdown_contents(everywhere, 1, c("x<sub>i</sub>", "P(&xi;=x<sub>i</sub>)")) %>%
+  set_escape_contents(FALSE) %>%
+  set_background_color(everywhere, 6, "orange")
+```
+  
+$E(\xi^2)=1^2*\frac{1}{6}+2^2*\frac{1}{6}+3^2*\frac{1}{6}+4^2*\frac{1}{6}+5^2*\frac{1}{6}+$
+
+## Kiszámítása
+
+```{r exi2_6}
+out_table %>%
+  set_markdown_contents(everywhere, 1, c("x<sub>i</sub>", "P(&xi;=x<sub>i</sub>)")) %>%
+  set_escape_contents(FALSE) %>%
+  set_background_color(everywhere, 7, "orange")
+```
+  
+$E(\xi^2)=1^2*\frac{1}{6}+2^2*\frac{1}{6}+3^2*\frac{1}{6}+4^2*\frac{1}{6}+5^2*\frac{1}{6}+6^2*\frac{1}{6}$
+
+## Kiszámítása
+
+```{r exi2_final}
+out_table %>%
+  set_markdown_contents(everywhere, 1, c("x<sub>i</sub>", "P(&xi;=x<sub>i</sub>)")) %>%
+  set_escape_contents(FALSE)
+```
+  
+$E(\xi^2)=1^2*\frac{1}{6}+2^2*\frac{1}{6}+3^2*\frac{1}{6}+4^2*\frac{1}{6}+5^2*\frac{1}{6}+6^2*\frac{1}{6}=15\frac{1}{6}$
+
+## Kiszámítása
+
+<br><br><br>
+$$D(\xi)=\sqrt{E(\xi^2)-E^2(\xi)}$$
+
+## Kiszámítása
+
+<br><br><br>
+$$D(\xi)=\sqrt{15,17-3,5^2}\approx 1,71$$
+
+## További feladatok
+
+1. [Ketten lőnek célba...](03_var_shooting.html)
+2. Egy dobozból húzunk...

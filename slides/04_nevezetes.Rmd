@@ -1,0 +1,473 @@
+---
+title: "Valószínűségi változók 2."
+subtitle: "Statisztika 1. szeminárium"
+author: "Morauszki András"
+university: "PPKE-BTK"
+output: 
+  ioslides_presentation:
+    logo: ppke.jpg
+    widescreen: true
+    css: mystyle.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(huxtable)
+library(dplyr)
+library(ggplot2)
+library(DescTools)
+library(stringr)
+library(magrittr)
+
+round2 = function(x, n) {
+  posneg = sign(x)
+  z = abs(x)*10^n
+  z = z + 0.5 + sqrt(.Machine$double.eps)
+  z = trunc(z)
+  z = z/10^n
+  z*posneg
+}
+
+N <- 8
+K <- 3
+n <- 4
+
+exercise1 <- "Adott %d ember, akik szeretnének kenuzni. Van közöttük %d tapasztalt kenus, a többiek tapasztalatlanok. A csónakházban %d-személyes kenut sikerül bérelni, ezért úgy döntenek, hogy kisorsolják, ki mehet közülük kenuzni. \n \n Jelölje $\\xi$ a kisorsolt tapasztalt kenusok számát! \n Adják meg $\\xi$ lehetséges értékeit, valószínűségeloszlását, és számítsák ki várható értékét és szórását!"
+
+special <- "Tap"
+
+create_population <- function(special = "Spec", regular = "Sima", N, K) {
+  population <- c(paste0(special, 1:K),
+                  paste0(regular, 1:ifelse((N - K) > 0, (N - K), 1)))
+  return(population)
+}
+
+population <- create_population(special = special, regular = "Uj", N, K)
+```
+
+# 1. feladat
+
+## Feladat {.fewlines2}
+
+```{r print_ex1, results='asis'}
+cat(sprintf(exercise1, N, K, n))
+```
+
+# Értékek
+
+## Értékek
+
+<div class="centered">
+```{r}
+combinations <- CombSet(population, n)
+n_combinations <- CombN(N, n)
+
+count_spec <- str_count(combinations, special) %>% 
+  matrix(n_combinations, n) %>% 
+  rowSums() 
+
+values <- count_spec %>%
+  unique() %>%
+  sort()
+
+probs <- count_spec %>%
+  table() %>%
+  divide_by(n_combinations) %>%
+  round2(3) %>%
+  as.numeric()
+
+table_data <- data.frame(
+  values = values, 
+  probs = probs
+)
+
+table <- table_data %>%
+  select(values) %>%
+  as_huxtable(add_colnames = TRUE) %>%
+  set_markdown_contents(1, 1, "x<sub>i</sub>") %>%
+  set_all_borders(1) %>%
+  set_bottom_border(1, everywhere, 1.5) %>%
+  set_bold(1, everywhere) %>%
+  set_align(everywhere, everywhere, "center") %>%
+  set_valign(everywhere, everywhere, "top") %>%
+  set_font(everywhere, everywhere, "Palatino Linotype") %>%
+  set_font_size(everywhere, everywhere, 18) %>%
+  set_all_padding(0) %>%
+  set_lr_padding(20) %>%
+  t()
+
+table
+```
+</div>
+
+# Valószínűségek
+
+## Valószínűségek {.fewlines}
+
+Az, hogy ki mehet kenuzni, sorsolással lesz eldöntve. A sorsolás miatt minden kimenetelnek ugyanakkora a valószínűsége, vagyis **klasszikus valószínűségi mezőről van szó.**  
+  
+A keresett valószínűségeket megkapjuk, ha a kedvező esetek számát osztjuk az összes eset számával.  
+  
+Nézzük először, hányféleképpen tudjuk kiválasztani azt `r cat(ifelse(n %in% c(1, 5), "az ", "a "), n)` személyt, aki elmehet kenuzni!  
+Ehhez a kombinatorikára lesz szükség.  
+
+## Valószínűségek {.fewlines2}
+
+<div style:"text-align: centered;">
+Milyen típusú kombinatorikai probléma ez?  
+  
+A három lehetőség: permutáció, variáció, kombináció  
+  
+És melyik aleset: ismétlés nélküli vagy ismétléses?
+</div>
+
+## Valószínűségek {.fewlines}
+
+Ha csak az érdekel minket, kik mehetnek kenuzni, de a sorrend nem (tehát pl. mindegy, ki hová ül a kenuban), akkor kombinációról van szó. Mivel mindenkit csak egyszer sorsolhatunk ki, ezért ismétlés nélküli.  
+  
+Ennek általános képlete:
+$$C_n^k=\binom{n}{k}=\frac{n!}{k!(n-k)!}$$
+
+## Valószínűségek {.fewlines2}
+
+A képletbe behelyettesítve:
+
+$$C_{`r N`}^{`r n`}=\binom{`r N`}{`r n`}=\frac{`r N`!}{`r n`!(`r N`-`r n`)!}=\frac{`r paste0(N:1, collapse="*")`}{`r paste0(paste0(n:1, collapse="*"), "*", paste0((N-n):1, collapse="*"))`}=`r factorial(N)/(factorial(n)*factorial(N-n))`$$
+
+Ennyi az összes lehetséges sorsolás. Ez lesz mindig a nevezőben
+
+## Valószínűségek
+```{r}
+i <- 0
+```
+A számláló az érték függvényében változni fog.  
+`r i` tapasztalt kenus:
+$$\binom{`r K`}{`r i`}*\binom{`r N - K`}{`r n - i`}=`r CombN(K, i)*CombN(N-K, n-i)`$$
+
+$$P(\xi=`r i`)=\frac{\binom{`r K`}{`r i`}*\binom{`r N - K`}{`r n - i`}}{\binom{`r N`}{`r n`}}=\frac{`r CombN(K, i)*CombN(N-K, n-i)`}{`r CombN(N, n)`} \approx `r probs[values==i]`$$
+
+## Valószínűségek
+```{r}
+i <- 1
+```
+`r i` tapasztalt kenus:
+$$\binom{`r K`}{`r i`}*\binom{`r N - K`}{`r n - i`}=`r CombN(K, i)*CombN(N-K, n-i)`$$
+
+$$P(\xi=`r i`)=\frac{\binom{`r K`}{`r i`}*\binom{`r N - K`}{`r n - i`}}{\binom{`r N`}{`r n`}}=\frac{`r CombN(K, i)*CombN(N-K, n-i)`}{`r CombN(N, n)`} \approx `r probs[values==i]`$$
+
+## Valószínűségek
+```{r}
+i <- 2
+```
+`r i` tapasztalt kenus:
+$$\binom{`r K`}{`r i`}*\binom{`r N - K`}{`r n - i`}=`r CombN(K, i)*CombN(N-K, n-i)`$$
+
+$$P(\xi=`r i`)=\frac{\binom{`r K`}{`r i`}*\binom{`r N - K`}{`r n - i`}}{\binom{`r N`}{`r n`}}=\frac{`r CombN(K, i)*CombN(N-K, n-i)`}{`r CombN(N, n)`} \approx `r probs[values==i]`$$
+
+## Valószínűségek
+```{r}
+i <- 3
+```
+`r i` tapasztalt kenus:
+$$\binom{`r K`}{`r i`}*\binom{`r N - K`}{`r n - i`}=`r CombN(K, i)*CombN(N-K, n-i)`$$
+
+$$P(\xi=`r i`)=\frac{\binom{`r K`}{`r i`}*\binom{`r N - K`}{`r n - i`}}{\binom{`r N`}{`r n`}}=\frac{`r CombN(K, i)*CombN(N-K, n-i)`}{`r CombN(N, n)`} \approx `r probs[values==i]`$$
+
+## Valószínűségek
+```{r}
+table <- table_data %>%
+  as_huxtable(add_colnames = TRUE) %>%
+  set_markdown_contents(1, everywhere, c("x<sub>i</sub>", "p<sub>i</sub>")) %>%
+  set_all_borders(1) %>%
+  set_bottom_border(1, everywhere, 1.5) %>%
+  set_bold(1, everywhere) %>%
+  set_align(everywhere, everywhere, "center") %>%
+  set_valign(everywhere, everywhere, "top") %>%
+  set_font(everywhere, everywhere, "Palatino Linotype") %>%
+  set_font_size(everywhere, everywhere, 18) %>%
+  set_all_padding(0) %>%
+  set_lr_padding(20) %>%
+  t()
+
+table
+```
+
+# Várható érték
+
+## Várható érték
+
+```{r}
+table
+
+expected <- paste0(values, "*", probs, collapse = "+")
+ev <- sum(values*probs)
+```
+
+$$E(\xi)=\sum_{i=1}^{n}x_i*p_i= \\
+`r expected`=`r ev`$$
+
+# Szórás
+
+## Második momentum
+
+```{r}
+table
+
+expected2 <- paste0(values, "^2*", probs, collapse = "+")
+ev2 <- sum(values**2 * probs)
+sd <- sqrt(ev2-ev**2) %>% round2(3)
+```
+
+$$E(\xi^2)=\sum_{i=1}^{n}x_i^2*p_i= \\
+`r expected2`=`r ev2`$$
+
+## Szórás
+
+$$D(\xi)=\sqrt{E(\xi^2)-E^2(\xi)}=\sqrt{`r ev2`-`r ev`^2}\approx `r sd`$$
+
+# Hipergeometrikus eloszlás
+
+## Mi lenne, ha... {.fewlines2}
+
+... ha nem `r N` elemből választanánk, hanem 1000-ből?  
+... ha nem `r n` elemet választanánk, hanem 100-at?
+
+## Hipergeometrikus eloszlás {.fewlines}
+
+Ezekben az esetekben nem visszatevéses mintavétel történik.  
+Ha a kérdés, hogy bizonyos típusú elemből hány kerül várhatóan a mintába, akkor ez a változó hipergeometrikus eloszlást követ.  
+  
+Annak valószínűsége, hogy N elemből n elemet kiválasztva éppen k db bizonyos típusú elem lesz a mintában (ha a populációban az adott típusú elemből K van):
+
+$$P(\xi = k) = \frac{\binom{K}{k}*\binom{N-K}{n-k}}{\binom{N}{n}}$$
+
+## Hipergeometrikus eloszlás {.fewlines}
+
+És a jó hír, hogy a várható értékhez és szóráshoz nem is kell minden eset valószínűségét kiszámítani.  
+
+$$E(\xi)=n*\frac{K}{N}$$
+$$D(\xi)=\sqrt{n*\frac{K}{N}*\left(1-\frac{K}{N}\right)*\frac{N-n}{N-1}}$$
+
+## Hipergeometrikus eloszlás
+
+```{r}
+sd2 <- sqrt(n*K/N*(1 - K/N)*((N - n)/(N - 1))) %>% round2(3)
+```
+A kenusok esetére alkalmazva:
+N = `r N`, K = `r K`, n = `r n`
+
+$$E(\xi)=`r n`*\frac{`r K`}{`r N`}=`r n*K/N`$$
+$$D(\xi)=\sqrt{`r n`*\frac{`r K`}{`r N`}*\left(1-\frac{`r K`}{`r N`}\right)*\frac{`r N`-`r n`}{`r N`-1}}\approx `r sd2`$$
+
+# 2. feladat
+
+## Feladat {.fewlines2}
+
+```{r example2, results='asis'}
+p = 0.8
+
+n <- 4
+
+if (n %in% c(3, 6, 8)) {
+  rag <- "-szor"
+} else if (n == 5) {
+  rag <- "-ször"
+} else {
+  rag <- "-szer"
+}
+pcent <- paste0(p*100, "%")
+
+exercise2 <- "Egy lövész %d%s lő egy céltáblára. A találat valószínűsége minden esetben %s. Legyen &xi; a céltáblát érő találatok száma! \n \n Adják meg &xi; lehetséges értékeit, eloszlását, várható értékét és szórását!"
+
+
+cat(sprintf(exercise2, n, rag, pcent))
+```
+
+# Értékek
+
+## Értékek
+
+<div class="centered">
+```{r}
+values <- 0:n
+
+probs <- NULL
+
+for (i in 1:length(values)) {
+  val <- values[i]
+  count <- CombN(n, val, repl = F, ord = F)
+  probs[i] <- count * (p ** val) * ((1 - p) ** (n - val))
+}
+
+table_data <- data.frame(
+  values = values, 
+  probs = probs
+)
+
+table <- table_data %>%
+  select(values) %>%
+  as_huxtable(add_colnames = TRUE) %>%
+  set_markdown_contents(1, 1, "x<sub>i</sub>") %>%
+  set_all_borders(1) %>%
+  set_bottom_border(1, everywhere, 1.5) %>%
+  set_bold(1, everywhere) %>%
+  set_align(everywhere, everywhere, "center") %>%
+  set_valign(everywhere, everywhere, "top") %>%
+  set_font(everywhere, everywhere, "Palatino Linotype") %>%
+  set_font_size(everywhere, everywhere, 18) %>%
+  set_all_padding(0) %>%
+  set_lr_padding(20) %>%
+  t()
+
+table
+```
+</div>
+
+# Valószínűségek
+
+## Valószínűségek {.fewlines}
+
+A lövész minden körben (a korábbi körök eredményétől függetlenül) `r pcent` valószínűséggel találja el a céltáblát. Mivel független eseményekről van szó, minden találati sorrend kiszámítható a valószínűségek szorzataként.  
+
+Legkönnyebben a 0 és `r n` találatot lehet kiszámítani:
+$$P(\xi = 0) = `r paste0(rep(1 - p, n), collapse="*")`=`r probs[1]`$$
+$$P(\xi = `r n`) = `r paste0(rep(p, n), collapse="*")`= `r probs[length(probs)]`$$
+
+## Valószínűségek {.smaller}
+
+Izgalmasabbak azok az esetek, amikor néhány lövés talál és néhány nem.  
+  
+Mennyi a valószínűsége, hogy a lövész 1-szer találja el a céltáblát?  
+Annak, hogy ez az 1. lövésre sikerül
+$$`r p`*`r paste0(rep(1 - p, n - 1), collapse="*")`=`r p * (1 - p) ** (n - 1)`$$  
+Annak, hogy 2. lövésre sikerül
+$$`r 1 - p`*`r p`*`r paste0(rep(1 - p, n - 2), collapse="*")`=`r p * (1 - p) ** (n - 1)`$$  
+Vagyis függetlenül attól, hányadik lövés talál, a valószínűségek egyenlők, hiszen ugyanazokat a számokat szorozzuk össze, csak más-más sorrendben. A kérdés ezért az, hányféle sorrend lehetséges, ez pedig 
+$$\binom{`r n`}{1}$$
+
+## Valószínűségek
+
+Vagyis a k találat általános képlete:
+$$P(\xi=k)=\binom{n}{k}*p^k*(1-p)^{n-k}$$
+
+## Valószínűségek {.smaller}
+
+A képletbe behelyettesítve:
+
+```{r print_probs, results='asis'}
+for (k in values) {
+  prob_ex <- paste0("$$P(\\xi=", k, ")=\\binom{", n, "}{", k, "}*", p, "^", k, "*(1-", p, ")^{", n - k,"}=",
+                    CombN(n, k) * (p ** k) * ((1 - p) ** (n - k)), "$$\n")
+  cat(prob_ex)
+}
+```
+
+## Valószínűségek
+```{r}
+table <- table_data %>%
+  as_huxtable(add_colnames = TRUE) %>%
+  set_markdown_contents(1, everywhere, c("x<sub>i</sub>", "p<sub>i</sub>")) %>%
+  set_all_borders(1) %>%
+  set_bottom_border(1, everywhere, 1.5) %>%
+  set_bold(1, everywhere) %>%
+  set_align(everywhere, everywhere, "center") %>%
+  set_valign(everywhere, everywhere, "top") %>%
+  set_font(everywhere, everywhere, "Palatino Linotype") %>%
+  set_font_size(everywhere, everywhere, 18) %>%
+  set_all_padding(0) %>%
+  set_lr_padding(20) %>%
+  t()
+
+table
+```
+
+# Várható érték
+
+## Várható érték
+
+```{r}
+table
+
+expected <- paste0(values, "*", probs, collapse = "+")
+ev <- sum(values*probs)
+```
+
+$$E(\xi)=\sum_{i=1}^{n}x_i*p_i= \\
+`r expected`=`r ev`$$
+
+# Szórás
+
+## Második momentum
+
+```{r}
+table
+
+expected2 <- paste0(values, "^2*", probs, collapse = "+")
+ev2 <- sum(values**2 * probs)
+sd <- sqrt(ev2-ev**2) %>% round2(3)
+```
+
+$$E(\xi^2)=\sum_{i=1}^{n}x_i^2*p_i= \\
+`r expected2`=`r ev2`$$
+
+## Szórás
+
+$$D(\xi)=\sqrt{E(\xi^2)-E^2(\xi)}=\sqrt{`r ev2`-`r ev`^2}\approx `r sd`$$
+
+# Binomiális eloszlás
+
+## Mi lenne, ha...
+
+... ha nem `r n`-szer lőne, hanem 1000-szer?  
+
+## Binomiális eloszlás {.fewlines}
+
+Ha a változó úgy épül fel, hogy azt vizsgáljuk n körből hányban következik be egy esemény, amelynek körről körre ugyanannyi a valószínűsége, akkor ez a változó binomiális eloszlást követ.  
+  
+Ezek körébe tartozik a visszatevéses mintavétel is.  
+  
+Ebben az esetben annak a valószínűsége, hogy éppen k körben következik be az adott esemény:
+$$P(\xi = k) = \binom{n}{k}*p^k*(1-p)^{n-k}$$
+
+## Binomiális eloszlás {.fewlines}
+
+A várható értékhez és szóráshoz ebben az esetben sem kell minden egyes kimenetel valószínűségét kiszámítani.  
+
+$$E(\xi)=n*p$$
+$$D(\xi)=\sqrt{n*p*(1-p)}$$
+
+## Binomiális eloszlás
+
+A lövész esetére alkalmazva:
+
+$$E(\xi)=`r n`*`r p`=`r n*p`$$
+$$D(\xi)=\sqrt{`r n`*`r p`*(1-`r p`)}=`r sqrt(n*p*(1 - p))`$$
+
+## Hipergeometrikus vagy binomiális?
+
+Mindkét esetben arról van szó, hogy figyeljük, n-ből hány esetre/darabra igaz, hogy bizonyos típusú.  
+  
+A különbség, hogy a hipergeometrikus eloszlást követő esetekben nem történik visszatevés, ezért a valószínűségek az előző húzásoktól függően változnak &rArr; nem is ezek alapján számolunk.  
+  
+A binomiális eloszlás esetében visszatesszük a kiválasztott elemet, vagy pedig más miatt a valószínűség körről körre állandó.  
+  
+A két eloszlást jellemzően más paraméterekkel adjuk meg:  
+
+- Hipergeometrikus: N, K, n 
+- Binomiális: p, n (de néha N, K, amiből kiszámítható p)
+
+# További eloszlások
+
+## További eloszlások
+
+Diszkrét:  
+
+- Poisson (hányszor történik meg valami - nem korlátos)
+- Negatív binomiális (hányadikra történik meg valami - "orosz rulett")
+
+Folytonos:  
+
+- Egyenletes (intervallumon belül egyenlő valószínűség)
+- Exponenciális (mennyit kell várni, mimre valami megtörténik)
+- Normális eloszlás (statisztikában majd sokat használjuk)
+- Student-t, &Chi;^2^, F (szintén)
