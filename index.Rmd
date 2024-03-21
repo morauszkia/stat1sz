@@ -3,7 +3,7 @@ title: "Statisztika 1. szeminárium"
 output: html_document
 ---
 
-## 2022/2023. tavaszi félév
+## 2023/2024. tavaszi félév
 ## PPKE-BTK
 
 
@@ -21,7 +21,7 @@ output: html_document
 
 ## Tantárgy célja   
   
-A szeminárium a Statisztika 1. előadáshoz kapcsolódik. Célja az előadáson tanultak gyakorlása és elmélyítése, a legfontosabb statisztikák és hipotézisvizsgálati módszerek megismerése. Az első negyedévben a valószínűségszámítással, a második negyedévben pedig a statisztika alapjaival (lejró statisztikák, becsléselmélet, hipotézisvizsgálat alapjai) foglalkozunk.
+A szeminárium a Statisztika 1. előadáshoz kapcsolódik. Célja az előadáson tanultak gyakorlása és elmélyítése, a legfontosabb statisztikák és hipotézisvizsgálati módszerek megismerése. Az első negyedévben a valószínűségszámítással, a második negyedévben pedig a statisztika alapjaival (leíró statisztikák, becsléselmélet, hipotézisvizsgálat alapjai) foglalkozunk.
 
 **TRIGGER WARNING**  
 
@@ -35,9 +35,12 @@ A szemináriumon sokat fogunk számolni, ezért érdemes **számológépet** bes
 
 ## Segédanyagok  
   
-A félév során a segédanyagokat, házi feladatsorokat, illetve azok megoldásait e-mailben kapják meg a hallgatók, illetve minden elérhető lesz a Teams csoportban is. A segédanyagokat igyekszem fokozatosan ide is feltölteni.
+A hallgatók az órán tanultak elmélyítésére, begyakorlására házi gyakorló feladatokat kapnak. Ezek megoldása nem kötelező a félév teljesítéséhez, de jó visszajelzés lehet a hallgatóknak, hogy sikerült-e elsajátítani a tanultakat, és nekem is. A zárthelyi dolgozat csak olyan feladattípusokat tartalmaz, amelyekre az órán is kitérünk, és a gyakorló feladatsorokban előfordultak.  
 
-A hallgatók az órán tanultak elmélyítésére házi gyakorló feladatokat kapnak. Ezek megoldása nem kötelező a félév teljesítéséhez, de jó visszajelzés Önöknek is, hogy sikerült-e elsajátítani a tanultakat, és nekem is.  
+A félév során a segédanyagokat, házi feladatsorokat, illetve azok megoldásait elsősorban e-mailben kapják meg a hallgatók. A honlapon egyes témákban írt összefoglalókat találnak, illetve a szemináriumon is használt diasorokat.  
+
+A ZH-n minden segédanyag (gyakorló feladatsorok megoldásai, online összefoglalók, órai jegyzetek, vagy azok alapján készített puskák) szabadon használható. Képletgyűjteményt a hallgatók tőlem is kapnak, vagy saját példányt nyomtathatnak, amennyiben nagyobb méretben szeretnék használni, vagy megjegyzésekkel, jegyzetekkel kívánják ellátni.  
+ 
 
 ## A félév teljesítése
   
@@ -47,10 +50,10 @@ A félév teljesítésének feltétele, hogy a hallgató **mindkét** ZH-jának 
 
 A sikertelen ZH javítására a félév végén, előre egyeztetett időpontban és módon van lehetőség.  
 
-**A ZH-k várható időpontjai a 2022/23. tavaszi félévben:**
+**A ZH-k várható időpontjai a 2023/24. tavaszi félévben:**
   
-**I. ZH:** 2023.04.19.   
-**II. ZH:** 2023.05.24.  
+**I. ZH:** 2023.04.02.   
+**II. ZH:** 2023.05.21.  
   
 
 A ZH-n használhatják az órai jegyzeteiket, illetve a kapott segédanyagokat (eloszlás-táblázatok, képletgyűjtemények, összefoglalók, házi feladatok megoldásai, stb.)
