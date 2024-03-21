@@ -14,6 +14,8 @@ navbar:
       menu:
       - text: "Kombinatorika"
         href: kombinatorika.html
+      - text: "Műveletek valószínűségekkel"
+        href: muveletek.html
       - text: "Nevezetes eloszlások"
         href: eloszlasok.html
     - text: "Matematikai statisztika"

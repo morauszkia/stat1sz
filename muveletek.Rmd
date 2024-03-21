@@ -1,0 +1,64 @@
+---
+title: "Műveletek valószínűségekkel"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Alapfogalmak
+
+- Kísérlet: a jelenség, amit megfigyelünk, azonos körülmények között megismételhető (pl. kockadobás, kártyahúzás, céltáblára lövés, aktuális időjárás, stb.), általában véletlen kísérletekről van szó, vagyis a kimenetele a véletlentől függ
+- Kimenetelek: a kísérlet lehetséges eredményei
+- Eseménytér: a kimenetelek halmaza, másképpen az elemi események halmaza (pl. kockadobásnál az összes lehetőség)
+- Események: az eseménytér részhalmazai. Lehetnek elemik és összetettek. 
+- Elemi esemény: tovább már nem bontható, csak egyféleképpen következhet be (pl. 3-ast dobunk)
+- Összetett esemény: felbonthatók, több elemi eseményből állnak, azok halmazai (pl. páros számot dobunk)
+- Esemény bekövetkezése: egy esemény bekövetkezik, ha a megfigyelt kimenetel eleme az adott halmaznak.
+- Valószínűség: az eseményekhez rendelhető valós, 0 és 1 közötti szám, amely megadja hogy ha megismételjük a kísérletet, akkor az esetek milyen arányában következik be az adott esemény.
+- Biztos esemény: amely biztosan bekövetkezik, valószínűsége 1 = 100%.
+- Lehetetlen esemény: amely az adott kísérlet során nem következhet be, valószínűsége 0 = 0%.
+- Klasszikus valószínűségi mező: az elemi események száma véges és ezek valószínűsége pozitív és egyenlő (pl. szabályos kockával végzett dobás)
+
+## Példa: kártyahúzás
+
+A kísérlet, amit végzünk legyen, hogy egy megkevert 32 lapos magyar kártyapakliból véletlenszerűen húzunk egy lapot.  
+
+A magyar kártyapakli 32 lapból áll: 4 színből (piros, zöld, makk és tök), színenként 8-8 lapból, amelyekből 4-4 számos (7-től 10-ig) és 4-4 figurás (alsó, felső, király, ász).  
+
+A kísérlet elemi eseményei az egyes konkrét kártyalapok: pl. piros 7-es, makk ász, tök felső, stb.  
+Az eseménytér tehát 32 elemi eseményből áll össze, mivel ennyi kártyalap van.  
+Összetett események lehetnek, hogy például pirosat húzunk (8 elemi esemény), alsót húzunk (4 elemi esemény), számos lapot húzunk (16 elemi esemény).  
+A kártyahúzás esetében véges számú elemi eseményről van szó, és mivel mindegyik lap kihúzásának ugyanannyi a valószínűsége, klassszikus valószínűségi mezőről beszélhetünk.  
+
+Ebben az esetben az egyes események valószínűsége kiszámítható:  
+$$P(A) = \frac{\text{kedvező elemi események száma}}{\text{összes elemi esemény száma}}$$
+
+A fentiek alapján mit mondhatunk arról, mennyi annak a valószínűsége, hogy a pakliból zöld lapot húzunk?  
+
+Mivel 8 zöld lap van összesen, a valószínűség: $P(Z)=\frac{8}{32}=\frac{1}{4}=0.25=25\%$  
+Ugyanígy annak, hogy (miután visszatettük a húzott lapot) pirosat húzunk, a valószínűsége: $P(P)=\frac{8}{32}=\frac{1}{4}$  
+Annak, hogy figurás lapot húzunk (összesen $4*4=16$ ilyen van) pedig $P(F)=\frac{16}{32}=\frac{1}{2}=50\%$  
+
+## Elemi műveletek 
+
+### 1. Komplementer
+
+Az első művelet, amit megnézünk, a komplementer esemény valószínűsége.  
+Komplementer eseménynek nevezzük azt az eseményt, amely akkor és csak akkor valósul meg, ha az eredeti esemény nem. Így például komplementer a páros és páratlan szám. Ha egy szám páros, akkor nem páratlan, ha egy szám nem páros, akkor páratlan. Tehát, ha az egyik esemény nem következik be, akkor a komplementere bekövetkezik.  
+A komplementer esemény valószínűségének jelölése és képlete: 
+$$P(\bar{A})=1-P(A)$$
+
+Mennyi a valószínűsége, hogy nem zöldet húzunk?  
+Mivel $3*8 = 24$ nem zöld lap van: $P(\bar{Z})=\frac{24}{32}=0.75$  
+De ezt úgy is megkaphatjuk, hogy $P(\bar{Z})=1-P(Z)=1-0.25=0.75$  
+
+A komplementer esemény komplementere az eredeti esemény, ezért a valószínűsége is:  
+$$P(\bar\bar{A}})=P(A)$$
+
+### 2. Események szorzata
+
+### 3. Események összege
+
+### 4. Események különbsége
