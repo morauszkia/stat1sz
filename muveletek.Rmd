@@ -55,10 +55,46 @@ Mivel $3*8 = 24$ nem zöld lap van: $P(\bar{Z})=\frac{24}{32}=0.75$
 De ezt úgy is megkaphatjuk, hogy $P(\bar{Z})=1-P(Z)=1-0.25=0.75$  
 
 A komplementer esemény komplementere az eredeti esemény, ezért a valószínűsége is:  
-$$P(\bar\bar{A}})=P(A)$$
+$$P(\bar{\bar{A}})=P(A)$$
 
 ### 2. Események szorzata
 
+Egy másik gyakori helyzet, amikor annak valószínűségét keressük, hogy két esemény együttesen bekövetkezik. Ezt jelöljük a két esemény szorzatával, tehát $P(A*B)$ azt jelöli, hogy az `A` és `B` esemény egyaránt megvalósul. Halmazelméleti fogalmakkal ez a halmazok metszetének felel meg.   
+
+Mennyi a valószínűsége, hogy a húzott kártyalap egyszerre zöld és piros?  
+Ebben az esetben nincs olyan kártyalap a pakliban, amely mindkét feltételnek megfelelne, hiszen minden kártyalapnak egyetlen színe van. A keresett valószínűség tehát:  
+$$P(Z*P)=\frac{0}{32}=0$$
+
+Az ilyen események egymást kölcsönösen kizárják, és valószínűségük 0.  
+
+Mennyi a valószínűsége, hogy a húzott kártyalap egyszerre zöld és figurás?  
+Itt nem egymást kizáró eseményekről van szó, hanem olyanokról, amelyek együttesen is bekövetkezhetnek. Összesen 4 figurás zöld lap van a pakliban (zöld alsó, felső, király és ász), ezért  
+$$P(Z*F)=\frac{4}{32}=12,5\%$$
+Az együttes bekövetkezésnek nincs általános képlete, kiszámításához további információra van szükség. Az eredeti két esemény valószínűségéből legfeljebb a szorzat határait tudjuk meghatározni:  
+
+- A két esemény szorzatának valószínűsége nem lehet nagyobb a kisebb esemény valószínűségénél. Ez akkor van, ha a kevésbé valószínű esemény részhalmaza a valószínűbbnek. 
+- A két esemény szorzatának valószínűsége akkor lehet 0, ha a két esemény valószínűségének összege $\le 1$.
+- Ha a két esemény valószínűségének összege $\ge 1$, akkor a szorzat valószínűsége $P(A*B)\ge P(A)+P(B)-1$
+
 ### 3. Események összege
+
+A másik gyakori eset, amikor annak valószínűségét keressük, hogy két (vagy több) esemény közül legalább az egyik megvalósul: A vagy B (vagy C, stb.) esemény bekövetkezik. Ebben az esetben megengedő vagyról van szó: az is jó, ha mindkét (több, mint egy) esemény valósul meg. Halmazelméleti fogalmakkal ez a halmazok uniójának felel meg.  
+
+Mennyi a valószínűsége, hogy a húzott kártyalap zöld vagy piros?  
+Ebben az esetben megfelel nekünk az összes zöld kártya (összesen 8) és az összes piros (szintén 8):  
+$$P(Z+P)=\frac{16}{32}=50\%$$
+Ha a két esemény **egymást kizáró**:  
+$$P(A+B)=P(A)+P(B)$$
+
+Mennyi a valószínűsége, hogy a húzott kártyalap zöld vagy figurás?  
+Ebben az esetben megfelel nekünk az összes zöld lap (8 kártya) és ezen felül azok többi színből a figurás lapok (3-szor 4-4 kártya):  
+$$P(Z+F)=\frac{8+3*4}{32}=\frac{20}{32}=62,5\%$$
+Itt nem adhatjuk egyszerűen össze a két valószínűséget: $0,25 + 0,5 \ne 0,625$. Mégpedig azért nem, mert ha összeadnánk, lennének olyan esetek, amelyeket kétszer számolunk: a zöld figurás lapokat. Ezeknek a valószínűségét le kell vonnunk az összegből. Általános tehát:  
+$$P(A+B)=P(A)+P(B)-P(A*B)$$
+Míg a korábbi képlet csak akkor működik, ha a két esemény kizáró, és ezért $P(A*B)=0$, ez utóbbi képlet minden esetben működik, és az abban szereplő 4 érték közül 3 ismeretében bármelyik hiányzó érték kiszámítható. Például a szorzat:   
+$$P(A*B)=P(A)+P(B)-P(A+B)$$
+Vagy az egyik esemény valószínűsége:  
+$$P(A)=P(A+B)+P(A*B)-P(B)$$
+
 
 ### 4. Események különbsége
