@@ -59,7 +59,7 @@ $$P(\bar{\bar{A}})=P(A)$$
 
 ### 2. Események szorzata
 
-Egy másik gyakori helyzet, amikor annak valószínűségét keressük, hogy két esemény együttesen bekövetkezik. Ezt jelöljük a két esemény szorzatával, tehát $P(A*B)$ azt jelöli, hogy az `A` és `B` esemény egyaránt megvalósul. Halmazelméleti fogalmakkal ez a halmazok metszetének felel meg.   
+Egy másik gyakori helyzet, amikor annak valószínűségét keressük, hogy két esemény együttesen bekövetkezik. Ezt jelöljük a két esemény szorzatával, tehát $P(A*B)$ azt jelöli, hogy az `A` és `B` esemény egyaránt megvalósul. Halmazelméleti fogalmakkal ez a halmazok metszetének felel meg. A szorzat kommutatív, $P(A*B)=P(B*A)$. Ezen túl kiterjeszthető több eseményre is: pl. $P(A*B*C)$ azt jelenti, hogy a három esemény együtt bekövetkezik.  
 
 Mennyi a valószínűsége, hogy a húzott kártyalap egyszerre zöld és piros?  
 Ebben az esetben nincs olyan kártyalap a pakliban, amely mindkét feltételnek megfelelne, hiszen minden kártyalapnak egyetlen színe van. A keresett valószínűség tehát:  
@@ -70,6 +70,9 @@ Az ilyen események egymást kölcsönösen kizárják, és valószínűségük 
 Mennyi a valószínűsége, hogy a húzott kártyalap egyszerre zöld és figurás?  
 Itt nem egymást kizáró eseményekről van szó, hanem olyanokról, amelyek együttesen is bekövetkezhetnek. Összesen 4 figurás zöld lap van a pakliban (zöld alsó, felső, király és ász), ezért  
 $$P(Z*F)=\frac{4}{32}=12,5\%$$
+
+#### Szorzat valószínűségének határai
+
 Az együttes bekövetkezésnek nincs általános képlete, kiszámításához további információra van szükség. Az eredeti két esemény valószínűségéből legfeljebb a szorzat határait tudjuk meghatározni:  
 
 - A két esemény szorzatának valószínűsége nem lehet nagyobb a kisebb esemény valószínűségénél. Ez akkor van, ha a kevésbé valószínű esemény részhalmaza a valószínűbbnek. 
@@ -78,23 +81,59 @@ Az együttes bekövetkezésnek nincs általános képlete, kiszámításához to
 
 ### 3. Események összege
 
-A másik gyakori eset, amikor annak valószínűségét keressük, hogy két (vagy több) esemény közül legalább az egyik megvalósul: A vagy B (vagy C, stb.) esemény bekövetkezik. Ebben az esetben megengedő vagyról van szó: az is jó, ha mindkét (több, mint egy) esemény valósul meg. Halmazelméleti fogalmakkal ez a halmazok uniójának felel meg.  
+A másik gyakori eset, amikor annak valószínűségét keressük, hogy két (vagy több) esemény közül legalább az egyik megvalósul: A vagy B (vagy C, stb.) esemény bekövetkezik. Ebben az esetben megengedő vagyról van szó: az is jó, ha mindkét (több, mint egy) esemény valósul meg. Halmazelméleti fogalmakkal ez a halmazok uniójának felel meg. Jelölése $P(A+B)$ és ez a művelet is kommutatív, $P(A+B)=P(B+A)$ és kiterjeszthető több eseményre is.  
 
 Mennyi a valószínűsége, hogy a húzott kártyalap zöld vagy piros?  
 Ebben az esetben megfelel nekünk az összes zöld kártya (összesen 8) és az összes piros (szintén 8):  
 $$P(Z+P)=\frac{16}{32}=50\%$$
-Ha a két esemény **egymást kizáró**:  
+Ha a két (vagy több) esemény **egymást kizáró**:  
 $$P(A+B)=P(A)+P(B)$$
 
 Mennyi a valószínűsége, hogy a húzott kártyalap zöld vagy figurás?  
 Ebben az esetben megfelel nekünk az összes zöld lap (8 kártya) és ezen felül azok többi színből a figurás lapok (3-szor 4-4 kártya):  
 $$P(Z+F)=\frac{8+3*4}{32}=\frac{20}{32}=62,5\%$$
-Itt nem adhatjuk egyszerűen össze a két valószínűséget: $0,25 + 0,5 \ne 0,625$. Mégpedig azért nem, mert ha összeadnánk, lennének olyan esetek, amelyeket kétszer számolunk: a zöld figurás lapokat. Ezeknek a valószínűségét le kell vonnunk az összegből. Általános tehát:  
+Itt nem adhatjuk egyszerűen össze a két valószínűséget: $0,25 + 0,5 \ne 0,625$. Mégpedig azért nem, mert ha összeadnánk, lennének olyan esetek, amelyeket kétszer számolunk: a zöld figurás lapokat. Ezeknek a valószínűségét le kell vonnunk az összegből: $0,25+0,5-0,125=0,625$. 
+Általánosan:  
 $$P(A+B)=P(A)+P(B)-P(A*B)$$
 Míg a korábbi képlet csak akkor működik, ha a két esemény kizáró, és ezért $P(A*B)=0$, ez utóbbi képlet minden esetben működik, és az abban szereplő 4 érték közül 3 ismeretében bármelyik hiányzó érték kiszámítható. Például a szorzat:   
 $$P(A*B)=P(A)+P(B)-P(A+B)$$
 Vagy az egyik esemény valószínűsége:  
 $$P(A)=P(A+B)+P(A*B)-P(B)$$
 
+#### Összeg valószínűségének határai  
+
+Ezt a valószínűséget is csak akkor tudjuk kiszámítani, ha a P(A) és P(B) valószínűségek mellett egyéb információink is vannak. Csak P(A) és P(B) ismeretében legfeljebb az összeg valószínűségének határait tudjuk megállapítani:  
+- Az összeg valószínűsége legalább a nagyobb valószínűségű esemény valószínűségével egyenlő, mégpedig akkor, ha a kevésbé valószínű esemény ennek részhalmaza.
+- Legfeljebb 1 lehet, ha $P(A)+P(B)\ge 1$ és legfeljebb $P(A)+P(B)$, ha $P(A)+P(B)\le 1$.
 
 ### 4. Események különbsége
+
+Végül az alapműveletek közül az utolsó annak valószínűsége, hogy az egyik esemény bekövetkezik, de a másik esemény nem. Ezt nevezzük két esemény különbségének. Jelölése: $P(A\backslash B)$, ami annyit tesz, hogy "annak valószínűsége, hogy A esemény bekövetkezik, de B nem."  
+
+Mennyi annak a valószínűsége, hogy zöld, de nem figurás lapot húzunk?
+A 8 zöld lap közül 4 figurás és 4 nem. Most csak ez utóbbiak jók nekünk.
+$$P(Z\backslash F)=\frac{4}{32}=0,125$$
+Mennyi annak a valószínűsége, hogy figurás, de nem zöld lapot húzunk?  
+A 16 figurás lap közül 4 zöld, tehát nekünk csak 12 jó most.  
+$$P(F\backslash Z)=\frac{12}{32}=0,375$$
+
+Ennek kiszámítása általánosan:  
+$$P(A\backslash B)=P(A)-P(A*B)$$
+Ezzel kapcsolatban fontos látni, hogy ez az első olyan művelet, amely nem kommutatív, tehát mint fent is láthatják, $P(A\backslash B)\ne P(B\backslash A)$.  
+Emellett fontos lehet, hogy ebben a kontextusban a "de" és az "és" egyenértékű, ezért a fentieket felhasználva kétféleképpen jelölhetjük ugyanazt az összetett eseményt: $P(A\backslash B)=P(A*\bar{B})$  
+
+## De Morgan-azonosságok
+
+Akárcsak az egyszerű eseményeknek, úgy az összetett eseményenkek is van komplementerük. A kísérlet legyen az, hogy embereket megkérdezünk, beszélnek-e angolul és hogy beszélnek-e franciául. Jelölje `A` esemény, hogy valaki beszél angolul, és `F`, hogy beszél franciául. Ebben az esetben `A*F` jelöli, hogy mindkét nyelven beszél, és `A+F`, hogy legalább egyik nyelven beszél.  
+
+Annak, hogy valaki mindkét nyelven beszél, az a komplementere, hogy legfeljebb egyik nyelven beszél (ami egyenértékű azzal, hogy nem beszél mindkét nyelven). Ez körülírható úgy is, hogy "nem beszél angolul vagy nem beszél franciául". A kétféle megfogalmazást a szokásos jelöléssel így írhatnánk:  
+Nem igaz, hogy mindkét nyelven beszél: $P(\overline{A*F})$, illetve nem beszél angolul vagy nem beszél franciául: $P(\bar{A}+\bar{F})$. Mivel mindkettő ugyanazt a nyelvtudást jelöli, egyenlőségjelet tehetünk közé. Általánosan:  
+$$P(\overline{A*B})=P(\bar{A}+\bar{B})$$  
+
+Annak, hogy valaki legalább egyik nyelven beszél ($P(A+F)$), a komplementere ($P(\overline{A+F})$)), hogy egyik nyelven sem beszél, vagy másképpen, hogy nem beszél angolul és nem beszél franciául sem ($P(\bar{A}*\bar{F})$. Általánosan:  
+$$P(\overline{A+B})=P(\bar{A}*\bar{B})$$  
+
+Ezek az ún. **de Morgan-azonosságok**. Ezek segítségével a $P(\bar{A}*\bar{B})$ és $P(\bar{A}+\bar{B})$ eseményeket át tudjuk írni a másik alakra, amelyre alkalmazni tudjuk a komplementerszabályt:  
+$$P(\bar{A}+\bar{B})=P(\overline{A*B})=1-P(A*B)$$
+$$P(\bar{A}*\bar{B})=P(\overline{A+B})=1-P(A+B)$$  
+

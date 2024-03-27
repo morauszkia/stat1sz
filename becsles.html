@@ -13,7 +13,7 @@
 
 <title>Becsléselmélet</title>
 
-<script src="site_libs/header-attrs-2.21/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.26/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
@@ -29,12 +29,12 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
-<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
-<link href="site_libs/font-awesome-6.2.1/css/all.min.css" rel="stylesheet" />
-<link href="site_libs/font-awesome-6.2.1/css/v4-shims.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -328,6 +328,9 @@ div.tocify {
       <a href="kombinatorika.html">Kombinatorika</a>
     </li>
     <li>
+      <a href="muveletek.html">Műveletek valószínűségekkel</a>
+    </li>
+    <li>
       <a href="eloszlasok.html">Nevezetes eloszlások</a>
     </li>
   </ul>
@@ -513,20 +516,20 @@ követ.</p>
 <tr class="odd">
 <td align="left">1. minta</td>
 <td align="right">100</td>
-<td align="right">171.08</td>
-<td align="right">10.51</td>
+<td align="right">170.60</td>
+<td align="right">9.39</td>
 </tr>
 <tr class="even">
 <td align="left">2. minta</td>
 <td align="right">500</td>
-<td align="right">169.46</td>
-<td align="right">10.53</td>
+<td align="right">170.06</td>
+<td align="right">10.22</td>
 </tr>
 <tr class="odd">
 <td align="left">3. minta</td>
 <td align="right">200</td>
-<td align="right">169.99</td>
-<td align="right">9.78</td>
+<td align="right">169.55</td>
+<td align="right">10.44</td>
 </tr>
 </tbody>
 </table>
@@ -581,10 +584,10 @@ várható értéket, sem a szórást. De erre tartjuk a szimulációkat. Vegyün
 elméleti eloszlás, a fekete szaggatott vonal pedig a mintaátlagok
 átlaga)</p>
 <p><img src="becsles_files/figure-html/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>A legkisebb átlag, amit kaptunk 166.01 volt, a legnagyobb pedig
-173.64, de az ábrán látható, hogy az átlagok túlnyomó többsége 168 és
-172 közé esik. Az átlagok átlaga pedig 169.99, a szórásuk pedig 1.01. Ez
-elég közel esik a várakozásainkhoz: 170-es átlaghoz és 1-es standard
+<p>A legkisebb átlag, amit kaptunk 166.47 volt, a legnagyobb pedig
+173.88, de az ábrán látható, hogy az átlagok túlnyomó többsége 168 és
+172 közé esik. Az átlagok átlaga pedig 170, a szórásuk pedig 1. Ez elég
+közel esik a várakozásainkhoz: 170-es átlaghoz és 1-es standard
 hibához.</p>
 <p>Korábban, a <a
 href="https://morauszkia.github.io/stat1sz/normalis-eloszlas.html">normális
@@ -597,7 +600,7 @@ esetében a</p>
 <p><span class="math display">\[170 \pm
 1.96*1=[168,04;171,96]\]</span></p>
 <p>határértékek felelnek meg. Vagyis a mintaátlag 95%-os valószínűséggel
-ezek közé fog esni. A fenti 10 000 mintából 94.53%-ban esett a
+ezek közé fog esni. A fenti 10 000 mintából 95.19%-ban esett a
 mintaátlag a megadott tartományba (Kb. 95% - kis eltérések mindig vannak
 a gyakorlatban)</p>
 <p>Jó hír: a várakozásaink bejöttek, az átlag tényleg úgy viselkedik,
@@ -652,7 +655,7 @@ megnéztük, hogy a minták kb. 95%-ában az átlag a populációbeli várható
 értéktől legfeljebb 1,96 standard hibányira volt. Nézzük meg a 10 000
 szimulált minta közül az esetek hány százalékában van a várható érték
 (170) a mintaátlagtól legfeljebb 1,96 st. hibányira, vagyis a fenti
-szabályokat betartva megszerkesztett intervallumon belül: 94.53%</p>
+szabályokat betartva megszerkesztett intervallumon belül: 95.19%</p>
 <p>Vessék ezt össze a néhány bekezdéssel feljebb kapott aránnyal - nem
 véletlen, hogy egyezik: ha az átlag beleesik a várható érték 1,96 st.
 hibányi környezetébe, akkor a várható érték is beleesik az átlag 1,96
@@ -699,7 +702,7 @@ vagyis pl. az intervallum megfelezéséhez az elemszám négyszeresére van
 szükség.</li>
 </ul>
 <div class="exercise">
-<p>Egy 100 elemű mintában a mintaátlag 170.93. A populációban a szórás
+<p>Egy 100 elemű mintában a mintaátlag 168.1. A populációban a szórás
 értéke 10. Adjon intervallumbecslést a várható értékre <span
 class="math inline">\(1-\alpha=0.95\)</span> konfidenciaszint
 mellett!</p>
@@ -716,12 +719,12 @@ valószínűség: <span class="math inline">\(1-\frac{\alpha}{2} =
 0,975\)</span>. Ennek a táblázatban az 1,96-os érték felel meg.</p>
 <p>Behelyettesítve:<br />
 <span class="math display">\[ \overline{X} \pm z_{1-\frac{\alpha}{2}}*
-\frac{\sigma}{\sqrt{N}}=170.93 \pm1,96*
+\frac{\sigma}{\sqrt{N}}=168.1 \pm1,96*
 \frac{10}{\sqrt{100}}\]</span></p>
-<p>A két határérték: 168.97 és 172.89.</p>
+<p>A két határérték: 166.14 és 170.06.</p>
 <p>Válasz:<br />
-A populációban a változó várható értéke 95%-os megbízhatósággal a 168.97
-és 172.89 közötti intervallumba esik.</p>
+A populációban a változó várható értéke 95%-os megbízhatósággal a 166.14
+és 170.06 közötti intervallumba esik.</p>
 </div>
 </div>
 <div id="intervallumbecslés-várható-értékre-mintából-becsült-szórással"
@@ -785,7 +788,7 @@ sort a szabadságfok adja meg.</p>
 t_{df;1-\frac{\alpha}{2}}* \frac{s^{\ast}}{\sqrt{N}}\]</span> <span
 class="math display">\[df = N-1\]</span></p>
 <div class="exercise">
-<p>Egy 100 elemű mintában a mintaátlag 170.93, a szórás pedig 10.5.
+<p>Egy 100 elemű mintában a mintaátlag 168.1, a szórás pedig 10.16.
 Adjon intervallumbecslést a várható értékre <span
 class="math inline">\(1-\alpha=0.95\)</span> konfidenciaszint
 mellett!</p>
@@ -811,12 +814,12 @@ kisebb konf.szintet eredményezne. A 60-as df-nek a táblázatban a 2,00
 érték felel meg.</p>
 <p>Behelyettesítve:<br />
 <span class="math display">\[\overline{X} \pm t_{df;1-\frac{\alpha}{2}}*
-\frac{s^{\ast}}{\sqrt{N}}=170.93 \pm 2*
-\frac{10.5}{\sqrt{100}}=170.93\pm2* 1.05=170.93 \pm 2.1\]</span></p>
-<p>A két határérték: 168.83 és 173.03.</p>
+\frac{s^{\ast}}{\sqrt{N}}=168.1 \pm 2*
+\frac{10.16}{\sqrt{100}}=168.1\pm2* 1.016=168.1 \pm 2.032\]</span></p>
+<p>A két határérték: 166.068 és 170.132.</p>
 <p>Válasz:<br />
 A populációban a változó várható értéke 95%-os megbízhatósággal a
-[168.83;173.03] intervallumba esik.</p>
+[166.068;170.132] intervallumba esik.</p>
 </div>
 </div>
 <div id="intervallumbecslés-valószínűségre-arányra"

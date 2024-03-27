@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Műveletek valószínűségekkel</title>
+
+<script src="site_libs/header-attrs-2.26/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Statisztika 1. szeminárium</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Főoldal</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Kombinatorika és valószínűségszámítás
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="kombinatorika.html">Kombinatorika</a>
+    </li>
+    <li>
+      <a href="muveletek.html">Műveletek valószínűségekkel</a>
+    </li>
+    <li>
+      <a href="eloszlasok.html">Nevezetes eloszlások</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Matematikai statisztika
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="vizualizacio.html">Adatvizualizáció</a>
+    </li>
+    <li>
+      <a href="normalis-eloszlas.html">Normális eloszlás</a>
+    </li>
+    <li>
+      <a href="becsles.html">Becsléselmélet</a>
+    </li>
+    <li>
+      <a href="nemparameteres.html">Nemparaméteres próbák</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Órák slide-jai
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="slides/01_valszam_muveletek.html">Műveletek valószínűségekkel</a>
+    </li>
+    <li>
+      <a href="slides/02_felteteles.html">Feltételes valószínűségek</a>
+    </li>
+    <li>
+      <a href="slides/03_val_valtozok.html">Valószínűségi változók</a>
+    </li>
+    <li>
+      <a href="slides/03_var_shooting.html">Valószínűségi változós feladatok</a>
+    </li>
+    <li>
+      <a href="slides/04_nevezetes.html">Nevezetes eloszlások</a>
+    </li>
+    <li>
+      <a href="slides/05_leiro_stat.html">Leíró statisztikák</a>
+    </li>
+    <li>
+      <a href="slides/06_becsles.html">Becsléselmélet</a>
+    </li>
+    <li>
+      <a href="slides/07_hipotezis.html">Hipotézisvizsgálat - egymintás próbák</a>
+    </li>
+    <li>
+      <a href="slides/08_ketmintas.html">Független mintás próbák</a>
+    </li>
+    <li>
+      <a href="slides/09_paros.html">Páros t-próba</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="mailto:morauszki.andras@gmail.com">
+    <span class="fa fa-envelope"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Műveletek valószínűségekkel</h1>
+
+</div>
+
+
+<div id="alapfogalmak" class="section level2">
+<h2>Alapfogalmak</h2>
+<ul>
+<li>Kísérlet: a jelenség, amit megfigyelünk, azonos körülmények között
+megismételhető (pl. kockadobás, kártyahúzás, céltáblára lövés, aktuális
+időjárás, stb.), általában véletlen kísérletekről van szó, vagyis a
+kimenetele a véletlentől függ</li>
+<li>Kimenetelek: a kísérlet lehetséges eredményei</li>
+<li>Eseménytér: a kimenetelek halmaza, másképpen az elemi események
+halmaza (pl. kockadobásnál az összes lehetőség)</li>
+<li>Események: az eseménytér részhalmazai. Lehetnek elemik és
+összetettek.</li>
+<li>Elemi esemény: tovább már nem bontható, csak egyféleképpen
+következhet be (pl. 3-ast dobunk)</li>
+<li>Összetett esemény: felbonthatók, több elemi eseményből állnak, azok
+halmazai (pl. páros számot dobunk)</li>
+<li>Esemény bekövetkezése: egy esemény bekövetkezik, ha a megfigyelt
+kimenetel eleme az adott halmaznak.</li>
+<li>Valószínűség: az eseményekhez rendelhető valós, 0 és 1 közötti szám,
+amely megadja hogy ha megismételjük a kísérletet, akkor az esetek milyen
+arányában következik be az adott esemény.</li>
+<li>Biztos esemény: amely biztosan bekövetkezik, valószínűsége 1 =
+100%.</li>
+<li>Lehetetlen esemény: amely az adott kísérlet során nem következhet
+be, valószínűsége 0 = 0%.</li>
+<li>Klasszikus valószínűségi mező: az elemi események száma véges és
+ezek valószínűsége pozitív és egyenlő (pl. szabályos kockával végzett
+dobás)</li>
+</ul>
+</div>
+<div id="példa-kártyahúzás" class="section level2">
+<h2>Példa: kártyahúzás</h2>
+<p>A kísérlet, amit végzünk legyen, hogy egy megkevert 32 lapos magyar
+kártyapakliból véletlenszerűen húzunk egy lapot.</p>
+<p>A magyar kártyapakli 32 lapból áll: 4 színből (piros, zöld, makk és
+tök), színenként 8-8 lapból, amelyekből 4-4 számos (7-től 10-ig) és 4-4
+figurás (alsó, felső, király, ász).</p>
+<p>A kísérlet elemi eseményei az egyes konkrét kártyalapok: pl. piros
+7-es, makk ász, tök felső, stb.<br />
+Az eseménytér tehát 32 elemi eseményből áll össze, mivel ennyi kártyalap
+van.<br />
+Összetett események lehetnek, hogy például pirosat húzunk (8 elemi
+esemény), alsót húzunk (4 elemi esemény), számos lapot húzunk (16 elemi
+esemény).<br />
+A kártyahúzás esetében véges számú elemi eseményről van szó, és mivel
+mindegyik lap kihúzásának ugyanannyi a valószínűsége, klassszikus
+valószínűségi mezőről beszélhetünk.</p>
+<p>Ebben az esetben az egyes események valószínűsége kiszámítható:<br />
+<span class="math display">\[P(A) = \frac{\text{kedvező elemi események
+száma}}{\text{összes elemi esemény száma}}\]</span></p>
+<p>A fentiek alapján mit mondhatunk arról, mennyi annak a valószínűsége,
+hogy a pakliból zöld lapot húzunk?</p>
+<p>Mivel 8 zöld lap van összesen, a valószínűség: <span
+class="math inline">\(P(Z)=\frac{8}{32}=\frac{1}{4}=0.25=25\%\)</span><br />
+Ugyanígy annak, hogy (miután visszatettük a húzott lapot) pirosat
+húzunk, a valószínűsége: <span
+class="math inline">\(P(P)=\frac{8}{32}=\frac{1}{4}\)</span><br />
+Annak, hogy figurás lapot húzunk (összesen <span
+class="math inline">\(4*4=16\)</span> ilyen van) pedig <span
+class="math inline">\(P(F)=\frac{16}{32}=\frac{1}{2}=50\%\)</span></p>
+</div>
+<div id="elemi-műveletek" class="section level2">
+<h2>Elemi műveletek</h2>
+<div id="komplementer" class="section level3">
+<h3>1. Komplementer</h3>
+<p>Az első művelet, amit megnézünk, a komplementer esemény
+valószínűsége.<br />
+Komplementer eseménynek nevezzük azt az eseményt, amely akkor és csak
+akkor valósul meg, ha az eredeti esemény nem. Így például komplementer a
+páros és páratlan szám. Ha egy szám páros, akkor nem páratlan, ha egy
+szám nem páros, akkor páratlan. Tehát, ha az egyik esemény nem
+következik be, akkor a komplementere bekövetkezik.<br />
+A komplementer esemény valószínűségének jelölése és képlete: <span
+class="math display">\[P(\bar{A})=1-P(A)\]</span></p>
+<p>Mennyi a valószínűsége, hogy nem zöldet húzunk?<br />
+Mivel <span class="math inline">\(3*8 = 24\)</span> nem zöld lap van:
+<span class="math inline">\(P(\bar{Z})=\frac{24}{32}=0.75\)</span><br />
+De ezt úgy is megkaphatjuk, hogy <span
+class="math inline">\(P(\bar{Z})=1-P(Z)=1-0.25=0.75\)</span></p>
+<p>A komplementer esemény komplementere az eredeti esemény, ezért a
+valószínűsége is:<br />
+<span class="math display">\[P(\bar{\bar{A}})=P(A)\]</span></p>
+</div>
+<div id="események-szorzata" class="section level3">
+<h3>2. Események szorzata</h3>
+<p>Egy másik gyakori helyzet, amikor annak valószínűségét keressük, hogy
+két esemény együttesen bekövetkezik. Ezt jelöljük a két esemény
+szorzatával, tehát <span class="math inline">\(P(A*B)\)</span> azt
+jelöli, hogy az <code>A</code> és <code>B</code> esemény egyaránt
+megvalósul. Halmazelméleti fogalmakkal ez a halmazok metszetének felel
+meg. A szorzat kommutatív, <span
+class="math inline">\(P(A*B)=P(B*A)\)</span>. Ezen túl kiterjeszthető
+több eseményre is: pl. <span class="math inline">\(P(A*B*C)\)</span> azt
+jelenti, hogy a három esemény együtt bekövetkezik.</p>
+<p>Mennyi a valószínűsége, hogy a húzott kártyalap egyszerre zöld és
+piros?<br />
+Ebben az esetben nincs olyan kártyalap a pakliban, amely mindkét
+feltételnek megfelelne, hiszen minden kártyalapnak egyetlen színe van. A
+keresett valószínűség tehát:<br />
+<span class="math display">\[P(Z*P)=\frac{0}{32}=0\]</span></p>
+<p>Az ilyen események egymást kölcsönösen kizárják, és valószínűségük
+0.</p>
+<p>Mennyi a valószínűsége, hogy a húzott kártyalap egyszerre zöld és
+figurás?<br />
+Itt nem egymást kizáró eseményekről van szó, hanem olyanokról, amelyek
+együttesen is bekövetkezhetnek. Összesen 4 figurás zöld lap van a
+pakliban (zöld alsó, felső, király és ász), ezért<br />
+<span class="math display">\[P(Z*F)=\frac{4}{32}=12,5\%\]</span></p>
+<div id="szorzat-valószínűségének-határai" class="section level4">
+<h4>Szorzat valószínűségének határai</h4>
+<p>Az együttes bekövetkezésnek nincs általános képlete, kiszámításához
+további információra van szükség. Az eredeti két esemény
+valószínűségéből legfeljebb a szorzat határait tudjuk meghatározni:</p>
+<ul>
+<li>A két esemény szorzatának valószínűsége nem lehet nagyobb a kisebb
+esemény valószínűségénél. Ez akkor van, ha a kevésbé valószínű esemény
+részhalmaza a valószínűbbnek.</li>
+<li>A két esemény szorzatának valószínűsége akkor lehet 0, ha a két
+esemény valószínűségének összege <span class="math inline">\(\le
+1\)</span>.</li>
+<li>Ha a két esemény valószínűségének összege <span
+class="math inline">\(\ge 1\)</span>, akkor a szorzat valószínűsége
+<span class="math inline">\(P(A*B)\ge P(A)+P(B)-1\)</span></li>
+</ul>
+</div>
+</div>
+<div id="események-összege" class="section level3">
+<h3>3. Események összege</h3>
+<p>A másik gyakori eset, amikor annak valószínűségét keressük, hogy két
+(vagy több) esemény közül legalább az egyik megvalósul: A vagy B (vagy
+C, stb.) esemény bekövetkezik. Ebben az esetben megengedő vagyról van
+szó: az is jó, ha mindkét (több, mint egy) esemény valósul meg.
+Halmazelméleti fogalmakkal ez a halmazok uniójának felel meg. Jelölése
+<span class="math inline">\(P(A+B)\)</span> és ez a művelet is
+kommutatív, <span class="math inline">\(P(A+B)=P(B+A)\)</span> és
+kiterjeszthető több eseményre is.</p>
+<p>Mennyi a valószínűsége, hogy a húzott kártyalap zöld vagy
+piros?<br />
+Ebben az esetben megfelel nekünk az összes zöld kártya (összesen 8) és
+az összes piros (szintén 8):<br />
+<span class="math display">\[P(Z+P)=\frac{16}{32}=50\%\]</span> Ha a két
+(vagy több) esemény <strong>egymást kizáró</strong>:<br />
+<span class="math display">\[P(A+B)=P(A)+P(B)\]</span></p>
+<p>Mennyi a valószínűsége, hogy a húzott kártyalap zöld vagy
+figurás?<br />
+Ebben az esetben megfelel nekünk az összes zöld lap (8 kártya) és ezen
+felül azok többi színből a figurás lapok (3-szor 4-4 kártya):<br />
+<span
+class="math display">\[P(Z+F)=\frac{8+3*4}{32}=\frac{20}{32}=62,5\%\]</span>
+Itt nem adhatjuk egyszerűen össze a két valószínűséget: <span
+class="math inline">\(0,25 + 0,5 \ne 0,625\)</span>. Mégpedig azért nem,
+mert ha összeadnánk, lennének olyan esetek, amelyeket kétszer számolunk:
+a zöld figurás lapokat. Ezeknek a valószínűségét le kell vonnunk az
+összegből: <span class="math inline">\(0,25+0,5-0,125=0,625\)</span>.
+Általánosan:<br />
+<span class="math display">\[P(A+B)=P(A)+P(B)-P(A*B)\]</span> Míg a
+korábbi képlet csak akkor működik, ha a két esemény kizáró, és ezért
+<span class="math inline">\(P(A*B)=0\)</span>, ez utóbbi képlet minden
+esetben működik, és az abban szereplő 4 érték közül 3 ismeretében
+bármelyik hiányzó érték kiszámítható. Például a szorzat:<br />
+<span class="math display">\[P(A*B)=P(A)+P(B)-P(A+B)\]</span> Vagy az
+egyik esemény valószínűsége:<br />
+<span class="math display">\[P(A)=P(A+B)+P(A*B)-P(B)\]</span></p>
+<div id="összeg-valószínűségének-határai" class="section level4">
+<h4>Összeg valószínűségének határai</h4>
+<p>Ezt a valószínűséget is csak akkor tudjuk kiszámítani, ha a P(A) és
+P(B) valószínűségek mellett egyéb információink is vannak. Csak P(A) és
+P(B) ismeretében legfeljebb az összeg valószínűségének határait tudjuk
+megállapítani:<br />
+- Az összeg valószínűsége legalább a nagyobb valószínűségű esemény
+valószínűségével egyenlő, mégpedig akkor, ha a kevésbé valószínű esemény
+ennek részhalmaza. - Legfeljebb 1 lehet, ha <span
+class="math inline">\(P(A)+P(B)\ge 1\)</span> és legfeljebb <span
+class="math inline">\(P(A)+P(B)\)</span>, ha <span
+class="math inline">\(P(A)+P(B)\le 1\)</span>.</p>
+</div>
+</div>
+<div id="események-különbsége" class="section level3">
+<h3>4. Események különbsége</h3>
+<p>Végül az alapműveletek közül az utolsó annak valószínűsége, hogy az
+egyik esemény bekövetkezik, de a másik esemény nem. Ezt nevezzük két
+esemény különbségének. Jelölése: <span
+class="math inline">\(P(A\backslash B)\)</span>, ami annyit tesz, hogy
+“annak valószínűsége, hogy A esemény bekövetkezik, de B nem.”</p>
+<p>Mennyi annak a valószínűsége, hogy zöld, de nem figurás lapot húzunk?
+A 8 zöld lap közül 4 figurás és 4 nem. Most csak ez utóbbiak jók nekünk.
+<span class="math display">\[P(Z\backslash
+F)=\frac{4}{32}=0,125\]</span> Mennyi annak a valószínűsége, hogy
+figurás, de nem zöld lapot húzunk?<br />
+A 16 figurás lap közül 4 zöld, tehát nekünk csak 12 jó most.<br />
+<span class="math display">\[P(F\backslash
+Z)=\frac{12}{32}=0,375\]</span></p>
+<p>Ennek kiszámítása általánosan:<br />
+<span class="math display">\[P(A\backslash B)=P(A)-P(A*B)\]</span> Ezzel
+kapcsolatban fontos látni, hogy ez az első olyan művelet, amely nem
+kommutatív, tehát mint fent is láthatják, <span
+class="math inline">\(P(A\backslash B)\ne P(B\backslash
+A)\)</span>.<br />
+Emellett fontos lehet, hogy ebben a kontextusban a “de” és az “és”
+egyenértékű, ezért a fentieket felhasználva kétféleképpen jelölhetjük
+ugyanazt az összetett eseményt: <span
+class="math inline">\(P(A\backslash B)=P(A*\bar{B})\)</span></p>
+</div>
+</div>
+<div id="de-morgan-azonosságok" class="section level2">
+<h2>De Morgan-azonosságok</h2>
+<p>Akárcsak az egyszerű eseményeknek, úgy az összetett eseményenkek is
+van komplementerük. A kísérlet legyen az, hogy embereket megkérdezünk,
+beszélnek-e angolul és hogy beszélnek-e franciául. Jelölje
+<code>A</code> esemény, hogy valaki beszél angolul, és <code>F</code>,
+hogy beszél franciául. Ebben az esetben <code>A*F</code> jelöli, hogy
+mindkét nyelven beszél, és <code>A+F</code>, hogy legalább egyik nyelven
+beszél.</p>
+<p>Annak, hogy valaki mindkét nyelven beszél, az a komplementere, hogy
+legfeljebb egyik nyelven beszél (ami egyenértékű azzal, hogy nem beszél
+mindkét nyelven). Ez körülírható úgy is, hogy “nem beszél angolul vagy
+nem beszél franciául”. A kétféle megfogalmazást a szokásos jelöléssel
+így írhatnánk:<br />
+Nem igaz, hogy mindkét nyelven beszél: <span
+class="math inline">\(P(\overline{A*F})\)</span>, illetve nem beszél
+angolul vagy nem beszél franciául: <span
+class="math inline">\(P(\bar{A}+\bar{F})\)</span>. Mivel mindkettő
+ugyanazt a nyelvtudást jelöli, egyenlőségjelet tehetünk közé.
+Általánosan:<br />
+<span
+class="math display">\[P(\overline{A*B})=P(\bar{A}+\bar{B})\]</span></p>
+<p>Annak, hogy valaki legalább egyik nyelven beszél (<span
+class="math inline">\(P(A+F)\)</span>), a komplementere (<span
+class="math inline">\(P(\overline{A+F})\)</span>)), hogy egyik nyelven
+sem beszél, vagy másképpen, hogy nem beszél angolul és nem beszél
+franciául sem (<span class="math inline">\(P(\bar{A}*\bar{F})\)</span>.
+Általánosan:<br />
+<span
+class="math display">\[P(\overline{A+B})=P(\bar{A}*\bar{B})\]</span></p>
+<p>Ezek az ún. <strong>de Morgan-azonosságok</strong>. Ezek segítségével
+a <span class="math inline">\(P(\bar{A}*\bar{B})\)</span> és <span
+class="math inline">\(P(\bar{A}+\bar{B})\)</span> eseményeket át tudjuk
+írni a másik alakra, amelyre alkalmazni tudjuk a
+komplementerszabályt:<br />
+<span
+class="math display">\[P(\bar{A}+\bar{B})=P(\overline{A*B})=1-P(A*B)\]</span>
+<span
+class="math display">\[P(\bar{A}*\bar{B})=P(\overline{A+B})=1-P(A+B)\]</span></p>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
